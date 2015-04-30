@@ -1,0 +1,61 @@
+33   q2_1_2
+63   q2_2
+93   q2_3_30
+123  q2_4_1 + other
+183  q2_5_1
+213  q2_6_1
+243  q2_7_1_1 +(261)
+785  q2_8_1
+815  q2_9_1
+845  q2_10_1
+875  q2_11_1
+905  q2_12_1
+935  q2_13_1
+965  q2_14_1
+995  q2_15_1
+1025 q2_16_1
+1055 q2_17_1
+
+Name 1
+Gender
+Age
+Marital_Status
+Marital_Status_Other
+Illness
+NumIllnesses
+Overnight Health_Centre
+Nights Health_Centre
+Overnight District_Hospital
+Nights District_Hospital
+Overnight Provincial_Hospital
+Nights Porovincial_Hospital
+Overnight National Hospital
+Nights National_Hospital
+Overnight Private_Clinic
+Nights Private_Clinic
+Care At- No care
+Care At- Home-made medicine
+Care At- Village modern medical practitioner
+Care At- Village health volunteer
+Care At- Traditional healer
+Care At- Health centre
+Care At- District hospital
+Care At- Provincial hospital/Regional
+Care At
+Care At - National hospital
+Care At - Private pharmacy
+Care At - Private clinic
+Care At - Abroad
+Care At - Illegal medical practitioner
+Care At - Other
+Care At - Do not remember
+Care At - Do not know
+Care At - Other
+Care At - Other Code
+
+
+
+
+("Name","Gender","Age","Marital_Status","Marital_Status_Other","Illness","NumIllnesses","Overnight Health_Centre","Nights Health_Centre","Overnight District_Hospital","Nights District_Hospital","Overnight Provincial_Hospital","Nights Porovincial_Hospital","Overnight National Hospital","Nights National_Hospital","Overnight Private_Clinic","Nights Private_Clinic","Care At- No care","Care At- Home-made medicine","Care At- Village modern medical practitioner","Care At- Village health volunteer","Care At- Traditional healer","Care At- Health centre","Care At- District hospital","Care At- Provincial hospital/Regional","Care At","Care At - National hospital","Care At - Private pharmacy","Care At - Private clinic","Care At - Abroad","Care At - Illegal medical practitioner","Care At - Other","Care At - Do not remember","Care At - Do not know","Care At - Other","Care At - Other Code")
+
+("Lamam","Kaleum","Dukjeung","Thateang)"

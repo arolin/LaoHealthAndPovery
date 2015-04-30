@@ -1,0 +1,22 @@
+---
+title: "PreId_Comparison"
+author: "Leah Hale"
+date: "29/04/2015"
+output: html_document
+---
+
+```{r}
+source("LoadData.R");
+PreId <-Villages$PreId;
+table(Villages$Code.distric[PreId])
+table(Villages$Code.distric[!PreId])
+table(Villages$Code.distric[PreId])
+
+Villages$VillageNum[PreId]
+Villages$VillageNum[!PreId]
+
+Villages$VillageNum
+
+table(HEFCard,lps$PreId);
+
+```

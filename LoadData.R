@@ -4,10 +4,35 @@ lps<-lpsraw;
 #Fix Gender
 lps$"q1_4"<-factor(lps$"q1_4",levels = c("1","2"),labels=c("F","M"));
 
-CNames = c("Video","Mobile","Camera","Television","Bicycle","Motorbike","Car or truck","Tractor","Boat","Motor Boat","N cattle","N buffalo","N horses","N pigs","N goats","N chickens");
+PossesionNames = c("Video","Mobile","Camera","Television","Bicycle","Motorbike","Car or truck","Tractor","Boat","Motor Boat","N cattle","N buffalo","N horses","N pigs","N goats","N chickens");
 DistNames = c("Lamam","Kaleum","Dukjeung","Thateang")
 lps$"dist" <- factor(lps$"dist",labels = DistNames);
 
+
+Villages <- read.csv("Vilages.csv")
+Villages$PreId <- Villages[,1]!="0"; 
+Villages$PreId <- is.na(Villages$PreId );
+
+VillageNum <-as.integer(Villages$Code.district)*1000 + Villages$Code.village;
+Villages<-cbind(Villages,VillageNum)
+
+PreId<-lps$id.format==1;
+r=1;
+for (i in 1:length(PreId)) {
+  vrow <-which (Villages$VillageNum == lps$Village[r]);
+  PreId[r]<-Villages$PreId[vrow];
+  r<-r+1;
+}
+lps<-cbind (lps,PreId)
+
+
+lps$"q1_5"<-factor(lps$"q1_5",c("1","3"),c("Yes","No"));
+
+HEFCard <-!is.na(lps$"q1_8_6");
+GVTPoor <-!is.na(lps$"q1_8_7");
+VilPoor <-lps$"q1_5"=="Yes";
+
+
 #Split Dependents
-source("SplitDeps.R")
+#source("SplitDeps.R")
 
