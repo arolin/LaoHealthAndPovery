@@ -1,5 +1,5 @@
 lpsraw<-read.csv("lps.csv");
-lps<-lpsraw;
+lps=lpsraw;
 
 #Fix Gender
 lps$"q1_4"<-factor(lps$"q1_4",levels = c("1","2"),labels=c("F","M"));
