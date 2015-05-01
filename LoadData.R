@@ -13,8 +13,6 @@ lps$"dist" <- factor(lps$"dist",labels = DistNames);
 
 
 Villages <- read.csv("Vilages.csv")
-Villages$PreId <- Villages[,1]!="0"; 
-Villages$PreId <- is.na(Villages$PreId );
 
 VillageNum <-as.integer(Villages$Code.district)*1000 + Villages$Code.village;
 Villages<-cbind(Villages,VillageNum)
@@ -23,7 +21,7 @@ PreId<-lps$id.format==1;
 r=1;
 for (i in 1:length(PreId)) {
   vrow <-which (Villages$VillageNum == lps$Village[r]);
-  PreId[r]<-!Villages$PreId[vrow];
+  PreId[r]<-Villages$Pre.ID[vrow]==1
   r<-r+1;
 }
 lps<-cbind (lps,PreId)
