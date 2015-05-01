@@ -46,6 +46,7 @@ NoAssist  <-lps$PreId & NoInsu;
 lgroups <- list(HEF_PreID,Geo_Poor,NoAssist)
 ```
 
+<<<<<<< HEAD
 #Family size
 ```{r} 
 wilcox.test(HH_NumPeople~HEF_PreID,data=lps[OnAList])

@@ -11,14 +11,17 @@ OnAList = HEF_PreID | Geo_Poor | NoAssist;
 HEF_PreID_Indv = c();
 Geo_Poor_Indv = c();
 NoAssist_Indv = c();
+OnAList_Indv  = c();
+
 for (r in as.integer(IndiHealth$SRow)) {
   HEF_PreID_Indv <-c(HEF_PreID_Indv,HEF_PreID[r]);
   Geo_Poor_Indv  <-c(Geo_Poor_Indv,Geo_Poor[r]);
   NoAssist_Indv  <-c(NoAssist_Indv,NoAssist[r]);
+  OnAList_Indv   <-c(OnAList_Indv,OnAList[r]);
 }
 
-lgroups <- list(HEF_PreID,Geo_Poor,NoAssist)
-liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv)
+lgroups <- list(HEF_PreID,Geo_Poor,NoAssist,OnAList)
+liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv,OnAList_Indv)
 
 #create a blank frame to hold the table
 ftable <-data.frame();
@@ -53,7 +56,7 @@ percentOther <- function(g) {
 
 
 familySize <-function (g) {
-   v <-mean(lps[g,"HH_Num_People"],na.rm = TRUE)
+   v <-mean(lps[g,"HH_NumPeople"],na.rm = TRUE)
   return (v);
 }
 
@@ -121,7 +124,31 @@ ftable<-bindVar(ftable,lgroups,familySize,"Average_FamilySize");
 t.test(IndiHealth$Marital_Status[HEF_PreID_Indv]=="Married",IndiHealth$Marital_Status[NoAssist_Indv]=="Married")
 t.test(IndiHealth$Gender=="F",IndiHealth$Gender[NoAssist_Indv]=="F")
 
-colnames(ftable) <- c("HEF","GEO_Poor","NoAssist")
+colnames(ftable) <- c("HEF","GEO_Poor","NoAssist","All Respondants")
 print(ftable)
 print(t(ftable))
 
+
+sigTable = data.frame();
+
+testNumPeople <-function (g,b) {
+  wt<-wilcox.test(reformulate(termlabels=g,response='HH_NumPeople'),data=lps[b,])
+  return(wt$p.value)
+}
+
+cases=c('HEF_PreID','HEF_PreID','Geo_Poor')
+populations = list (lps$HEF_PreID|lps$Geo_Poor,lps$HEF_PreID|lps$NoAssist,lps$Geo_Poor|lps$NoAssist)
+bindSig <-function(sig,varFunc,name) {
+  rtab<-c();
+  for (i in 1:3) {
+    rtab<-c(rtab,varFunc(cases[i],populations[[i]]))
+  }
+  sig<-rbind(sig,rtab)
+  rownames(sig)[length(sig[,1])]=name;
+  return(sig)
+}
+
+sigTable<-bindSig(sigTable,testNumPeople,"Household Size")
+
+colnames(sigTable) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
+print(sigTable)
