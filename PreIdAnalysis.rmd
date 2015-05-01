@@ -5,6 +5,7 @@ date: "29/04/2015"
 output: html_document
 ---
 
+
 ```{r,results='asis'}
 
 library("xtable")
@@ -16,20 +17,42 @@ HEFCard_by_PreId <- c(sum(lps[HEFCard,]$PreId),sum(!lps[HEFCard,]$PreId));
 GVTPoor_by_PreId <- c(sum(lps[GVTPoor,]$PreId),sum(!lps[GVTPoor,]$PreId));
 NoInsu_by_PreId  <- c(sum(lps[NoInsu,]$PreId), sum(!lps[NoInsu,]$PreId));
             
+
+
 ftable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
 
 ftable<-cbind(ftable,rowSums(ftable));
 rownames(ftable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
 colnames(ftable)<-c("PreId","Geo","Row Total");
 print(xtable(ftable),"html")
-# priHEF_by_PreId               <- table(lps[HEFCard,]$PreId);
-# GVTPoor_by_PreId           <- table(lps[GVTPoor,]$PreId);
-# NoInsur_by_PreIDpreIdTable <- table(lps[NoInsu,]$PreId);
-# 
-# preIdTable <-rbind(HEF_by_PreId,GVTPoor_by_PreId,NoInsur_by_PreIDpreIdTable)
-# 
-# table(lps[NoIns,]$PreId)
-
-
 
 ```
+
+```{r,results='hide'}
+HEF_PreID <-lps$PreId & HEFCard;
+Geo_Poor  <-!lps$PreId & GVTPoor;
+NoAssist  <-lps$PreId & NoInsu;
+
+lgroups <- list(HEF_PreID,Geo_Poor,NoAssist)
+```
+
+#Gender
+
+```{r,results='asis'}
+#create a blank frame to hold the table
+ftable <-data.frame();
+#copute the rows for each group in the table
+for (l in lgroups) {
+  rtab<-c(sum(lps[l,"Gender"]=="F",na.rm=TRUE),sum(lps[l,"Gender"]=="M",na.rm=TRUE))
+  ftable<-cbind(ftable,rtab)
+}
+#ftable<-cbind(ftable,rowSums(ftable));
+rownames(ftable) <- c("F","M")
+colnames(ftable) <- c("HEF","GEO_Poor","NoAssist")
+```
+## Gender of respondents
+```{r,results='asis'}
+print (xtable(ftable),"html")
+
+```
+## Gender of all
