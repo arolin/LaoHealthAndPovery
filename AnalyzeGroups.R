@@ -2,6 +2,12 @@ HEF_PreID <-lps$PreId & HEFCard;
 Geo_Poor  <-!lps$PreId & GVTPoor;
 NoAssist  <-lps$PreId & NoInsu;
 
+lps$HEF_PreID<-HEF_PreID;
+lps$Geo_Poor<-Geo_Poor;
+lps$NoAssist<-NoAssist;
+OnAList = HEF_PreID | Geo_Poor | NoAssist;
+
+
 HEF_PreID_Indv = c();
 Geo_Poor_Indv = c();
 NoAssist_Indv = c();

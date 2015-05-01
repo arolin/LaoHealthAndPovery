@@ -27,6 +27,16 @@ colnames(ftable)<-c("PreId","Geo","Row Total");
 print(xtable(ftable),"html")
 
 ```
+```{r}
+source("AnalyzeGroups.R");
+```
+
+```r sum(HEF_PreID & NoAssist)``` persons are on both the HEF_PreId and the NoAssist List we will cound them as HEF.
+
+```r sum (HEF_PreID & Geo_Poor)```
+
+which(HEF_PreID & NoAssist)
+
 
 ```{r,results='hide'}
 HEF_PreID <-lps$PreId & HEFCard;
@@ -36,23 +46,16 @@ NoAssist  <-lps$PreId & NoInsu;
 lgroups <- list(HEF_PreID,Geo_Poor,NoAssist)
 ```
 
-#Gender
-
-```{r,results='asis'}
-#create a blank frame to hold the table
-ftable <-data.frame();
-#copute the rows for each group in the table
-for (l in lgroups) {
-  rtab<-c(sum(lps[l,"Gender"]=="F",na.rm=TRUE),sum(lps[l,"Gender"]=="M",na.rm=TRUE))
-  ftable<-cbind(ftable,rtab)
-}
-#ftable<-cbind(ftable,rowSums(ftable));
-rownames(ftable) <- c("F","M")
-colnames(ftable) <- c("HEF","GEO_Poor","NoAssist")
-```
-## Gender of respondents
-```{r,results='asis'}
-print (xtable(ftable),"html")
-
-```
-## Gender of all
+#Family size
+```{r} 
+wilcox.test(HH_NumPeople~HEF_PreID,data=lps[OnAList])
+``` 
+HEF to all in sample group.
+```{r}
+wilcox.test(HH_NumPeople~Geo_Poor,data=lps[OnAList])
+``` 
+GeoPoor to all in sample group.
+```{r}
+wilcox.test(HH_NumPeople~NoAssist,data=lps[OnAList])
+``` 
+No Assist to all in sample group.
