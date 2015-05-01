@@ -5,18 +5,31 @@ date: "29/04/2015"
 output: html_document
 ---
 
-```{r}
+```{r,results='asis'}
+
+library("xtable")
 source("LoadData.R");
-PreId <-Villages$PreId;
-table(Villages$Code.distric[PreId])
-table(Villages$Code.distric[!PreId])
-table(Villages$Code.distric[PreId])
 
-Villages$VillageNum[PreId]
-Villages$VillageNum[!PreId]
+ftable<-data.frame();
 
-Villages$VillageNum
+HEFCard_by_PreId <- c(sum(lps[HEFCard,]$PreId),sum(!lps[HEFCard,]$PreId));
+GVTPoor_by_PreId <- c(sum(lps[GVTPoor,]$PreId),sum(!lps[GVTPoor,]$PreId));
+NoInsu_by_PreId  <- c(sum(lps[NoInsu,]$PreId), sum(!lps[NoInsu,]$PreId));
+            
+ftable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
 
-table(HEFCard,lps$PreId);
+ftable<-cbind(ftable,rowSums(ftable));
+rownames(ftable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
+colnames(ftable)<-c("PreId","Geo","Row Total");
+print(xtable(ftable),"html")
+# priHEF_by_PreId               <- table(lps[HEFCard,]$PreId);
+# GVTPoor_by_PreId           <- table(lps[GVTPoor,]$PreId);
+# NoInsur_by_PreIDpreIdTable <- table(lps[NoInsu,]$PreId);
+# 
+# preIdTable <-rbind(HEF_by_PreId,GVTPoor_by_PreId,NoInsur_by_PreIDpreIdTable)
+# 
+# table(lps[NoIns,]$PreId)
+
+
 
 ```
