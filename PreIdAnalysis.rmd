@@ -50,9 +50,23 @@ for (l in lgroups) {
 rownames(ftable) <- c("F","M")
 colnames(ftable) <- c("HEF","GEO_Poor","NoAssist")
 ```
+
 ## Gender of respondents
 ```{r,results='asis'}
 print (xtable(ftable),"html")
 
 ```
 ## Gender of all
+
+#Num Peopls
+```{r}
+n1<-which(names(lps)=="q2_1_2_30")
+vname<-!is.na(lps[,n1:(n1+29)])
+nnames<-rowSums(vname)
+sum (!lps$HH_NumPeople == nnames)
+
+hist(lps$HH_NumPeople - nnames)
+hist(lps$HH_NumPeople)
+hist(nnames)
+```
+Num names matches num people every times

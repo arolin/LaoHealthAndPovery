@@ -44,6 +44,14 @@ percentOther <- function(g) {
   m <-sum(IndiHealth$Marital_Status[g]=="Other") / sum (g)
 }
 
+
+
+familySize <-function (g) {
+   v <-mean(lps[g,"HH_Num_People"],na.rm = TRUE)
+  return (v);
+}
+
+
 countFemale <-function (g) {
   v <-sum(lps[g,"Gender"]=="F",na.rm = TRUE)
   return (v);
@@ -73,7 +81,10 @@ percentMaleI <-function (g) {
   v<-m/(m+f)
   return (v);
 }
-
+avgAge <-function (g) {
+ v= mean (IndiHealth[g, "Age"])
+ return (v);
+}
 bindVar <-function(ftable,group,varFunc,name) {
   rtab<-c();
   for (l in group) {
@@ -98,7 +109,8 @@ ftable<-bindVar(ftable,liGroups,percentMarried,"%Married");
 ftable<-bindVar(ftable,liGroups,percentSingle,"%Single");
 ftable<-bindVar(ftable,liGroups,percentDivorced,"%Divorced");
 ftable<-bindVar(ftable,liGroups,percentOther,"%Marital_Other");
-
+ftable<-bindVar(ftable,liGroups,avgAge,"Average_Age");
+ftable<-bindVar(ftable,lgroups,familySize,"Average_FamilySize");
 
 t.test(IndiHealth$Marital_Status[HEF_PreID_Indv]=="Married",IndiHealth$Marital_Status[NoAssist_Indv]=="Married")
 t.test(IndiHealth$Gender=="F",IndiHealth$Gender[NoAssist_Indv]=="F")
