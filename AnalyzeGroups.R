@@ -299,3 +299,71 @@ colnames(hcSeekSig) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
 print(hcSeek)
 print(hcSeekSig)
 
+
+################################
+##Overnight HC
+
+
+################################
+### Paymanets
+payTable <- data.frame(stringsAsFactors = FALSE);
+paySigTabel <-data.frame();
+
+careCostComp <- function (g,var,flag) {
+  g2 <- g & !is.na(flag);
+  cv=lps[g2,var];
+  
+  cv <- cv[cv!=98 & cv!=99]
+  g3 = !is.na(cv);
+  r$max <- max (cv,na.rm = TRUE);
+  r$min <- min (cv,na.rm = TRUE);
+  r$num <- sum (g3,na.rm = TRUE);
+  r$mean <- mean(cv,na.rm = TRUE);
+  r$median <- median(cv,na.rm = TRUE);  
+  return (r);  
+}
+
+bindCostVars <-function(ftable,group,varFunc,vars,flag,names) {
+  for (v in 1:length(vars)) {
+    meantab<-c();
+    mediantab<-c();
+    for (l in group) {
+      vf <- varFunc(l,vars[v],flag);
+      meantab<-c(meantab,vf$mean)
+      mediantab<-c(mediantab,vf$median)
+    }
+    ftable<-rbind(ftable,meantab,mediantab)
+    rn<-paste(names[v]," mean");
+    rownames(ftable)[length(ftable[,1])-1]=rn;
+    rn<-paste(names[v]," median");
+    rownames(ftable)[length(ftable[,1])]=rn;
+  }
+  return(ftable)
+}
+
+
+bindCostVars2 <-function(ftable,group,varFunc,vars,flag,names) {
+  for (v in 1:length(vars)) {
+    rtab<-c();
+    for (l in group) {
+      vf <- varFunc(l,vars[v],flag);
+      s<-"";
+      if (!is.na(vf$median)) {
+          s<-paste (format(vf$mean/1000,digits=2),format(vf$median/1000,digits=2),"[",vf$num,"]")
+      }else {          
+          s<-paste ("[",vf$num,"]")
+      }
+      rtab<-c(rtab,s)
+    }
+    options(stringsAsFactors=FALSE);
+    ftable<-rbind(ftable,rtab)
+    options(stringsAsFactors=TRUE);
+    rownames(ftable)[length(ftable[,1])]=names[v];
+  }
+  return(ftable)
+}
+
+NHsi = which (names(lps)=="HH_Illness_1_National_Hospital_cost_Medicine")
+NHei = which (names(lps)=="HH_Illness_1_National_Hospital_cost_Overall_average")
+payTable<-bindCostVars2(payTable,lgroups,careCostComp,NHsi:NHei,lps$HH_Illness_1_Consult_National_Hospital,names(lps)[NHsi:NHei])
+print(payTable)
