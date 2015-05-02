@@ -31,7 +31,7 @@ lps$VilPoor<-factor(lps$VilPoor,c("1","3"),c("Yes","No"));
 
 HEFCard <-!is.na(lps$HH_Insurance_HEFCard);
 GVTPoor <-!is.na(lps$HH_Insurance_GVTPoor);
-NoInsu <- !is.na(lps$HH_Insurance_Informal_no_insuranc)
+NoInsu <- !is.na(lps$HH_Insurance_Informal_no_insurance)
 VilPoor <-lps$VilPoor=="Yes";
 
 #Split Dependents
