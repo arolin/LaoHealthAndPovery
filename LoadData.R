@@ -36,6 +36,7 @@ VilPoor <-lps$VilPoor=="Yes";
 
 #Split Dependents
 if (!exists("IndiHealth")) {
-  source("SplitDeps.R")
+  #source("SplitDeps.R")
+  load("IndiHealth.bin");
 }
 
