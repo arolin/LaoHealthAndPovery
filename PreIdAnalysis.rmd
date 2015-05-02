@@ -27,8 +27,12 @@ colnames(ftable)<-c("PreId","Geo","Row Total");
 print(xtable(ftable),"html")
 
 ```
-```{r}
+```{r, results='hide'}
 source("AnalyzeGroups.R");
+```
+# HC Seeking
+```{r, results='asis'}
+print(xtable(hcSeek),"html")
 ```
 
 ```r sum(HEF_PreID & NoAssist)``` persons are on both the HEF_PreId and the NoAssist List we will cound them as HEF.
@@ -60,28 +64,7 @@ GeoPoor to all in sample group.
 wilcox.test(HH_NumPeople~NoAssist,data=lps[OnAList])
 ``` 
 No Assist to all in sample group.
-=======
-#Gender
 
-```{r,results='asis'}
-#create a blank frame to hold the table
-ftable <-data.frame();
-#copute the rows for each group in the table
-for (l in lgroups) {
-  rtab<-c(sum(lps[l,"Gender"]=="F",na.rm=TRUE),sum(lps[l,"Gender"]=="M",na.rm=TRUE))
-  ftable<-cbind(ftable,rtab)
-}
-#ftable<-cbind(ftable,rowSums(ftable));
-rownames(ftable) <- c("F","M")
-colnames(ftable) <- c("HEF","GEO_Poor","NoAssist")
-```
-
-## Gender of respondents
-```{r,results='asis'}
-print (xtable(ftable),"html")
-
-```
-## Gender of all
 
 #Num Peopls
 ```{r}
@@ -95,4 +78,15 @@ hist(lps$HH_NumPeople)
 hist(nnames)
 ```
 Num names matches num people every times
->>>>>>> e9ad12049f56229c53e2b97437f1e1154a0147d7
+
+
+#Check Service Usage 
+
+```{r,results='hide'}
+si<-which(names(IndiHealth)=="Care At- No care");
+ei<-which(names(IndiHealth)=="Care At - Do not know")
+NCareSpec <- sum(IndiHealth$Illness[rowSums(!is.na(IndiHealth[si:ei]))==0]==1);
+
+```
+
+There are ```r NCareSpec``` individuals who where reported as being ill but nocare (not even 'no care') was specified.

@@ -20,6 +20,13 @@ for (r in as.integer(IndiHealth$SRow)) {
   OnAList_Indv   <-c(OnAList_Indv,OnAList[r]);
 }
 
+IndiHealth$HEF_PreID <- HEF_PreID_Indv;
+IndiHealth$Geo_Poor  <- Geo_Poor_Indv;
+IndiHealth$NoAssist  <- NoAssist_Indv;
+
+
+
+
 lgroups <- list(HEF_PreID,Geo_Poor,NoAssist,OnAList)
 liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv,OnAList_Indv)
 
@@ -90,10 +97,24 @@ percentMaleI <-function (g) {
   v<-m/(m+f)
   return (v);
 }
+
+hohLit <-function (g) {
+  avg<-mean(lps$HoH_Literacy_Level[g]);
+  return (avg);
+}
+
+spouseLit <- function (g) {
+  who<-g & !lps$HoH_Spouse_Literacy_Level[g]==4;
+  avg <- mean(lps$HoH_Spouse_Literacy_Level[who]);
+  return (avg);
+}
+
+
 avgAge <-function (g) {
  v= mean (IndiHealth[g, "Age"])
  return (v);
 }
+
 bindVar <-function(ftable,group,varFunc,name) {
   rtab<-c();
   for (l in group) {
@@ -120,6 +141,10 @@ ftable<-bindVar(ftable,liGroups,percentDivorced,"%Divorced");
 ftable<-bindVar(ftable,liGroups,percentOther,"%Marital_Other");
 ftable<-bindVar(ftable,liGroups,avgAge,"Average_Age");
 ftable<-bindVar(ftable,lgroups,familySize,"Average_FamilySize");
+ftable<-bindVar(ftable,lgroups,hohLit,"HoH Litteracy");
+ftable<-bindVar(ftable,lgroups,spouseLit,"Spouse Literacy");
+
+
 
 t.test(IndiHealth$Marital_Status[HEF_PreID_Indv]=="Married",IndiHealth$Marital_Status[NoAssist_Indv]=="Married")
 t.test(IndiHealth$Gender=="F",IndiHealth$Gender[NoAssist_Indv]=="F")
@@ -131,24 +156,130 @@ print(t(ftable))
 
 sigTable = data.frame();
 
+testHoHLit <- function (g,b) {
+  wt<-wilcox.test(reformulate(termlabels=g,response='HoH_Literacy_Level'),data=lps[b,])
+  return(wt$p.value)
+}
+
 testNumPeople <-function (g,b) {
   wt<-wilcox.test(reformulate(termlabels=g,response='HH_NumPeople'),data=lps[b,])
   return(wt$p.value)
 }
 
+
+testAge <-function (g,b) {
+  wt<-wilcox.test(reformulate(termlabels=g,response='Age'),data=IndiHealth[b,])
+  return(wt$p.value)
+}
+
+
 cases=c('HEF_PreID','HEF_PreID','Geo_Poor')
-populations = list (lps$HEF_PreID|lps$Geo_Poor,lps$HEF_PreID|lps$NoAssist,lps$Geo_Poor|lps$NoAssist)
-bindSig <-function(sig,varFunc,name) {
+pops_survey = list (lps$HEF_PreID|lps$Geo_Poor,lps$HEF_PreID|lps$NoAssist,lps$Geo_Poor|lps$NoAssist)
+pops_idv    = list (IndiHealth$HEF_PreID|IndiHealth$Geo_Poor,IndiHealth$HEF_PreID|IndiHealth$NoAssist,IndiHealth$Geo_Poor|IndiHealth$NoAssist)
+bindSig <-function(sig,varFunc,name,p) {
   rtab<-c();
   for (i in 1:3) {
-    rtab<-c(rtab,varFunc(cases[i],populations[[i]]))
+    rtab<-c(rtab,varFunc(cases[i],p[[i]]))
   }
   sig<-rbind(sig,rtab)
   rownames(sig)[length(sig[,1])]=name;
   return(sig)
 }
 
-sigTable<-bindSig(sigTable,testNumPeople,"Household Size")
-
+sigTable<-bindSig(sigTable,testAge, "Avg HH Age",pops_idv)
+sigTable<-bindSig(sigTable,testNumPeople,"Household Size",pops_survey)
+sigTable<-bindSig(sigTable,testHoHLit,"HoH Literacy",pops_survey)
 colnames(sigTable) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
 print(sigTable)
+
+## Healthcare Seeking Behavior
+hcSeek <- data.frame();
+hcSeekSig <-data.frame();
+
+sickLastYear <-function (g) {
+  m <-100*sum(IndiHealth$Illness[g]=="1") / sum (g)
+  return (m)
+}
+
+sickTimesYear <-function (g) {
+  m <- mean(IndiHealth$NumIllnesses[g],na.rm = TRUE)
+  return(m)
+}
+
+
+testSickLastYear <- function(g,b) {
+  grp<-IndiHealth[,g];
+  grp2 <-b & !grp;
+  
+  print (c(sum(grp), sum(IndiHealth$Illness[grp]==1),sum(grp2),sum(IndiHealth$Illness[grp2]==1)))
+  tr<-t.test(IndiHealth$Illness[grp]==1,IndiHealth$Illness[grp2]==1)
+  return(tr$p.value)
+}
+
+testSickTimesYear <- function(g,b) {
+  wt<-wilcox.test(reformulate(termlabels=g,response='NumIllnesses'),data=IndiHealth[b,])
+  return (wt$p.value)
+}
+
+#compute a percnet for a given variable from the invididuales table
+#specific to the number of sick people
+hcsPComp <- function (g,var) {
+    cv=IndiHealth[g,var];
+    cv = !is.na(cv);
+    cv= sum(cv);
+    dv=sum(IndiHealth$Illness[g]==1);
+    return (100*cv/dv);  
+}
+
+bindCVars <-function(ftable,group,varFunc,vars,names) {
+  
+  for (v in 1:length(vars)) {
+    rtab<-c();
+    for (l in group) {
+      rtab<-c(rtab,varFunc(l,vars[v]))
+    }
+    ftable<-rbind(ftable,rtab)
+    rn<-names[v];
+    rownames(ftable)[length(ftable[,1])]=rn;
+  }
+  return(ftable)
+}
+
+testHCSPComp <- function (g,b,var){
+  group <-IndiHealth[g,var];
+  comp <-IndiHealth[b,var];
+  tr<-t.test(!is.na(group),!is.na(comp));
+  return(tr$p.value)
+}
+bindSigVarsT <-function(sig,varFunc,varNames,name,groups) {
+  for(v in 1:length(varNames)) {
+    rtab <- c();
+    for (i in 1:length(groups)) {
+      if (i<length(groups)) {
+        for (n in (i+1):3) {
+          rtab<-c(rtab,varFunc(groups[[i]],groups[[n]],varNames[v]))
+        }
+      }
+    }
+    sig<-rbind(sig,rtab)
+    rownames(sig)[length(sig[,1])]=name[v];
+  }
+  return(sig)
+}
+
+careTypes<-c("Care At- No care","Care At- Home-made medicine","Care At- Village modern medical practitioner","Care At- Village health volunteer","Care At- Traditional healer","Care At- Health centre","Care At- District hospital","Care At- Provincial hospital/Regional","Care At","Care At - National hospital","Care At - Private pharmacy","Care At - Private clinic","Care At - Abroad","Care At - Illegal medical practitioner","Care At - Other","Care At - Do not remember","Care At - Do not know","Care At - Other specify")
+
+
+hcSeek<-bindVar(hcSeek,liGroups,sickLastYear,"Sick last year");
+hcSeek<-bindVar(hcSeek,liGroups,sickTimesYear,"Sick times last year");
+hcSeek<-bindCVars(hcSeek,liGroups,hcsPComp,careTypes,careTypes)
+hcSeekSig<-bindSig(hcSeekSig,testSickLastYear, "Sick last year",pops_idv)
+hcSeekSig<-bindSig(hcSeekSig,testSickTimesYear, "Sick times last year",pops_idv)
+hcSeekSig<-bindSigVarsT(hcSeekSig,testHCSPComp,careTypes,careTypes,liGroups[1:3])
+
+colnames(hcSeek) <- c("HEF","GEO_Poor","NoAssist","All Respondants")
+
+colnames(hcSeekSig) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
+print(hcSeek)
+print(hcSeekSig)
+
