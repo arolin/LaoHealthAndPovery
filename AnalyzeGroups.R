@@ -246,8 +246,10 @@ bindCVars <-function(ftable,group,varFunc,vars,names) {
 }
 
 testHCSPComp <- function (g,b,var){
-  group <-IndiHealth[g,var];
-  comp <-IndiHealth[b,var];
+  sickG  <-IndiHealth$Illness[g]==1;
+  sickB  <-IndiHealth$Illness[b]==1;
+  group <-IndiHealth[sickG,var];
+  comp <-IndiHealth[sickB,var];
   tr<-t.test(!is.na(group),!is.na(comp));
   return(tr$p.value)
 }
