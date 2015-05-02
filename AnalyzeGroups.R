@@ -104,7 +104,8 @@ hohLit <-function (g) {
 }
 
 spouseLit <- function (g) {
-  who<-g & !lps$HoH_Spouse_Literacy_Level[g]==4;
+  fours <-lps$HoH_Spouse_Literacy_Level==4;
+  who<-(g & !(fours));
   avg <- mean(lps$HoH_Spouse_Literacy_Level[who]);
   return (avg);
 }
