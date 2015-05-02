@@ -13,7 +13,7 @@ source("LoadData.R");
 
 source("AnalyzeGroups.R");
 
-# ftable<-data.frame();
+# demsTable<-data.frame();
 # 
 # HEFCard_by_PreId <- c(sum(lps[HEFCard,]$PreId),sum(!lps[HEFCard,]$PreId));
 # GVTPoor_by_PreId <- c(sum(lps[GVTPoor,]$PreId),sum(!lps[GVTPoor,]$PreId));
@@ -21,23 +21,23 @@ source("AnalyzeGroups.R");
 #             
 # 
 # 
-# ftable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
+# demsTable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
 # 
-# ftable<-cbind(ftable,rowSums(ftable));
-# rownames(ftable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
-# colnames(ftable)<-c("PreId","Geo","Row Total");
-# print(xtable(ftable),"html")
+# demsTable<-cbind(demsTable,rowSums(demsTable));
+# rownames(demsTable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
+# colnames(demsTable)<-c("PreId","Geo","Row Total");
+# print(xtable(demsTable),"html")
 
 ```
 ```{r, results='hide'}
 ```
 # Demographics (HH)
 ```{r,results='asis'}
-print(xtable(ftable),"html")
+print(xtable(demsTable),"html")
 ```
 ### P Values for demographics
 ```{r,results='asis'}
-print(xtable(sigTable),"html")
+print(xtable(demsSigTable),"html")
 ```
 
 # HC Seeking
