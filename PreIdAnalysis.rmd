@@ -6,36 +6,51 @@ output: html_document
 ---
 
 
-```{r,results='asis'}
+```{r,results='hide'}
 
 library("xtable")
 source("LoadData.R");
 
-ftable<-data.frame();
+source("AnalyzeGroups.R");
 
-HEFCard_by_PreId <- c(sum(lps[HEFCard,]$PreId),sum(!lps[HEFCard,]$PreId));
-GVTPoor_by_PreId <- c(sum(lps[GVTPoor,]$PreId),sum(!lps[GVTPoor,]$PreId));
-NoInsu_by_PreId  <- c(sum(lps[NoInsu,]$PreId), sum(!lps[NoInsu,]$PreId));
-            
-
-
-ftable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
-
-ftable<-cbind(ftable,rowSums(ftable));
-rownames(ftable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
-colnames(ftable)<-c("PreId","Geo","Row Total");
-print(xtable(ftable),"html")
+# ftable<-data.frame();
+# 
+# HEFCard_by_PreId <- c(sum(lps[HEFCard,]$PreId),sum(!lps[HEFCard,]$PreId));
+# GVTPoor_by_PreId <- c(sum(lps[GVTPoor,]$PreId),sum(!lps[GVTPoor,]$PreId));
+# NoInsu_by_PreId  <- c(sum(lps[NoInsu,]$PreId), sum(!lps[NoInsu,]$PreId));
+#             
+# 
+# 
+# ftable <- rbind(HEFCard_by_PreId,GVTPoor_by_PreId,NoInsu_by_PreId);
+# 
+# ftable<-cbind(ftable,rowSums(ftable));
+# rownames(ftable)<-c("HEF Card Holder","Govenment Poor List","No Insurance")
+# colnames(ftable)<-c("PreId","Geo","Row Total");
+# print(xtable(ftable),"html")
 
 ```
 ```{r, results='hide'}
-source("AnalyzeGroups.R");
 ```
+# Demographics (HH)
+```{r,results='asis'}
+print(xtable(ftable),"html")
+```
+### P Values for demographics
+```{r,results='asis'}
+print(xtable(sigTable),"html")
+```
+
 # HC Seeking
 ```{r, results='asis'}
 print(xtable(hcSeek),"html")
 ```
 
 ```r sum(HEF_PreID & NoAssist)``` persons are on both the HEF_PreId and the NoAssist List we will cound them as HEF.
+
+### p values for health seeking
+```{r, results='asis'}
+print(xtable(hcSeekSig,digits=4),"html")
+```
 
 ```r sum (HEF_PreID & Geo_Poor)```
 
@@ -50,7 +65,6 @@ NoAssist  <-lps$PreId & NoInsu;
 lgroups <- list(HEF_PreID,Geo_Poor,NoAssist)
 ```
 
-<<<<<<< HEAD
 #Family size
 ```{r} 
 wilcox.test(HH_NumPeople~HEF_PreID,data=lps[OnAList])

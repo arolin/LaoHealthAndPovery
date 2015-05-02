@@ -18,6 +18,7 @@ for (n in 1:length(names(lpsraw))) {
 }
 
 TableCheck<-read.csv("Constants/ColNames.csv")
-TableCheck<-cbind(TableCheck,NACount,Levels)
+TableCheck<-cbind(names(lpsraw),TableCheck,NACount,Levels)
 
+write.csv(TableCheck,"TableCheck.csv")
 

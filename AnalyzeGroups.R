@@ -246,14 +246,27 @@ bindCVars <-function(ftable,group,varFunc,vars,names) {
   return(ftable)
 }
 
+testHCSickComp <- function (g,b,var){
+  tr<-t.test(IndiHealth$Illness[g]==1,IndiHealth$Illness[b]==1);
+  return(tr$p.value)
+}
+
 testHCSPComp <- function (g,b,var){
-  sickG  <-IndiHealth$Illness[g]==1;
-  sickB  <-IndiHealth$Illness[b]==1;
+  sickG  <-(IndiHealth$Illness==1 & g);
+  nSick<-sum(sickG)
+  sickB  <-(IndiHealth$Illness==1 & b);
+  nSick <- sum(sickB)
   group <-IndiHealth[sickG,var];
+  used<-sum(!is.na(group))
+  
   comp <-IndiHealth[sickB,var];
+  used<-sum(!is.na(comp))
+  
   tr<-t.test(!is.na(group),!is.na(comp));
   return(tr$p.value)
 }
+
+
 bindSigVarsT <-function(sig,varFunc,varNames,name,groups) {
   for(v in 1:length(varNames)) {
     rtab <- c();
