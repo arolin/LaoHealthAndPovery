@@ -1,0 +1,36 @@
+---
+title: "PrintTables"
+author: "Leah Hale"
+date: "02/05/2015"
+output: html_document
+---
+
+#####
+#analys of cost breakdown
+
+```{r, results='hide'}
+library("xtable")
+source ("LoadData.R")
+source ("AnalyzeGroups.R")
+```
+
+First question...how do breakdowns compare to the total
+
+```{r,reasis}
+si= which (names(lps)=="HH_Illness_1_National_Hospital_cost_Medicine")
+ei= which (names(lps)=="HH_Illness_1_National_Hospital_cost_Others")
+sumCosts<-rowSums (lps[,si:ei],na.rm = TRUE);
+diffCosts <- sumCosts - lps$HH_Illness_1_National_Hospital_cost_Overall_average;
+ sum (sumCosts == lps$HH_Illness_1_National_Hospital_cost_Overall_average,na.rm = TRUE)
+hist(diffCosts)
+
+sum(!is.na(lps$HH_Illness_1_Consult_National_Hospital))
+
+```
+
+```{r, results='asis'}
+print(xtable(payTable),"html")
+
+print(xtable(payTableSPSS),"html")
+```
+sum(lps)
