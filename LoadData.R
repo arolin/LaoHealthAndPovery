@@ -35,8 +35,7 @@ NoInsu <- !is.na(lps$HH_Insurance_Informal_no_insurance)
 VilPoor <-lps$VilPoor=="Yes";
 
 #Split Dependents
-if (!exists("IndiHealth")) {
-  #source("SplitDeps.R")
-  load("IndiHealth.bin");
-}
+#source("SplitDeps.R")
+load("IndiHealth.bin");
+
 

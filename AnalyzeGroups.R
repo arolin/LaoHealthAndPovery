@@ -45,6 +45,9 @@ IndiHealth$NoAssist  <- NoAssist_Indv;
 ##Create the  basic list of groups for inspection
 ##create a second versino for inspection into the individuals table
 lgroups <- list(HEF_PreID,Geo_Poor,NoAssist,OnAList)
+names(lgroups)=c("HEF_PreID","Geo_Poor","NoAssist,OnAList")
+gNames <- c("PreId_HEF,GEO_HEF,NoAssist,All")
+gSigNames <-c("PreId vs Geo", "PreId vs NoAssist", "Geo vs NoAssist")
 liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv,OnAList_Indv)
 
 ################################################################################
@@ -144,6 +147,21 @@ hohLit <-function (g) {
     return (avg);
 }
 
+canRW <-function (g) {
+  pct<-sum(lps$HoH_Literacy_Level[g]==3)/sum(g);
+  return (pct);
+}
+
+canR<-function (g) {
+  pct<-sum(lps$HoH_Literacy_Level[g]==2)/sum(g);
+  return (pct);
+}
+cantRW<-function (g) {
+  pct<-sum(lps$HoH_Literacy_Level[g]==1)/sum(g);
+  return (pct);
+}
+
+
 spouseLit <- function (g) {
     fours <-lps$HoH_Spouse_Literacy_Level==4;
     who<-(g & !(fours));
@@ -177,10 +195,19 @@ demsTable<-bindVar(demsTable,lgroups,hohLit           ,"HoH Litteracy"      );
 demsTable<-bindVar(demsTable,lgroups,spouseLit        ,"Spouse Literacy"    );
 
 ##copy the column names to the table
-colnames(demsTable) <- c("HEF","GEO_Poor","NoAssist","All Respondants")
+colnames(demsTable) <- gNames
 
+litTable<-data.frame();
 
-write.foreign(demsTable, "./spss/demsTable.txt", "./spss/demsTable.sps",   package="SPSS") 
+litTable<-bindVar(litTable,lgroups,canRW           ,"HoH Can Read Write %"      );
+litTable<-bindVar(litTable,lgroups,canR           ,"HoH Can Read %"      );
+litTable<-bindVar(litTable,lgroups,cantRW           ,"HoH Can Not Read Write %"      );
+colnames(litTable) <- gNames
+write.csv(litTable,"./spss/litTable.csv")
+print (litTable)
+
+write.foreign(demsTable, "./spss/demsTable.txt", "./spss/demsTable.sps",   package="SPSS")
+write.csv(demsTable,"./spss/demsTable.csv");
 ##Demographics table Complete
 ################################################################################
 
@@ -219,16 +246,19 @@ bindSig <-function(sig,varFunc,name,p) {
 demsSigTable<-bindSig(demsSigTable,testAge, "Avg HH Age",pops_idv)
 demsSigTable<-bindSig(demsSigTable,testNumPeople,"Household Size",pops_survey)
 demsSigTable<-bindSig(demsSigTable,testHoHLit,"HoH Literacy",pops_survey)
-colnames(demsSigTable) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
+colnames(demsSigTable) <- gSigNames
 
-write.foreign(demsSigTable, "./spss/demsSigTable.txt", "./spss/demsSigTable.sps",   package="SPSS") 
+write.foreign(demsSigTable, "./spss/demsSigTable.txt", "./spss/demsSigTable.sps",   package="SPSS")
+write.csv(demsSigTable,"./spss/demsSigTable.csv")
 ##
 ################################################################################
 
 ################################################################################
 ## Healthcare Seeking Behavior
-hcSeek <- data.frame();
-hcSeekSig <-data.frame();
+
+##create to empty frames
+hcSeek    <- data.frame();
+hcSeekSig <- data.frame();
 
 sickLastYear <-function (g) {
     m <-100*sum(IndiHealth$Illness[g]=="1") / sum (g)
@@ -296,9 +326,15 @@ testHCSPComp <- function (g,b,var){
     
     comp <-IndiHealth[sickB,var];
     used<-sum(!is.na(comp))
+    if (length(!is.na(group))>0 && length(!is.na(comp)>0)) {
+        tr<-t.test(!is.na(group),!is.na(comp));
+        return(tr$p.value)
+    }
+    else {
+        breakMeHere<-0;
+        return(999)
+    }
     
-    tr<-t.test(!is.na(group),!is.na(comp));
-    return(tr$p.value)
 }
 
 
@@ -333,7 +369,9 @@ colnames(hcSeek) <- c("HEF","GEO_Poor","NoAssist","All Respondants")
 colnames(hcSeekSig) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
 
 write.foreign(hcSeek, "./spss/hcSeekTable.txt", "./spss/hcSeekTable.sps",   package="SPSS")
+write.csv(hcSeek,"./spss/hsSeekTable.csv");
 write.foreign(hcSeekSig, "./spss/hcSeekSigTable.txt", "./spss/hcSeekSigTable.sps",   package="SPSS")
+write.csv(hcSeekSig,"./spss/hsSeekSigTable.csv");
 
 
 ################################
@@ -456,19 +494,117 @@ careCostComp <- function (g,cc,pc) {
         cv<-c(cv,lps[g2,vname])
     }
     cap3=length(cv)
-    cv <- cv[cv!=98 & cv!=99]
+    cv <- cv[cv!=98 & cv!=99 & cv!=0]
     if (is.null(cv) ){
-        r$num=0;        
+        r$num=cap3;        
     }
     else {
+      hlim<-max(cv)
+      #hlim=10000
+      if(sum(cv[]<hlim)>0) {
+        r$hist <- hist(cv[cv[]<hlim],100,plot=FALSE);
+      }
         r$num=sum(!is.na(cv) );
     }
     
     r$max <- max (cv,na.rm = TRUE);
     r$min <- min (cv,na.rm = TRUE);
     r$mean <- mean(cv,na.rm = TRUE);
-    r$median <- median(cv,na.rm = TRUE);  
+    r$median <- median(cv,na.rm = TRUE); 
+    r$total <-sum(cv,na.rm=TRUE);
+    if (length(cv>100)>1) {
+      #r$hist <- hist(cv[cv>100],na.exclude=TRUE,plot=FALSE);
+    }
     return (r);  
+}
+
+
+careCostTab <- function (g,cc,pc) {
+  
+  cv<-c();
+  ##build a list for all prefixes
+  for (p in prefixes) {
+    flag<-paste(p,"Consult_",cc,sep="")
+    fn <-which (names(lps)==flag)
+    if (length(fn)==0 | is.null(fn)){
+      fn<-1;
+    }
+    atPrefix <- !is.na(lps[,flag]);
+    cap <- sum(atPrefix)
+    g2= g & atPrefix;
+    cap2 <-sum(g2)
+    vname<-paste(p,cc,pc,sep="");
+    cv<-c(cv,lps[g2,vname])
+  }
+  
+  r$count<-length(cv)
+  r$noResp <-sum(is.na(cv));
+  
+  cv <- cv[cv!=98 & cv!=99 & cv!=0]
+  if (is.null(cv) ){
+    r$num=cap3;        
+  }
+  else {
+    r$num=sum(!is.na(cv) );
+  }
+  
+  r$max <- max (cv,na.rm = TRUE);
+  r$min <- min (cv,na.rm = TRUE);
+  r$mean <- mean(cv,na.rm = TRUE);
+  r$median <- median(cv,na.rm = TRUE);
+  
+  return (r);  
+}
+
+
+
+
+bindCostVarsSPSS <-function(ftable,groups,varFunc,cc,pcS) {
+  for (pc in pcS) {
+    rtab<-c();
+    i<-1
+    for (l in groups) {
+      vf <- varFunc(l,cc,pc);
+      
+      if (vf$num!=0) {
+        rtab<-c(rtab,vf$total,vf$mean,vf$median,vf$num)
+      }else {          
+        rtab<-c(rtab,0,NA,NA,vf$num)
+      }
+
+      i<-i+1;
+    }
+    ftable<-rbind(ftable,rtab)
+    rn<-paste(cc,pc,sep="");
+    rownames(ftable)[length(ftable[,1])]=rn;
+
+  }
+  return(ftable)
+}
+
+buildHists <-function(hlist,groups,varFunc,cc,pcS) {
+  for (pc in pcS) {
+    rtab<-c();
+    i<-1
+    for (l in groups) {
+      vf <- varFunc(l,cc,pc);
+      
+      if (vf$num!=0) {
+        rtab<-c(rtab,vf$total,vf$mean,vf$median,vf$num)
+      }else {          
+        rtab<-c(rtab,0,NA,NA,vf$num)
+      }
+      hname<-paste(names(groups)[i],"_",cc,pc,sep="");
+      if(!is.null(vf$hist)){
+        vf$hist$xname<-hname;
+        hlist[[hname]]<-vf$hist;
+      }
+      
+      i<-i+1;
+    }
+      
+  }
+  return(hlist)
 }
 
 
@@ -477,25 +613,54 @@ careCostComp <- function (g,cc,pc) {
 
 ##"Private_Clinic",
 careCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer","Traditional_Healer","Private_Clinic","Private_Pharmacist","Religious_Healer");
+NationalCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer");
 paymentClass = c("_cost_Medicine","_cost_Medical_Fee","_cost_Transport","_cost_Others","_cost_Overall_average");
+paymentClass = c("_cost_Overall_average");
+
 prefixes     = c("HH_Illness_1_","HH_Illness_2_","HH_Illness_3_");
+
+for (g in lgroups){
+  gs<-0;
+  for (p in prefixes) {
+    f<-1:length(g);
+    f[]<-FALSE;
+    for (cc in careCenters) {
+      flag<-paste(p,"Consult_",cc,sep="")
+      f[g] <- f[g] | !is.na(lps[g,flag]);
+    }
+    gs<-gs+sum(f);
+  }
+  print(gs);
+}
+
+
 
 payTable <-data.frame();
 
 payTableSPSS <-data.frame();
+payTableAvgOnly <-data.frame();
+
+lhist<-list()
 for (cc in careCenters) {
     payTable<-bindCostVars2(payTable,lgroups,careCostComp,cc,paymentClass)
     
     payTableSPSS<-bindCostVarsSPSS(payTableSPSS,lgroups,careCostComp,cc,paymentClass)
+    lhist<-buildHists(lhist,lgroups,careCostComp,cc,paymentClass)
+    payTableAvgOnly <-bindCostVarsSPSS(payTableAvgOnly ,lgroups,careCostComp,cc,c("_cost_Overall_average"))
 }
 
 colnames(payTable)<-c("Preid_HEF","GEO_Poor","NoAssist","All Respondants")
 
 spssColn<-c()
-for (cn in c("Preid_HEF","GEO_Poor","NoAssist","All Respondants")) {
-  spssColn<-c(spssColn,paste(cn,"mean"),paste(cn,"median"),paste(cn,"num"))
+for (cn in c("Preid","GEO","No","All")) {
+  spssColn<-c(spssColn,paste(cn,"total"),paste(cn,"mean",sep="_"),paste(cn,"median",sep="_"),paste(cn,"num",sep="_"))
 }
 colnames(payTableSPSS)<-spssColn
+colnames(payTableAvgOnly)<-spssColn
+
+write.csv     (format(payTable        ,scientific=FALSE),"./spss/payTablecmp.csv")
+write.csv     (format(payTableSPSS    ,scientific=FALSE),"./spss/payTable.csv")
+write.csv     (format(payTableAvgOnly ,scientific=FALSE),"./spss/payTableAvgs.csv")
 
 ##############################################################
 ##Test that all the expected vars exist
