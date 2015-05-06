@@ -6,49 +6,7 @@
 ################################################################################
 
 library("foreign")
-
-################################################################################
-###Define Principle Groups
-HEF_PreID <-lps$PreId & HEFCard;
-Geo_Poor  <-!lps$PreId & GVTPoor;
-NoAssist  <-lps$PreId & NoInsu;
-
-################################################################################
-###Populate the groups back into the table for MWW tests
-lps$HEF_PreID<-HEF_PreID;
-lps$Geo_Poor<-Geo_Poor;
-lps$NoAssist<-NoAssist;
-OnAList = HEF_PreID | Geo_Poor | NoAssist;
-
-################################################################################
-####Create extensions of the group for use with the individuals tables
-HEF_PreID_Indv = c();
-Geo_Poor_Indv = c();
-NoAssist_Indv = c();
-OnAList_Indv  = c();
-
-for (r in as.integer(IndiHealth$SRow)) {
-    HEF_PreID_Indv <-c(HEF_PreID_Indv,HEF_PreID[r]);
-    Geo_Poor_Indv  <-c(Geo_Poor_Indv,Geo_Poor[r]);
-    NoAssist_Indv  <-c(NoAssist_Indv,NoAssist[r]);
-    OnAList_Indv   <-c(OnAList_Indv,OnAList[r]);
-}
-
-##copy the indvidual table groups into the table for MWW tests
-IndiHealth$HEF_PreID <- HEF_PreID_Indv;
-IndiHealth$Geo_Poor  <- Geo_Poor_Indv;
-IndiHealth$NoAssist  <- NoAssist_Indv;
-##
-################################################################################
-
-################################################################################
-##Create the  basic list of groups for inspection
-##create a second versino for inspection into the individuals table
-lgroups <- list(HEF_PreID,Geo_Poor,NoAssist,OnAList)
-names(lgroups)=c("HEF_PreID","Geo_Poor","NoAssist,OnAList")
-gNames <- c("PreId_HEF,GEO_HEF,NoAssist,All")
-gSigNames <-c("PreId vs Geo", "PreId vs NoAssist", "Geo vs NoAssist")
-liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv,OnAList_Indv)
+source("./SmallScripts/DefineGroups.r")
 
 ################################################################################
 ################################################################################
@@ -203,11 +161,10 @@ litTable<-bindVar(litTable,lgroups,canRW           ,"HoH Can Read Write %"      
 litTable<-bindVar(litTable,lgroups,canR           ,"HoH Can Read %"      );
 litTable<-bindVar(litTable,lgroups,cantRW           ,"HoH Can Not Read Write %"      );
 colnames(litTable) <- gNames
-write.csv(litTable,"./spss/litTable.csv")
-print (litTable)
 
-write.foreign(demsTable, "./spss/demsTable.txt", "./spss/demsTable.sps",   package="SPSS")
+write.csv(litTable,"./spss/litTable.csv");
 write.csv(demsTable,"./spss/demsTable.csv");
+
 ##Demographics table Complete
 ################################################################################
 
@@ -248,7 +205,7 @@ demsSigTable<-bindSig(demsSigTable,testNumPeople,"Household Size",pops_survey)
 demsSigTable<-bindSig(demsSigTable,testHoHLit,"HoH Literacy",pops_survey)
 colnames(demsSigTable) <- gSigNames
 
-write.foreign(demsSigTable, "./spss/demsSigTable.txt", "./spss/demsSigTable.sps",   package="SPSS")
+
 write.csv(demsSigTable,"./spss/demsSigTable.csv")
 ##
 ################################################################################
@@ -316,23 +273,30 @@ testHCSickComp <- function (g,b,var){
     return(tr$p.value)
 }
 
+##compare two groups for illness significance
 testHCSPComp <- function (g,b,var){
+    ##get people in group who reported illness
     sickG  <-(IndiHealth$Illness==1 & g);
+    #count these people
     nSick<-sum(sickG)
+    ##get people in base line who were sic
     sickB  <-(IndiHealth$Illness==1 & b);
     nSick <- sum(sickB)
-    group <-IndiHealth[sickG,var];
-    used<-sum(!is.na(group))
     
+    ##get the specific variable of interest
+    group <-IndiHealth[sickG,var];
     comp <-IndiHealth[sickB,var];
-    used<-sum(!is.na(comp))
-    if (length(!is.na(group))>0 && length(!is.na(comp)>0)) {
-        tr<-t.test(!is.na(group),!is.na(comp));
-        return(tr$p.value)
-    }
-    else {
-        breakMeHere<-0;
-        return(999)
+    if (length(group)>0 && length(comp) >0) {
+        ##print("Zero Lenght group!") 
+        if (length(!is.na(group))>0 && length(!is.na(comp)>0)) {
+            ##do a ttest on both groups
+            tr<-t.test(!is.na(group),!is.na(comp));
+            return(tr$p.value)
+        }
+        else {
+            breakMeHere<-0;
+            return(999)
+        }
     }
     
 }
@@ -368,9 +332,8 @@ colnames(hcSeek) <- c("HEF","GEO_Poor","NoAssist","All Respondants")
 
 colnames(hcSeekSig) = c("HEF vs Geo", "HEF vs NoAssist", "Geo vs NoAssist")
 
-write.foreign(hcSeek, "./spss/hcSeekTable.txt", "./spss/hcSeekTable.sps",   package="SPSS")
+
 write.csv(hcSeek,"./spss/hsSeekTable.csv");
-write.foreign(hcSeekSig, "./spss/hcSeekSigTable.txt", "./spss/hcSeekSigTable.sps",   package="SPSS")
 write.csv(hcSeekSig,"./spss/hsSeekSigTable.csv");
 
 
@@ -378,310 +341,6 @@ write.csv(hcSeekSig,"./spss/hsSeekSigTable.csv");
 ##Overnight HC
 
 
-################################################################################
-### Paymets
-payTable <- data.frame(stringsAsFactors = FALSE);
-payTableSpss <- data.frame(stringsAsFactors = FALSE);
-paySigTabel <-data.frame();
-
-careCostComp <- function (g,var,flag) {
-    g2 <- g & !is.na(flag);
-    cv=lps[g2,var];
-    
-    cv <- cv[cv!=98 & cv!=99]
-    if (!is.null(cv) ){
-        r$num=0;
-    }
-    else {
-        r$num=sum(!is.na(cv) );
-    }
-    
-    r$max <- max (cv,na.rm = TRUE);
-    r$min <- min (cv,na.rm = TRUE);
-    r$mean <- mean(cv,na.rm = TRUE);
-    r$median <- median(cv,na.rm = TRUE);  
-    return (r);  
-}
-
-bindCostVars <-function(ftable,group,varFunc,vars,flag,names) {
-    for (v in 1:length(vars)) {
-        meantab<-c();
-        mediantab<-c();
-        numtab<-c();
-        for (l in group) {
-            vf <- varFunc(l,vars[v],flag);
-            meantab<-c(,meantab,vf$mean)
-            mediantab<-c(mediantab,vf$median)
-        }
-        ftable<-rbind(ftable,numtab,meantab,mediantab)
-        rn<-paste(names[v]," num");
-        rownames(ftable)[length(ftable[,1])-2]=rn;
-        ftable<-rbind(ftable,meantab,mediantab)
-        rn<-paste(names[v]," mean");
-        rownames(ftable)[length(ftable[,1])-1]=rn;
-        rn<-paste(names[v]," median");
-        rownames(ftable)[length(ftable[,1])]=rn;
-    }
-    return(ftable)
-}
-
-
-
-
-##this gets called for each care center (cc) and will add a line for
-##each payment class in the list (pcS) - the varFunc function should
-##combine all itterations (prefix)
-bindCostVars2 <-function(ftable,groups,varFunc,cc,pcS) {
-    for (pc in pcS) {
-        rtab<-c();
-        for (l in groups) {
-            vf <- varFunc(l,cc,pc);
-            s<-"";
-            if (vf$num!=0) {
-                s<-paste (format(vf$mean/1000,digits=2),"/",format(vf$median/1000,digits=2),"[",vf$num,"]")
-            }else {          
-                 s<-paste ("")
-             }
-            rtab<-c(rtab,s)
-        }
-        options(stringsAsFactors=FALSE);
-        ftable<-rbind(ftable,rtab)
-        options(stringsAsFactors=TRUE);
-        rownames(ftable)[length(ftable[,1])]=paste(cc,pc,sep="");
-    }
-    return(ftable)
-}
-
-bindCostVarsSPSS <-function(ftable,groups,varFunc,cc,pcS) {
-  for (pc in pcS) {
-    rtab<-c();
-    for (l in groups) {
-      vf <- varFunc(l,cc,pc);
-      
-      if (vf$num!=0) {
-        rtab<-c(rtab,vf$mean,vf$median,vf$num)
-      }else {          
-        rtab<-c(rtab,NA,NA,vf$num)
-      }
-      
-    }
-    ftable<-rbind(ftable,rtab)
-    rn<-paste(cc,pc,sep="");
-    rownames(ftable)[length(ftable[,1])]=rn;
-  }
-  return(ftable)
-}
-
-
-
-##takes in a group a care centeter (cc) and payment class (pc) and
-##tests all combines results for all prefixes valid for g+cc+pc
-careCostComp <- function (g,cc,pc) {
-
-    cv<-c();
-    ##build a list for all prefixes
-    for (p in prefixes) {
-        flag<-paste(p,"Consult_",cc,sep="")
-        fn <-which (names(lps)==flag)
-        if (length(fn)==0 | is.null(fn)){
-          fn<-1;
-        }
-        atPrefix <- !is.na(lps[,flag]);
-        cap <- sum(atPrefix)
-        g2= g & atPrefix;
-        cap2 <-sum(g2)
-        vname<-paste(p,cc,pc,sep="");
-        cv<-c(cv,lps[g2,vname])
-    }
-    cap3=length(cv)
-    cv <- cv[cv!=98 & cv!=99 & cv!=0]
-    if (is.null(cv) ){
-        r$num=cap3;        
-    }
-    else {
-      hlim<-max(cv)
-      #hlim=10000
-      if(sum(cv[]<hlim)>0) {
-        r$hist <- hist(cv[cv[]<hlim],100,plot=FALSE);
-      }
-        r$num=sum(!is.na(cv) );
-    }
-    
-    r$max <- max (cv,na.rm = TRUE);
-    r$min <- min (cv,na.rm = TRUE);
-    r$mean <- mean(cv,na.rm = TRUE);
-    r$median <- median(cv,na.rm = TRUE); 
-    r$total <-sum(cv,na.rm=TRUE);
-    if (length(cv>100)>1) {
-      #r$hist <- hist(cv[cv>100],na.exclude=TRUE,plot=FALSE);
-    }
-    return (r);  
-}
-
-
-careCostTab <- function (g,cc,pc) {
-  
-  cv<-c();
-  ##build a list for all prefixes
-  for (p in prefixes) {
-    flag<-paste(p,"Consult_",cc,sep="")
-    fn <-which (names(lps)==flag)
-    if (length(fn)==0 | is.null(fn)){
-      fn<-1;
-    }
-    atPrefix <- !is.na(lps[,flag]);
-    cap <- sum(atPrefix)
-    g2= g & atPrefix;
-    cap2 <-sum(g2)
-    vname<-paste(p,cc,pc,sep="");
-    cv<-c(cv,lps[g2,vname])
-  }
-  
-  r$count<-length(cv)
-  r$noResp <-sum(is.na(cv));
-  
-  cv <- cv[cv!=98 & cv!=99 & cv!=0]
-  if (is.null(cv) ){
-    r$num=cap3;        
-  }
-  else {
-    r$num=sum(!is.na(cv) );
-  }
-  
-  r$max <- max (cv,na.rm = TRUE);
-  r$min <- min (cv,na.rm = TRUE);
-  r$mean <- mean(cv,na.rm = TRUE);
-  r$median <- median(cv,na.rm = TRUE);
-  
-  return (r);  
-}
-
-
-
-
-bindCostVarsSPSS <-function(ftable,groups,varFunc,cc,pcS) {
-  for (pc in pcS) {
-    rtab<-c();
-    i<-1
-    for (l in groups) {
-      vf <- varFunc(l,cc,pc);
-      
-      if (vf$num!=0) {
-        rtab<-c(rtab,vf$total,vf$mean,vf$median,vf$num)
-      }else {          
-        rtab<-c(rtab,0,NA,NA,vf$num)
-      }
-
-      i<-i+1;
-    }
-    ftable<-rbind(ftable,rtab)
-    rn<-paste(cc,pc,sep="");
-    rownames(ftable)[length(ftable[,1])]=rn;
-
-  }
-  return(ftable)
-}
-
-buildHists <-function(hlist,groups,varFunc,cc,pcS) {
-  for (pc in pcS) {
-    rtab<-c();
-    i<-1
-    for (l in groups) {
-      vf <- varFunc(l,cc,pc);
-      
-      if (vf$num!=0) {
-        rtab<-c(rtab,vf$total,vf$mean,vf$median,vf$num)
-      }else {          
-        rtab<-c(rtab,0,NA,NA,vf$num)
-      }
-      hname<-paste(names(groups)[i],"_",cc,pc,sep="");
-      if(!is.null(vf$hist)){
-        vf$hist$xname<-hname;
-        hlist[[hname]]<-vf$hist;
-      }
-      
-      i<-i+1;
-    }
-      
-  }
-  return(hlist)
-}
-
-
-
-
-
-##"Private_Clinic",
-careCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer","Traditional_Healer","Private_Clinic","Private_Pharmacist","Religious_Healer");
-NationalCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer");
-paymentClass = c("_cost_Medicine","_cost_Medical_Fee","_cost_Transport","_cost_Others","_cost_Overall_average");
-paymentClass = c("_cost_Overall_average");
-
-prefixes     = c("HH_Illness_1_","HH_Illness_2_","HH_Illness_3_");
-
-for (g in lgroups){
-  gs<-0;
-  for (p in prefixes) {
-    f<-1:length(g);
-    f[]<-FALSE;
-    for (cc in careCenters) {
-      flag<-paste(p,"Consult_",cc,sep="")
-      f[g] <- f[g] | !is.na(lps[g,flag]);
-    }
-    gs<-gs+sum(f);
-  }
-  print(gs);
-}
-
-
-
-payTable <-data.frame();
-
-payTableSPSS <-data.frame();
-payTableAvgOnly <-data.frame();
-
-lhist<-list()
-for (cc in careCenters) {
-    payTable<-bindCostVars2(payTable,lgroups,careCostComp,cc,paymentClass)
-    
-    payTableSPSS<-bindCostVarsSPSS(payTableSPSS,lgroups,careCostComp,cc,paymentClass)
-    lhist<-buildHists(lhist,lgroups,careCostComp,cc,paymentClass)
-    payTableAvgOnly <-bindCostVarsSPSS(payTableAvgOnly ,lgroups,careCostComp,cc,c("_cost_Overall_average"))
-}
-
-colnames(payTable)<-c("Preid_HEF","GEO_Poor","NoAssist","All Respondants")
-
-spssColn<-c()
-for (cn in c("Preid","GEO","No","All")) {
-  spssColn<-c(spssColn,paste(cn,"total"),paste(cn,"mean",sep="_"),paste(cn,"median",sep="_"),paste(cn,"num",sep="_"))
-}
-colnames(payTableSPSS)<-spssColn
-colnames(payTableAvgOnly)<-spssColn
-
-write.csv     (format(payTable        ,scientific=FALSE),"./spss/payTablecmp.csv")
-write.csv     (format(payTableSPSS    ,scientific=FALSE),"./spss/payTable.csv")
-write.csv     (format(payTableAvgOnly ,scientific=FALSE),"./spss/payTableAvgs.csv")
-
-##############################################################
-##Test that all the expected vars exist
-fail<-0;
-suc <-0;
-for (p in prefixes) {
-    for (cc in careCenters) {
-        for (pc in paymentClass) {
-            name<-paste(p,cc,pc,sep="");
-            w<-which (names(lps)==name)
-            if (length(w)!=1) {
-                print(name);
-                fail<-fail+1;
-            }else {
-                 suc<-suc+1;
-             }
-        }
-    }
-}
-print(suc);
-print(fail);
 
     
 

@@ -34,6 +34,10 @@ GVTPoor <-!is.na(lps$HH_Insurance_GVTPoor);
 NoInsu <- !is.na(lps$HH_Insurance_Informal_no_insurance)
 VilPoor <-lps$VilPoor=="Yes";
 
+source("./SmallScripts/DefineGroups.r")
+
+
+
 #Split Dependents
 #source("SplitDeps.R")
 load("IndiHealth.bin");
