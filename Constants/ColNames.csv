@@ -1305,7 +1305,7 @@ Overall average:                                                                
 "3 If borrow money (answer 6 to question 3.8), from whom? _money lender, __LAK                                                        ",q3_9_3,HH_Payment_Borrowed_moneylender_LAK
 "4 If borrow money (answer 6 to question 3.8), from whom? _bank, _LAK                                                                 ",q3_9_4,HH_Payment_Borrowed_bank_LAK
 "5 If borrow money (answer 6 to question 3.8), from whom? _others __LAK                                                               ",q3_9_5,HH_Payment_Borrowed_others_LAK
-"6 If borrow money (answer 6 to question 3.8), from whom? _TOTAL __ LAK                                                               ",q3_9_total,HH_Payment_Borrowed_TOTAL_LAK
+"6 If borrow money (answer 6 to question 3.8), from whom? _TOTAL __ LAK                                                             ",q3_9_total,HH_Payment_Borrowed_TOTAL_LAK
  3.9 other                                                                                                                           ,q3_9_1_oth,HH_Payment_Borrowed_other
  3.10 For what service?  - Consultations                                                                                             ,q3_10_1,HH_Services_Consultations
  3.10 For what service?  -  Medicine                                                                                                 ,q3_10_2,HH_Services_Medicine
@@ -1328,11 +1328,11 @@ Overall average:                                                                
  4.2 Last night did you sleep under a mosquito net?                                                                                  ,q4_2,Mother_Mosquito_net_last_night
   4.2.1 have you ever been to ANC                                                                                                    ,q4_2_1,Mother_been_to_ANC
  4.3 Do you have/still have a pregnancy monitoring card o...                                                                         ,q4_3,Mother_have_a_pregnancy_monitoring_card
-4.4.Verbal.1 How many ANC did you attend during your pregnancy?_ANC1                                                                 ,q4_4_1,Mother_How_many_ANC_(verbal)_ANC1
-4.4.Verbal.2 How many ANC did you attend during your pregnancy?_ANC2                                                                 ,q4_4_2,Mother_How_many_ANC_(verbal)_ANC2
-4.4.Verbal.3 How many ANC did you attend during your pregnancy?_ANC3                                                                 ,q4_4_3,Mother_How_many_ANC_(verbal)_ANC3
-4.4.Verbal.4 How many ANC did you attend during your pregnancy?_ANC4                                                                 ,q4_4_4,Mother_How_many_ANC_(verbal)_ANC4
-4.4.Verbal.5 How many ANC did you attend during your pregnancy?_ANC5                                                                 ,q4_4_5,Mother_How_many_ANC_(verbal)_ANC5
+4.4.Verbal.1 How many ANC did you attend during your pregnancy?_ANC1                                                                 ,q4_4_1,Mother_How_many_ANC_verbal_ANC1
+4.4.Verbal.2 How many ANC did you attend during your pregnancy?_ANC2                                                                 ,q4_4_2,Mother_How_many_ANC_verbal_ANC2
+4.4.Verbal.3 How many ANC did you attend during your pregnancy?_ANC3                                                                 ,q4_4_3,Mother_How_many_ANC_verbal_ANC3
+4.4.Verbal.4 How many ANC did you attend during your pregnancy?_ANC4                                                                 ,q4_4_4,Mother_How_many_ANC_verbal_ANC4
+4.4.Verbal.5 How many ANC did you attend during your pregnancy?_ANC5                                                                 ,q4_4_5,Mother_How_many_ANC_verbal_ANC5
 4.4.Card.1 How many ANC did you attend during your pregnancy?_Date                                                                   ,q4_4_card_1,Mother_ANC_Card_1_Date
 4.4.Card.2 How many ANC did you attend during your pregnancy?_Date                                                                   ,q4_4_card_2,Mother_ANC_Card_2_Date
 4.4.Card.3 How many ANC did you attend during your pregnancy?_Date                                                                   ,q4_4_card_3,Mother_ANC_Card_3_Date
@@ -1341,7 +1341,7 @@ Overall average:                                                                
  4.5 Where did you attend ANC?  - Provincial Hospital                                                                                ,q4_5_1,Mother_ANC_Where_Provincial_Hospital
  4.5 Where did you attend ANC?  - District Hospital                                                                                  ,q4_5_2,Mother_ANC_Where_District_Hospital
  4.5 Where did you attend ANC?  - Health centre                                                                                      ,q4_5_3,Mother_ANC_Where_Health_centre
- 4.5 Where did you attend ANC?  - Village (Mobile clinic of Health Centre)                                                           ,q4_5_4,Mother_ANC_Where_Village_(MobileclinicofHealthCentre)
+ 4.5 Where did you attend ANC?  - Village (Mobile clinic of Health Centre)                                                           ,q4_5_4,Mother_ANC_Where_Village_mobile_clinic
  4.5 Where did you attend ANC?  -  Private clinic                                                                                    ,q4_5_5,Mother_ANC_Where_Private_clinic
  4.5 Where did you attend ANC?  - TBA                                                                                                ,q4_5_6,Mother_ANC_Where_TBA
  4.5 Where did you attend ANC?  - Other (explain) _____________________                                                              ,q4_5_7,Mother_ANC_Where_Other
@@ -1361,15 +1361,15 @@ TT5                                                                             
 4.8Was the blood pressure measured?                                                                                                  ,q4_8,Mother_Blood_pressure_measured
 4.8 Was the ferrous and folic acid tablet given?                                                                                     ,q4_9,Mother_Ferrous_and_folic_acid
 4.10 Did you pay by yourself for ANCs?                                                                                               ,q4_10,Mother_OOP_ANCs
-4.11 drugs/supplies in hospital                                                                                                      ,q4_11_1,Mother_Pay_drugs/suppliesinhospital
-4.11 drugs/supplies outside hospital                                                                                                 ,q4_11_2,Mother_Pay_drugs/suppliesoutsidehospital
+4.11 drugs/supplies in hospital                                                                                                      ,q4_11_1,Mother_Pay_drugs_suppliesinhospital
+4.11 drugs/supplies outside hospital                                                                                                 ,q4_11_2,Mother_Pay_drugs_suppliesoutsidehospital
 4.11 service charge                                                                                                                  ,q4_11_3,Mother_Pay_servicecharge
-"4.11 others, specify                                                                                                                 ",q4_11_4,Mother_Pay_others
+"4.11 others, specify                                                                                                               ",q4_11_4,Mother_Pay_others
 4.11 Average amount                                                                                                                  ,q4_11_5,Mother_Pay_Averageamount
 4.11 Other                                                                                                                           ,q4_11_other,Mother_Pay_Other
  4.12 Have you heard about free maternal health service for pregnant women in Sekong?                                                ,q4_12a,Mother_Sekong_Free_Health_Know
-" 4.12 (B)If yes, who can have access to these free services                                                                          ",q4_12b,Mother_Sekong_Free_Health_Can_access
-" 4.13 What do you think, which services are free? (only one answer)                                                                  ",q4_13,Mother_Sekong_Free_Health_Believes_free
+" 4.12 (B)If yes, who can have access to these free services                                                                        ",q4_12b,Mother_Sekong_Free_Health_Can_access
+" 4.13 What do you think, which services are free? (only one answer)                                                                ",q4_13,Mother_Sekong_Free_Health_Believes_free
   4.14At what level? (possible multiple answers)  - HC                                                                               ,q4_14_1,Mother_Sekong_Free_Health_Believes_free_at_HC_level
   4.14At what level? (possible multiple answers)  - DH                                                                               ,q4_14_2,Mother_Sekong_Free_Health_Believes_free_at_level_DH
   4.14At what level? (possible multiple answers)  - PH                                                                               ,q4_14_3,Mother_Sekong_Free_Health_Believes_free_at_level_PH
@@ -1387,44 +1387,44 @@ TT5                                                                             
  4.16 District Hospital                                                                                                              ,q4_16_district,Mother_Birth_facility_District_Hospital
  4.16 Health Center                                                                                                                  ,q4_16_hc,Mother_Birth_facility_Health_Center
 4.16 Where did you give birth? (only one answer)_Found in report or not?                                                             ,q4_16_report,Mother_Birth_facility_Report_found
-4.16 Name of Facility                                                                                                                ,q4_16_Name_report,Mother_Birth_facility_Name
-4.17 What type of services was it?_From HF records                                                                                   ,q4_17_report,Mother_Birth_facility_type_From_HF_records
-"4.20 If at hospital, did you receive food allowance?_...                                                                             ",q4_20_report,Mother_Birth_Food_allowance_Recieved
-"4.21 If yes, how much?_From Facility Record                                                                                          ",q4_21_report,Mother_Birth_Food_allowance_Amount
-"4.25 If delivery was at hospital, for patient living >3...                                                                           ",q4_25_report,"4.25Ifdeliverywasathospital,forpatientliving>3..."
-4_26 Allowance in LAK                                                                                                                ,q4_26_report,4_26AllowanceinLAK
+4.16 Name of Facility                                                                                                                ,q4_16_Name_report,Mother_Birth_report_facility_Name
+4.17 What type of services was it?_From HF records                                                                                   ,q4_17_report,Mother_Birth_report_facility_type_From_HF_records
+"4.20 If at hospital, did you receive food allowance?_...                                                                           ",q4_20_report,Mother_Birth_report_Food_allowance_Recieved
+"4.21 If yes, how much?_From Facility Record                                                                                        ",q4_21_report,Mother_Birth_report_Food_allowance_Amount
+"4.25 If delivery was at hospital, for patient living >3...                                                                         ",q4_25_report,Mother_Birth_report_Delivery_was_at_hospital_more_3k
+4_26 Allowance in LAK                                                                                                                ,q4_26_report,Mother_Birth_report_Transportation_allowance
 4.17 What type of services was it?                                                                                                   ,q4_17,Mother_Birth_Status
  4.18 How much did you pay for the delivery in kips?                                                                                 ,q4_18,Mother_Birth_Cost_delivery
-drugs/supplies in hospital                                                                                                           ,q4_19,Mother_Birth_Cost_delivery_Drugs/supplies_in_hospital
-drugs/supplies outside hospital                                                                                                      ,q4_19_2,Mother_Birth_Cost_drugs/supplies_outside_hospital
+drugs/supplies in hospital                                                                                                           ,q4_19,Mother_Birth_Cost_delivery_Drugs_supplies_in_hospital
+drugs/supplies outside hospital                                                                                                      ,q4_19_2,Mother_Birth_Cost_drugs_supplies_outside_hospital
 service charge                                                                                                                       ,q4_19_3,Mother_Birth_Cost_service_charge
-"others, specify:_________                                                                                                            ",q4_19_4,Mother_Birth_Cost_others_specify
+"others, specify:_________                                                                                                          ",q4_19_4,Mother_Birth_Cost_others_specify
 All Average amount:                                                                                                                  ,q4_19_5,Mother_Birth_Cost_Average_amount
- 4.19 other specify                                                                                                                  ,q4_19_other,4.19otherspecify
-" 4.20 If at hospital, did you receive food allowance?                                                                                ",q4_20,"4.20Ifathospital,didyoureceivefoodallowance?"
-" 4.21 If yes, how much?                                                                                                              ",q4_21,"4.21Ifyes,howmuch?"
- 4.22 Allowance receipt voucher available?                                                                                           ,q4_22,4.22Allowancereceiptvoucheravailable?
- 4.23 Did you receive food allowance daily?                                                                                          ,q4_23,4.23Didyoureceivefoodallowancedaily?
- 4.23 other specify                                                                                                                  ,q4_23_other,4.23otherspecify
-" 4.25 If delivery was at hospital, for patient living >3km fro...                                                                    ",q4_25,"4.25Ifdeliverywasathospital,forpatientliving>3kmfro..."
- 4.26 Allowance in LAK                                                                                                               ,q4_26,4.26AllowanceinLAK
- 4.27 Transport receipt voucher available?                                                                                           ,q4_27,4.27Transportreceiptvoucheravailable?
- 4.29Who assisted you to give birth? (possible multiple a... - Doctor                                                                ,q4_29_1,Mother_Birst_Assistant_Doctor
- 4.29Who assisted you to give birth? (possible multiple a... -  Midwife (pink blouse)                                                ,q4_29_2,Mother_Birst_Assistant_Midwife
- 4.29Who assisted you to give birth? (possible multiple a... - Nurse (white blouse)                                                  ,q4_29_3,Mother_Birst_Assistant_Nurse
- 4.29Who assisted you to give birth? (possible multiple a... - TBA                                                                   ,q4_29_4,Mother_Birst_Assistant_TBA
- 4.29Who assisted you to give birth? (possible multiple a... - Family member                                                         ,q4_29_5,Mother_Birst_Assistant_Family_member
- 4.29Who assisted you to give birth? (possible multiple a... - Nobody                                                                ,q4_29_6,Mother_Birst_Assistant_Nobody
- 4.29Who assisted you to give birth? (possible multiple a... - Other (explain) ________________________                              ,q4_29_7,Mother_Birst_Assistant_Other
-  4.29 other specify                                                                                                                 ,q4_29_other,Mother_Birst_Assistant_other_specify
- 4.30Which medical services did you receive? -  anamnesis                                                                            ,q4_30_1,Mother_Recieved_medical_services_anamnesis
- 4.30Which medical services did you receive? -   weight/height measurement                                                           ,q4_30_2,Mother_Recieved_medical_services_weight/heightmeasurement
- 4.30Which medical services did you receive? -   body touch and palpation                                                            ,q4_30_3,Mother_Recieved_medical_services_bodytouchandpalpation
- 4.30Which medical services did you receive? -   blood pressure measurement                                                          ,q4_30_4,Mother_Recieved_medical_services_bloodpressuremeasurement
- 4.30Which medical services did you receive? -   lung and heart stethoscope                                                          ,q4_30_5,Mother_Recieved_medical_services_lungandheartstethoscope
-" 4.30Which medical services did you receive? -   Others, specify:_______________                                                     ",q4_30_6,Mother_Recieved_medical_services_Others
- 4.30Which medical services did you receive? -   no service                                                                          ,q4_30_7,Mother_Recieved_medical_services_noservice
- 4.30 other specify                                                                                                                  ,q4_30_other,Mother_Recieved_medical_services_Other_specify
+ 4.19 other specify                                                                                                                  ,q4_19_other,Mother_Birth_Cost_otherspecify
+" 4.20 If at hospital, did you receive food allowance?                                                                              ",q4_20,Mother_Birth_Hospital_Food_allowance
+" 4.21 If yes, how much?                                                                                                            ",q4_21,Mother_Birth_Hospital_Food_allowance_Amount
+ 4.22 Allowance receipt voucher available?                                                                                           ,q4_22,Mother_Birth_Hospital_Food_allowance_Have_voucher
+ 4.23 Did you receive food allowance daily?                                                                                          ,q4_23,Mother_Birth_Hospital_Food_allowance_Daily
+ 4.23 other specify                                                                                                                  ,q4_23_other,Mother_Birth_Hospital_Food_allowance_Other
+" 4.25 If delivery was at hospital, for patient living >3km fro...                                                                  ",q4_25,Mother_Birth_Delivery_was_at_hospital_more_3k
+ 4.26 Allowance in LAK                                                                                                               ,q4_26,Mother_Birth_Transportation_allowance
+ 4.27 Transport receipt voucher available?                                                                                           ,q4_27,Mother_Birth_Transportation_allowance_Have_voucher
+ 4.29Who assisted you to give birth? (possible multiple a... - Doctor                                                                ,q4_29_1,Mother_Birth_Assistant_Doctor
+ 4.29Who assisted you to give birth? (possible multiple a... -  Midwife (pink blouse)                                                ,q4_29_2,Mother_Birth_Assistant_Midwife
+ 4.29Who assisted you to give birth? (possible multiple a... - Nurse (white blouse)                                                  ,q4_29_3,Mother_Birth_Assistant_Nurse
+ 4.29Who assisted you to give birth? (possible multiple a... - TBA                                                                   ,q4_29_4,Mother_Birth_Assistant_TBA
+ 4.29Who assisted you to give birth? (possible multiple a... - Family member                                                         ,q4_29_5,Mother_Birth_Assistant_Family_member
+ 4.29Who assisted you to give birth? (possible multiple a... - Nobody                                                                ,q4_29_6,Mother_Birth_Assistant_Nobody
+ 4.29Who assisted you to give birth? (possible multiple a... - Other (explain) ________________________                              ,q4_29_7,Mother_Birth_Assistant_Other
+  4.29 other specify                                                                                                                 ,q4_29_other,Mother_Birth_Assistant_other_specify
+ 4.30Which medical services did you receive? -  anamnesis                                                                            ,q4_30_1,Mother_Birth_Recieved_medical_services_anamnesis
+ 4.30Which medical services did you receive? -   weight/height measurement                                                           ,q4_30_2,Mother_Birth_Recieved_medical_services_weight_heightmeasurement
+ 4.30Which medical services did you receive? -   body touch and palpation                                                            ,q4_30_3,Mother_Birth_Recieved_medical_services_bodytouchandpalpation
+ 4.30Which medical services did you receive? -   blood pressure measurement                                                          ,q4_30_4,Mother_Birth_Recieved_medical_services_bloodpressuremeasurement
+ 4.30Which medical services did you receive? -   lung and heart stethoscope                                                          ,q4_30_5,Mother_Birth_Recieved_medical_services_lungandheartstethoscope
+" 4.30Which medical services did you receive? -   Others, specify:_______________                                                   ",q4_30_6,Mother_Birth_Recieved_medical_services_Others
+ 4.30Which medical services did you receive? -   no service                                                                          ,q4_30_7,Mother_Birth_Recieved_medical_services_noservice
+ 4.30 other specify                                                                                                                  ,q4_30_other,Mother_Birth_Recieved_medical_services_Other_specify
  4.31 Did you wait for long?                                                                                                         ,q4_31,Mother_Birth_Wait_long
  4.31 How long ..#minutes                                                                                                            ,q4_31_time,Mother_Birth_Wait_time
  4.31 Reason                                                                                                                         ,q4_31_reasonENG,Mother_Birth_Wait_Reason
@@ -1442,7 +1442,7 @@ All Average amount:                                                             
  4.39 Where did you attend Postnatal consultations? -  Health center                                                                 ,q4_39_3,Mother_Postnatal_consultation_Location_Health_center
  4.39 Where did you attend Postnatal consultations? -  Village (outreach of health center)                                           ,q4_39_4,Mother_Postnatal_consultation_Location_Village_outreach
  4.39 Where did you attend Postnatal consultations? -  TBA                                                                           ,q4_39_5,Mother_Postnatal_consultation_Location_TBA
- 4.39 Where did you attend Postnatal consultations? -  Nurse/Private clinic                                                          ,q4_39_6,Mother_Postnatal_consultation_Location_Nurse/Private_clinic
+ 4.39 Where did you attend Postnatal consultations? -  Nurse/Private clinic                                                          ,q4_39_6,Mother_Postnatal_consultation_Location_Nurse_Private_clinic
  4.39 Where did you attend Postnatal consultations? -  Village visit                                                                 ,q4_39_7,Mother_Postnatal_consultation_Location_Villagevisit
  4.39 Where did you attend Postnatal consultations? - Other: explain                                                                 ,q4_39_8,Mother_Postnatal_consultation_Location_Other
  4.39 other specify                                                                                                                  ,q4_39_other,Mother_Postnatal_consultation_Location_Other_specify
@@ -1464,7 +1464,7 @@ All Average amount:                                                             
 5.1 Birth date of this child?_Number of month                                                                                        ,q5_1_2,Mother_Child_Birth_Date_month
   5.2 Gender of this child?                                                                                                          ,q5_2,Mother_Child_Gender
   5.3 Is this child already registered at the district of...                                                                         ,q5_3,Mother_Child_Registered_at_district
-" 5.4 Last night, did this child sleep under a mosquito net?                                                                          ",q5_4,Mother_Child_Mosquito_net_last_night
+" 5.4 Last night, did this child sleep under a mosquito net?                                                                        ",q5_4,Mother_Child_Mosquito_net_last_night
   5.5 Do you have the monitoring (yellow) card or booklet...                                                                         ,q5_5,Mother_Child_Have_monitoring_booklet
 BCG                                                                                                                                  ,q5_6_1_1,Mother_Child_Immu_BCG
 HepB0                                                                                                                                ,q5_6_1_2,Mother_Child_Immu_HepB0

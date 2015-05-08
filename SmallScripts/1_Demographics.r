@@ -47,4 +47,4 @@ ftable[,percentRows]<-lapply(percentRows,function(X){sapply(ftable[,X],sprintf,f
 write.csv(ftable,"./output/DemogTable.csv")
 
 DemogTableX<-xtable(t(ftable),caption="Population Demographics")
-cat(print(DemogTableX),file="./output/DemogTable.tex")
+cat(print(DemogTableX),file="./tex/DemogTable.tex")
