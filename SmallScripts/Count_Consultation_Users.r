@@ -16,6 +16,45 @@ paymentClass = c("_cost_Medicine","_cost_Medical_Fee","_cost_Transport","_cost_O
 prefixes     = c("HH_Illness_1_","HH_Illness_2_","HH_Illness_3_");
 
 
+
+
+
+
+
+
+ConsultTableExtract <- function () {
+  paymentClass = c("Medicine","Medical_Fee","Transport","Others","Overall_average");
+  fnames =c ("Flag","Serial","Group",paymentClass,"CareCenter");
+  newTab <-data.frame();
+  names <-NULL;
+  for (prefix in prefixes) {
+    for (cc in careCenters) {
+      flag<-paste(prefix,"Consult_",cc,sep="");
+
+
+      payFields<-sapply(paymentClass,function(X){paste(prefix,cc,"_cost_",X,sep="")});
+      names<-c(names,payFields);
+      fields<-c(flag,"Serial","Group",payFields); 
+      #lapply(fields,function(X){if (length(which(names(lps)==X)[1]==0)) {print(X)}})
+      careEvents = lps[,fields];
+      #careEvents = careEvents[!is.na(careEvents[1]),];
+      careEvents = cbind.data.frame (careEvents,cc);
+      #print (dim(careEvents))
+      colnames(careEvents)<-fnames;
+      newTab<-rbind.data.frame (newTab,careEvents)
+      
+    }
+  }
+  
+  newTab<-newTab[!is.na(newTab[,1]),]
+  for (pc in paymentClass) {
+    newTab[,pc]<-as.numeric(gsub(",","",newTab[,pc]))
+  }
+  return (newTab);
+}
+ConsultTable <- ConsultTableExtract()
+
+
 buildFlags <- function (prefixes = prefixes, careCenter=careCenters) {
     flags <- c();
     for (prefix in prefixes) {
@@ -25,6 +64,7 @@ buildFlags <- function (prefixes = prefixes, careCenter=careCenters) {
         }
     }
     return(flags);
+    
 }
                    
 nAnswers <- vector (mode="numeric",length(lps[,1]))
@@ -44,7 +84,7 @@ for (p in prefixes) {
     nAnswers<-nAnswers + 1*(nTreat>0);
     
     nTreatments<-c(nTreatments,nTreat[nTreat>0]);
-    nTreatmentsInList <- c(nTreatments,nTreat[OnAList & nTreat>0])
+    nTreatmentsInList <- c(nTreatments,nTreat[nTreat>0])
     allReports <-rbind(allReports,reports);
 }
 
@@ -64,7 +104,7 @@ CountReport <- function (payType,group=TRUE, prefixs = prefixes, careCenter=care
     counts$numTreated = 0;
     counts$numOutliers = 0;
     grandTotal <-0;
-    counts$rdata<-data.frame(stringsAsFactors=FALSE);
+    counts$rdata<-data.frame(stringsAsFactors=T);
     
     for (prefix in prefixs) {
         for (cc in careCenter) {
@@ -77,27 +117,37 @@ CountReport <- function (payType,group=TRUE, prefixs = prefixes, careCenter=care
     
             payField<-paste(prefix,cc,payType,sep="");
             payments <- persons[hadCare,payField];
-
-            counts$rdata<-rbind(counts$rdata,cbind(lps$Group[group][hadCare],payments));
-            if (sdl>0) {
-                sdv<-sd(payments);
-                outLiers = payments>sdl*sdv
-                payments<-payments[!outLiers]
-                counts$numOutliers = counts$numOutliers + sum(outLiers)
-            }
-            dontRemb = payments==98 | payments==99;
-            
-            counts$numNA   = counts$numNA   + sum(is.na(payments));
-            payments       = payments[!is.na(payments)];
-            counts$zeros   = counts$zeros   + sum(payments==0,na.rm=TRUE);
-            counts$is9899  = counts$is9899  + sum(dontRemb, na.rm=TRUE);
-            counts$total   = counts$total   + sum(payments[!dontRemb],na.rm=TRUE);
-            counts$inTotal = counts$inTotal + sum (!dontRemb);
-
-            counts$numTreated  = counts$numTreated + sum(hadCare);
+            #print("group");print(group);
+            #print("hadcare");print(hadCare);
+            counts$rdata<-rbind.data.frame(counts$rdata,cbind.data.frame(lps$Group[group][hadCare],payments));
         }#for each care center
     }
-    names(counts$rdata)<-c("Group","Amount");
+
+    payments <- as.numeric(as.vector(counts$rdata[,2]));
+    counts$numTreated = grandTotal;
+    
+    if (sdl>0) {
+      outLiers = findOutliers( payments,sdl)
+      counts$rdata<-cbind.data.frame(counts$rdata,outLiers);
+      payments<-payments[!outLiers]
+      counts$numOutliers = counts$numOutliers + sum(outLiers)
+    }else {
+      #print(counts$rdata)
+      counts$rdata<-cbind.data.frame(counts$rdata,F);
+    }
+    dontRemb = payments==98 | payments==99;
+    
+    counts$numNA   = counts$numNA   + sum(is.na(payments));
+    payments       = payments[!is.na(payments)];
+    counts$zeros   = sum(payments==0,na.rm=TRUE);
+    counts$is9899  = sum(dontRemb, na.rm=TRUE);
+    counts$total   = sum(payments[!dontRemb],na.rm=TRUE);
+    counts$inTotal = length (is.na(payments))-counts$is9899;
+
+
+    counts$numTreated  = counts$numTreated + sum(hadCare);
+
+    names(counts$rdata)<-c("Group","Amount","outLiers");
     return(counts);
 }
 
@@ -105,28 +155,48 @@ ConsultationSummary <- function (paytype,carecenters,sdl=-1) {
     
     SumTab=NULL;
     for (g in lgroups) {
+      
         cr <- CountReport(group = g,payType = paytype,careCenter=carecenters,sdl=sdl)
+
         if (sdl>0) {
-            row <-c(cr$numOutliers,cr$numNA,cr$zeros,cr$zeros/cr$numTreated,cr$is9899,cr$is9899/cr$numTreated,cr$inTotal,cr$numTreated,cr$total,cr$total/cr$inTotal)
+          col <-c(cr$numOutliers,cr$numNA,cr$zeros,cr$zeros/cr$numTreated,cr$is9899,cr$is9899/cr$numTreated,cr$inTotal,cr$numTreated,cr$total,cr$total/cr$inTotal)
         }else {
-            row <-c(cr$numNA,cr$zeros,cr$zeros/cr$numTreated,cr$is9899,cr$is9899/cr$numTreated,cr$inTotal,cr$numTreated,cr$total,cr$total/cr$inTotal)
+          col <-c(               cr$numNA,cr$zeros,cr$zeros/cr$numTreated,cr$is9899,cr$is9899/cr$numTreated,cr$inTotal,cr$numTreated,cr$total,cr$total/cr$inTotal)
         }
-        SumTab<-cbind(SumTab,row);
+        SumTab<-cbind.data.frame(SumTab,col);
 
     }
 
+    
     if (sdl>0) {
-        rownames(SumTab)<-c("Num outliers removed","num no payment info","num responding 0","% responding 0","num responding don't know","% responding don't know","Num providing payment info","Total treated","total expenditure","average expenditure");
+      rownames(SumTab)<-c("Num outliers removed",
+                          "Num no payment info",
+                          "Num responding 0",
+                          "% responding 0",
+                          "Num responding don't know",
+                          "% responding don't know",
+                          "Num in total",
+                          "Total treated",
+                          "Total expenditure",
+                          "Average expenditure");
     }else {
-        rownames(SumTab)<-c("num no payment info","num responding 0","% responding 0","num responding don't know","% responding don't know","Num providing payment info","Total treated","total expenditure","average expenditure");
+      rownames(SumTab)<-c("Num no payment info",
+                          "Num responding 0",
+                          "% responding 0",
+                          "Num responding don't know",
+                          "% responding don't know",
+                          "Num in total",
+                          "Total treated",
+                          "Total expenditure",
+                          "Average expenditure");
     }
         
     colnames(SumTab) = names(lgroups);
 
 
-    moneyRows<-c("average expenditure","total expenditure");
+    moneyRows<-c("Average expenditure","Total expenditure");
     percentRows <-c("% responding 0","% responding don't know");
-    highlightRows <-c("% responding 0","average expenditure");
+    highlightRows <-c("% responding 0","Average expenditure");
     highlightRows <- as.vector(sapply(highlightRows,function(X){return(which(rownames(SumTab)==X))}));
     
     ftable <-as.data.frame(SumTab);
@@ -172,8 +242,18 @@ interleave <- function(v1,v2)
     c(v1,v2)[order(c(ord1,ord2))]
 }
 
-factHist <- function (X) {
+factHist <- function (X,...) {
     c <- as.numeric(levels(factor(X)));
     b <- interleave(c,c+1);
-    return (suppressWarnings(hist (X,b,freq=TRUE,plot=FALSE,right=FALSE)));
+    return (suppressWarnings(hist (X,b,na.rm=na.rm,freq=TRUE,plot=FALSE,right=FALSE)));
+}
+
+
+findOutliers <- function (X,lim) {
+  if (lim<0) {
+    return(rep(F,length(X)));
+  } else {
+
+    return (X>(mean(X)+lim*sd(X)));
+  }
 }

@@ -3,7 +3,9 @@
 \usepackage{lscape}
 \usepackage{rotating}
 \usepackage{numprint}
+\usepackage{graphicx}
 \begin{document}
+
 
 \title{Analysis of Consultation Expenditures}
 
@@ -19,9 +21,10 @@
 <<setup,echo=FALSE,results=hide>>=
 library("xtable")
 source("LoadData.R");
-source("./SmallScripts/DefineGroups.r")
 source("SmallScripts/Count_Consultation_Users.r")
 options(scipen = 10)
+outLim <-2.5; #standard deviations per
+
 @
 
 \section {How many people reported?}
@@ -33,11 +36,11 @@ surveys reported at least 1 consultation, and a total of
 \Sexpr{ sum(nTreatments) }
 total consultations were reported.
 Among the respondents we are interested in 
-\Sexpr{ sum(nAnswers[OnAList]>0) }
+\Sexpr{ sum(nAnswers>0) }
 of a total 
-\Sexpr{ sum(OnAList) } 
+\Sexpr{ sum(length(lps$Group)) } 
 responded to at least 1 consultation. A total of
-\Sexpr{ sum(nAnswers[OnAList]) } 
+\Sexpr{ sum(nAnswers) } 
  illnesses requiring consultations were reported, with a total of 
 \Sexpr{sum(nTreatmentsInList) }
 care center visits reported.\\
@@ -47,7 +50,7 @@ The  survey allows for respondents to describe 0 to 3 consultation events. The d
 <<consultation_histo, echo=FALSE,fig=TRUE,include=TRUE>>=
 {
   par(mar=c(4,4,3,3),  pin=c(2.5,2.5))
-  ph <- hist(nAnswers[OnAList],breaks=(0:4),right=FALSE,plot=FALSE);
+  ph <- hist(nAnswers,breaks=(0:4),right=FALSE,plot=FALSE);
   plot(ph,ylim= c(0,1.2*(max(ph$counts))),axes=FALSE,labels=TRUE,,main = "Consultation response frequency",xlab="Num Consultations Reported by survey",ylab=("Number of Surveys"))
   axis(1,at=ph$mids,labels = 0:3)
   axis(2)
@@ -77,59 +80,67 @@ Each care center expense report is broken up by expense type, and then the respo
 @ 
 <<Ballpark_Table,echo=FALSE,results=tex>>=
 {
-    EstimationTotal <- ConsultationSummary (paytype = c("_cost_Overall_average"), carecenters= careCenters);
-    print(EstimationTotal$printable,add.to.row=EstimationTotal$prow);
-    write.csv(EstimationTotal$table,"EstimationTotals.csv")
-    
-    EstimationTotal <- ConsultationSummary (paytype = c("_cost_Overall_average"), carecenters= careCenters,sdl=1.5);
-    print(EstimationTotal$printable,add.to.row=EstimationTotal$prow);
-    write.csv(EstimationTotal$table,"EstimationTotals.csv")
+  EstimationTotal <- ConsultationSummary (paytype = c("_cost_Overall_average"), carecenters= careCenters);
+  print(EstimationTotal$printable,add.to.row=EstimationTotal$prow);
+  write.csv(EstimationTotal$table,"EstimationTotals.csv")
 }
-    
-    
-    ## EstimationTotals=NULL;
-    ## for (g in lgroups) {
-    ##     cr <- CountReport(group = g,payType = c("_cost_Overall_average"))
-    ##     row <-c(cr$numNA,
-    ##             cr$zeros,
-    ##             cr$zeros/cr$numTreated,
-    ##             cr$is9899,
-    ##             cr$is9899/cr$numTreated,
-    ##             cr$inTotal,
-    ##             cr$numTreated,
-    ##             cr$total,
-    ##             cr$total/cr$inTotal)
+@ 
 
-    ##     EstimationTotals<-cbind(EstimationTotals,row);
-
-    ## }
+Analysis of the distribution of payments reveals that there are a number of outliers.
 
 
-    ## rownames(EstimationTotals)<-c("num no payment info","num responding 0","% responding 0","num responding don't know","% responding don't know","Num providing payment info","Total treated","total expenditure","average expenditure");
-    ## colnames(EstimationTotals) = names(lgroups);
-
-
-    ## moneyRows<-c("average expenditure","total expenditure");
-    ## percentRows <-c("% responding 0","% responding don't know");
-    
-    ## ftable <-as.data.frame(EstimationTotals);
-    ## ftable[percentRows,]<-100*ftable[percentRows,];
-    ## ftable <-as.data.frame(lapply(ftable,sprintf,fmt=c("%.0f","%.0f","%.1f%%","%.0f","%.1f%%","%.0f","%.0f","%.0f","%.0f")),stringsAsFactors=FALSE);
-
-    ## rownames(ftable) <-rownames(EstimationTotals)
-    ## colnames(ftable) <-colnames(EstimationTotals)
-    ## ftable[moneyRows,]<-format(EstimationTotals[moneyRows,],digits=0,format="d",big.mark=",");
-    
-    ## ptable<-xtable(ftable);
-
-    ## addform<-list();
-    ## addform$pos<-list(c(2,8));
-    ## addform$command<-c("\\rowcolor[gray]{0.75}\n")
-    ## print(ptable,add.to.row=addform)
-
-
-
-
+\begin{center}
+<<Distributions,results=tex,echo=FALSE>>=
+{
+  gr=levels(lps$Group);
+  for (g in gr) {
+    file=paste(g,"_hist1.pdf",sep="");
+    pdf(file=file,paper="special",width=6,height=6)
+    v<-as.numeric(as.vector(EstimationTotal$data$rdata[EstimationTotal$data$rdata[,1]==g,2]));
+    out = findOutliers(v,outLim);
+    h1<-factHist(v)
+    suppressWarnings(plot(h1,freq=TRUE,xlab="Amount Payed",ylab="Number of Payments",main=paste ("Payment Distribution for",g," Group")))
+    dev.off()
+    cat("\\includegraphics[height=1.5in, width=1.5in]{", file, "}\n", sep="")
+  }
+}
 @
+\end{center}
+
+If we set a threshold of \Sexpr{outLim} standard deviations above the mean, the distributions now look like this.
+
+
+%%recompute the estimation with the outliers removed
+
+<<Ballpark_no_outliers,echo=F,results=tex>>=
+
+
+    EstimationTotal <- ConsultationSummary (paytype = c("_cost_Overall_average"), carecenters= careCenters,sdl=outLim);
+@ 
+
+\begin{center}
+<<Distributions,echo=FALSE,results=tex>>=
+{
+  gr=levels(lps$Group);
+  for (g in gr) {
+    file=paste(g,"_hist2.pdf",sep="");
+    pdf(file=file,paper="special",width=6,height=6)
+    v<-as.numeric(as.vector(EstimationTotal$data$rdata[EstimationTotal$data$rdata[,1]==g,2]));
+    out = findOutliers(v,outLim);
+    h1<-factHist(v[!out])
+    suppressWarnings(plot(h1,freq=TRUE,xlab="Amount Payed",ylab="Number of Payments",main=paste ("Payment Distribution for",g," Group")))
+    dev.off()
+    cat("\\includegraphics[height=1.5in, width=1.5in]{", file, "}\n", sep="")
+  }
+}
+@ 
+\end{center}
+  
+<<echo=F,results=tex>>=
+print(EstimationTotal$printable,add.to.row=EstimationTotal$prow);
+@ 
+
+    
+    
 
 \end{document}

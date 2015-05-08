@@ -1,5 +1,5 @@
 VariableDesc,QNum,VarName
-                                                                                                                                  ,id.format,id.format
+                                                                                                                                     ,id.format,id.format
 Case completed in Snap Interviewer                                                                                                   ,id.completed,id.completed
 Language used to conduct the interview                                                                                               ,id.language,id.language
 Date of interview                                                                                                                    ,id.date,id.date
@@ -9,6 +9,8 @@ Time interview ended                                                            
 Duration of interview                                                                                                                ,id.time,id.time
 Name or ID of interviewer                                                                                                            ,id.interviewer,id.interviewer
 Location of interview                                                                                                                ,id.location,id.location
+VillagePreId                                                                                                                         ,Pre.ID..1...Geo..2.,VillagePreId           
+Group                                                                                                                                ,Pre.id1.Geo2.NP3,Group
 District                                                                                                                             ,dist,dist
 <none>                                                                                                                               ,Village,Village
   1.3. Household serial number in this cluster : Serial...                                                                           ,q1_3,Serial
@@ -259,7 +261,6 @@ Name30                                                                          
  q2_7_1_16 Where did …. seek care during this sickness? - Do not remember                                                            ,q2_7_1_16,q2_7_1_16
  q2_7_1_17 Where did …. seek care during this sickness? - Do not know                                                                ,q2_7_1_17,q2_7_1_17
  q2_7_other1 other specify                                                                                                           ,q2_7_other1,q2_7_other1
-                                                                                                                                     ,q2_7_other1_code,q2_7_other1_code
  q2_7_2_1 Where did …. seek care during this sickness? - No care                                                                     ,q2_7_2_1,q2_7_2_1
  q2_7_2_2 Where did …. seek care during this sickness? - Home-made medicine                                                          ,q2_7_2_2,q2_7_2_2
  q2_7_2_3 Where did …. seek care during this sickness? - Village modern medical practitioner                                         ,q2_7_2_3,q2_7_2_3
@@ -278,7 +279,6 @@ Name30                                                                          
  q2_7_2_16 Where did …. seek care during this sickness? - Do not remember                                                            ,q2_7_2_16,q2_7_2_16
  q2_7_2_17 Where did …. seek care during this sickness? - Do not know                                                                ,q2_7_2_17,q2_7_2_17
  q2_7_other2 other specify                                                                                                           ,q2_7_other2,q2_7_other2
-,q2_7_other2_code,q2_7_other2_code
  q2_7_3_1 Where did …. seek care during this sickness? - No care                                                                     ,q2_7_3_1,q2_7_3_1
  q2_7_3_2 Where did …. seek care during this sickness? - Home-made medicine                                                          ,q2_7_3_2,q2_7_3_2
  q2_7_3_3 Where did …. seek care during this sickness? - Village modern medical practitioner                                         ,q2_7_3_3,q2_7_3_3
@@ -1154,7 +1154,7 @@ Overall average:                                                                
 "3.3.10 Total how much did you/he pay for Others_If do not remember, write 98 If do not know, write 99                                ",q3.3.10.4,HH_Illness_1_Total_cost_Others
 Overall average:                                                                                                                     ,q3.3.10.5,HH_Illness_1_Total_cost_Overall_average
 3.3.10 other                                                                                                                         ,q3.3.10_other,HH_Illness_1_Total_cost_other
-                                                                                                                                     ,q3_2,HH_Illness_2_report_individual_number
+                                                                                                                                     ,q3_4,HH_Illness_2_report_individual_number
  3.5 The before last time a person of the household was v... - National Hospital                                                     ,q3_5_1,HH_Illness_2_Consult_National_Hospital
  3.5 The before last time a person of the household was v... - Provincial Hospital                                                   ,q3_5_2,HH_Illness_2_Consult_Provincial_Hospital
  3.5 The before last time a person of the household was v... - District Hospital                                                     ,q3_5_3,HH_Illness_2_Consult_District_Hospital
@@ -1767,3 +1767,10 @@ Mebendazole date?                                                               
 9.15. What type of latrine do household members use? - Other latrine specify________                                                 ,q9_15_4,HH_Latrine_type_Other
 9.15. What type of latrine do household members use? - None                                                                          ,q9_15_5,HH_Latrine_type_None
 9.15 What type of latrine do household members use? other specify                                                                    ,q9_15_other,HH_Latrine_type_Other_specify
+                                                                                                                                     ,X,X
+                                                                                                                                     ,X.1,X.1
+                                                                                                                                     ,Check.3.3.1,Check.3.3.1
+                                                                                                                                     ,Check.3.3.10,Check.3.3.10
+                                                                                                                                     ,Check.3.5.10,Check.3.5.10
+                                                                                                                                     ,Check.3.7.10,Check.3.7.10
+                                                                                                                                     ,Check.3.9,Check.3.9

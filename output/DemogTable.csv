@@ -1,0 +1,5 @@
+"","NumHouseHolds","NumIndivids","MeanHHSize","MeanAge","MedianAge","PercentMale","PercentFemale","PercentSingle","PercentMarried","PercentDivorced","PercentWidowed","Percent_HoH_CantRW","Percent_HoH_CanR","Percent_HoH_CanRW","Percent_HoH_Spouse_CantRW","Percent_HoH_Spouse_CanR","Percent_HoH_Spouse_CanRW"
+"HEF PreID","271","1667","6.2","22.3","17","49.9%","50.1%","59.8%","34.7%","1.7%","3.8%","38.4%","8.1%","53.5%","48.7%","7.7%","24.4%"
+"HEF GeoID","269","2290","8.5","21.6","15","51.0%","49.0%","58.5%","36.9%","0.6%","4.0%","28.3%","5.2%","66.5%","47.2%","9.3%","37.5%"
+"NoAssis","390","2599","6.7","24.3","20","49.6%","50.4%","54.1%","41.7%","0.9%","3.3%","13.8%","3.8%","82.3%","29.7%","6.7%","53.8%"
+"All","930","6556","7.0","22.9","18","50.1%","49.9%","57.1%","38.2%","1.0%","3.7%","25.2%","5.5%","69.4%","40.3%","7.7%","40.5%"
