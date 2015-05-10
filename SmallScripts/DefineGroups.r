@@ -16,6 +16,20 @@ HEF_GeoID<-lps$Group=="GeoID";
 No_Assist<-lps$Group=="NoAssist";
 All<-rep(T,length(HEF_PreID));
 lgroups<-list(HEF_PreID,HEF_GeoID,No_Assist,All)
+names(lgroups) <- c("PreID","GeoID","NoAssist","All")
+
+
+
+HEF_PreID<-IndiHealth$Group=="PreID";
+HEF_GeoID<-IndiHealth$Group=="GeoID";
+No_Assist<-IndiHealth$Group=="NoAssist";
+All<-rep(T,length(HEF_PreID));
+ligroups<-list(HEF_PreID,HEF_GeoID,No_Assist,All)
+names(ligroups) <- c("PreID","GeoID","NoAssist","All")
+
+
+
+
 
 lps$Ethnic_group<-lps$HoH_Ethnic_group
 lps$Ethnic_group[lps$HoH_Ethnic_group==6]<-lps$HoH_Ethnic_group_other[lps$HoH_Ethnic_group==6]

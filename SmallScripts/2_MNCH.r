@@ -1,165 +1,21 @@
 ## 1.2.1. Health/MNCH status of the mothers and children under 24 months
-
+library("xtable")
 ## For all households (N=930) and indicative only for the 3 sub-groups (HEF Pre-id, HEF Geographic, Non-HEF) 
 ## Make analysis for 930
 
 ## Section 4: 	Mother <24 month child Maternal status & Free Maternity
 
 ## List of frequency tables for all questions
-## q4_4_1            ,Mother_How_many_ANC_verbal_ANC1                                                        
-## q4_4_2            ,Mother_How_many_ANC_verbal_ANC2
-## q4_4_3            ,Mother_How_many_ANC_verbal_ANC3
-## q4_4_4            ,Mother_How_many_ANC_verbal_ANC4
-## q4_4_5            ,Mother_How_many_ANC_verbal_ANC5
-## q4_4_card_1       ,Mother_ANC_Card_1_Date
-## q4_4_card_2       ,Mother_ANC_Card_2_Date
-## q4_4_card_3       ,Mother_ANC_Card_3_Date
-## q4_4_card_4       ,Mother_ANC_Card_4_Date
-## q4_4_card_5       ,Mother_ANC_Card_5_Date
-## q4_5_1            ,Mother_ANC_Where_Provincial_Hospital
-## q4_5_2            ,Mother_ANC_Where_District_Hospital
-## q4_5_3            ,Mother_ANC_Where_Health_centre
-## q4_5_4            ,Mother_ANC_Where_Village_mobile_clinic
-## q4_5_5            ,Mother_ANC_Where_Private_clinic
-## q4_5_6            ,Mother_ANC_Where_TBA
-## q4_5_7            ,Mother_ANC_Where_Other
-## q4_5_other        ,Mother_ANC_Where_Other_specify
-## q4_6              ,Mother_Informed_of_Pregnancy_Risk
-## q4_7              ,Mother_TT_immun_before_or_during_pregnancy
-## q4_7_1            ,Mother_TT_immun_Card1
-## q4_7_2            ,Mother_TT_immun_Card2
-## q4_7_3            ,Mother_TT_immun_Card3
-## q4_7_4            ,Mother_TT_immun_Card4
-## q4_7_5            ,Mother_TT_immun_Card5
-## q4_7_card_1       ,Mother_TT_immun_preg_Card_Date
-## q4_7_card_2       ,Mother_TT_immun_preg_Card_Date
-## q4_7_card_3       ,Mother_TT_immun_preg_Card_Date
-## q4_7_card_4       ,Mother_TT_immun_preg_Card_Date
-## q4_7_card_5       ,Mother_TT_immun_preg_Card_Date
-## q4_8              ,Mother_Blood_pressure_measured
-## q4_9              ,Mother_Ferrous_and_folic_acid
-## q4_10             ,Mother_OOP_ANCs
-## q4_11_1           ,Mother_Pay_drugs/suppliesinhospital
-## q4_11_2           ,Mother_Pay_drugs/suppliesoutsidehospital
-## q4_11_3           ,Mother_Pay_servicecharge
-## q4_11_4           ,Mother_Pay_others
-## q4_11_5           ,Mother_Pay_Averageamount
-## q4_11_other       ,Mother_Pay_Other
-## q4_12a            ,Mother_Sekong_Free_Health_Know
-## q4_12b            ,Mother_Sekong_Free_Health_Can_access
-## q4_13             ,Mother_Sekong_Free_Health_Believes_free
-## q4_14_1           ,Mother_Sekong_Free_Health_Believes_free_at_HC_level
-## q4_14_2           ,Mother_Sekong_Free_Health_Believes_free_at_level_DH
-## q4_14_3           ,Mother_Sekong_Free_Health_Believes_free_at_level_PH
-## q4_14_4           ,Mother_Sekong_Free_Health_Believes_free_at_level_NH
-## q4_14_5           ,Mother_Sekong_Free_Health_Believes_free_at_level_Dont_know
-## q4_15_1           ,Mother_Sekong_Free_Health_Info_source_Head_of_village
-## q4_15_2           ,Mother_Sekong_Free_Health_Info_source_Village_health_volunteer
-## q4_15_3           ,Mother_Sekong_Free_Health_Info_source_Health_center_staff
-## q4_15_4           ,Mother_Sekong_Free_Health_Info_source_Family_friends
-## q4_15_5           ,Mother_Sekong_Free_Health_Info_source_Others
-## q4_15_other       ,Mother_Sekong_Free_Health_Info_source_Others_specify
-## q4_16             ,Mother_Birth_facility_type
-## q4_16_other       ,Mother_Birth_facility_other_specify
-## q4_16_pro         ,Mother_Birth_facility_Province_Hospital
-## q4_16_district    ,Mother_Birth_facility_District_Hospital
-## q4_16_hc          ,Mother_Birth_facility_Health_Center
-## q4_16_report      ,Mother_Birth_facility_Report_found
-## q4_16_Name_report ,Mother_Birth_report_facility_Name
-## q4_17_report      ,Mother_Birth_report_facility_type_From_HF_records
-## q4_20_report      ,Mother_Birth_report_Food_allowance_Recieved
-## q4_21_report      ,Mother_Birth_report_Food_allowance_Amount
-## q4_25_report      ,Mother_Birth_report_Delivery_was_at_hospital_more_3k
-## q4_26_report      ,Mother_Birth_report_Transportation_allowance
-## q4_17             ,Mother_Birth_Status
-## q4_18             ,Mother_Birth_Cost_delivery
-## q4_19             ,Mother_Birth_Cost_delivery_Drugs/supplies_in_hospital
-## q4_19_2           ,Mother_Birth_Cost_drugs/supplies_outside_hospital
-## q4_19_3           ,Mother_Birth_Cost_service_charge
-## q4_19_4           ,Mother_Birth_Cost_others_specify
-## q4_19_5           ,Mother_Birth_Cost_Average_amount
-## q4_19_other       ,Mother_Birth_Cost_otherspecify
-## q4_20             ,Mother_Birth_Hospital_Food_allowance
-## q4_21             ,Mother_Birth_Hospital_Food_allowance_Amount
-## q4_22             ,Mother_Birth_Hospital_Food_allowance_Have_voucher
-## q4_23             ,Mother_Birth_Hospital_Food_allowance_Daily
-## q4_23_other       ,Mother_Birth_Hospital_Food_allowance_Other
-## q4_25             ,Mother_Birth_Delivery_was_at_hospital_more_3k
-## q4_26             ,Mother_Birth_Transportation_allowance
-## q4_27             ,Mother_Birth_Transportation_allowance_Have_voucher
-## q4_29_1           ,Mother_Birth_Assistant_Doctor
-## q4_29_2           ,Mother_Birth_Assistant_Midwife
-## q4_29_3           ,Mother_Birth_Assistant_Nurse
-## q4_29_4           ,Mother_Birth_Assistant_TBA
-## q4_29_5           ,Mother_Birth_Assistant_Family_member
-## q4_29_6           ,Mother_Birth_Assistant_Nobody
-## q4_29_7           ,Mother_Birth_Assistant_Other
-## q4_29_other       ,Mother_Birth_Assistant_other_specify
-## q4_30_1           ,Mother_Birth_Recieved_medical_services_anamnesis
-## q4_30_2           ,Mother_Birth_Recieved_medical_services_weight/heightmeasurement
-## q4_30_3           ,Mother_Birth_Recieved_medical_services_bodytouchandpalpation
-## q4_30_4           ,Mother_Birth_Recieved_medical_services_bloodpressuremeasurement
-## q4_30_5           ,Mother_Birth_Recieved_medical_services_lungandheartstethoscope
-## q4_30_6           ,Mother_Birth_Recieved_medical_services_Others
-## q4_30_7           ,Mother_Birth_Recieved_medical_services_noservice
-## q4_30_other       ,Mother_Birth_Recieved_medical_services_Other_specify
-## q4_31             ,Mother_Birth_Wait_long
-## q4_31_time        ,Mother_Birth_Wait_time
-## q4_31_reasonENG   ,Mother_Birth_Wait_Reason
-## q4_32             ,Mother_Birth_Num_infusions
-## q4_33             ,Mother_Num_Doctor_Visits
-## q4_34             ,Mother_Breast_feed_time
-## q4_35             ,Mother_Time_retur_after_delivery
-## q4_36             ,Mother_Recieved_VitA
-## q4_36_other       ,Mother_Recieved_VitA_other_specify
-## q4_37             ,Mother_Recieved_VitA_red_capsule
-## q4_38_1           ,Mother_Postnatal_consultation_N_days_after_delivery_1
-## q4_38_2           ,Mother_Postnatal_consultation_N_days_after_delivery_2
-## q4_39_1           ,Mother_Postnatal_consultation_Location_Provincial_hospital
-## q4_39_2           ,Mother_Postnatal_consultation_Location_District_hospital
-## q4_39_3           ,Mother_Postnatal_consultation_Location_Health_center
-## q4_39_4           ,Mother_Postnatal_consultation_Location_Village_outreach
-## q4_39_5           ,Mother_Postnatal_consultation_Location_TBA
-## q4_39_6           ,Mother_Postnatal_consultation_Location_Nurse/Private_clinic
-## q4_39_7           ,Mother_Postnatal_consultation_Location_Villagevisit
-## q4_39_8           ,Mother_Postnatal_consultation_Location_Other
-## q4_39_other       ,Mother_Postnatal_consultation_Location_Other_specify
-## q4_40             ,Mother_Postnatal_consultation_Helpfull
-## q4_40_other       ,Mother_Postnatal_consultation_Helpfull_other
-## q4_41             ,Mother_Familily_planning_Using
-## q4_41_other       ,Mother_Familily_planning_Using_other
-## q4_42             ,Mother_Familily_planning_Surprise
-## q4_43             ,Mother_Familily_planning_Want_child
-## q4_44             ,Mother_Familily_planning_Time_from_delivery
-## q4_45_1           ,Mother_Family_planning_Location_Provincial_Hospital
-## q4_45_2           ,Mother_Family_planning_Location_District_hospital
-## q4_45_3           ,Mother_Family_planning_Location_Health_centre
-## q4_45_4           ,Mother_Family_planning_Location_Village_volunteer
-## q4_45_5           ,Mother_Family_planning_Location_Private_Pharmacy
-## q4_45_6           ,Mother_Family_planning_Location_Other
-## q4_45_other       ,Mother_Family_planning_Location_Other_specify
 
 source("./Constants/Q4.r")
-
-q4Check<-function() {
-  q4a<-t(sapply(q4,function(X){
-         qn<-colnames(lpsraw)[which(colnames(lps)==X)[1]]
-         f<-factor(lps[,X])
-         s<-"";
-         s='"'
-         for (l in levels(f)){
-           s<-paste(s,l,"{",sum(f==l,na.rm=TRUE),"} ",sep="")
-         }
-         s<-paste(s,'"',sep="")
-         return(c(qn,sum(is.na(lps[,X])),s))
-              }))
-  colnames(q4a)<-c("QName","NaCount","Vals")
-  write.csv(q4a,"Q4Check.csv")
-}
+source("./Constants/Q5.r")
 
 Mothers<-!is.na(lps[,"Mother_ID"])
+
 NumMothers <-sapply (lgroups,function(X){sum(X&Mothers)})
-                     
+write.csv(NumMothers,"./output/NumMothers.csv")
+cat(print(xtable(as.data.frame(NumMothers),caption="Number of mothers with ID cards")),file="./tex/NumMothers.tex")
+
 #Questions on ANC: 4.2, 4.3, 4.4
 
 ########################################
@@ -184,11 +40,12 @@ cat(print(xtable(fMNet,caption="Mosquito Net Ussage")),file="./tex/MosquitoNet.t
 ########################################
 ##4.3 Mother_have_a_pregnancy_monitoring_card
 
+
 NiceTable<-function(V,lv=NULL,lb=NULL) {
   if (!is.null(lb)) {
     tv<-factor(lps[,V],levels=lv,labels=lb)
   }else {
-    tv[,V];
+    tv<-lps[,V];
   }
   NT <- table(tv[Mothers],lps$Group[Mothers])
   All<-rowSums(NT)
@@ -196,98 +53,117 @@ NiceTable<-function(V,lv=NULL,lb=NULL) {
   NT<- t(t(NT)/rowSums(t(NT)))
   fNT<-sapply(NT,function(X){lapply(X,function(X){sprintf(X*100,fmt="%.1f%%")})})
   dim(fNT)<-c(length(fNT)/4,4)
-  colNames(fNT)<-colnames(NT)
-  rowNames(fNT)<-rownames(NT)
-  return(list(NT,fNT))
+  colnames(fNT)<-colnames(NT)
+  rownames(fNT)<-rownames(NT)
+  r<-list(NT,fNT)
+  names(r)<-c("tab","ftab")
+  return(r)
 }
+
+
 PregCard <- NiceTable("Mother_have_a_pregnancy_monitoring_card",lv=c(1,2),lb=c("Yes","No"))
+write.csv(PregCard$ftab,file="./output/Have_Pregnancy_Monitoring_Card.csv")
+cat(print(xtable(PregCard$ftab,caption="Mother Has Pregnancy Monitoring Card")),file="./tex/PregCard.tex")
+
+
+##4.4
+Q4_4<-c("Mother_How_many_ANC_verbal_ANC1","Mother_How_many_ANC_verbal_ANC2","Mother_How_many_ANC_verbal_ANC3","Mother_How_many_ANC_verbal_ANC4","Mother_How_many_ANC_verbal_ANC5")
+M4_4 <- !is.na(lps[,Q4_4[1]]);
+sum(M4_4)
+ANC <- sapply (Q4_4,function(X){sapply(lgroups,function(G){sum(lps[G&M4_4,X]==1)})})
+ANC <- t(ANC);
+colnames(ANC) <- names(lgroups)
+rownames(ANC) <- sapply(1:5,function(X){paste("Had at least",X,"ANC visit")})
+
+write.csv(ANC,file="./output/Q4_4_ANC_count.csv")
+cat(print(xtable(ANC,caption="Number of AnteNatal Care Visis")),file="./tex/Q4_4_ANC.tex")
+
+##Questions on TT: 4.7
+Q4_7 <- "Mother_TT_immun_before_or_during_pregnancy"
+TTPreg <- NiceTable(Q4_7,lv=c(1,2),lb=c("Yes","No"))
+TTPreg$ftab <- rbind.data.frame(TTPreg$ftab,sapply(lgroups,function(G){as.character(sum(!is.na(lps[G,Q4_7])))}));
+rownames(TTPreg$ftab)[3] <- "Num Resp"
+TTPreg$ftab <- as.data.frame(TTPreg$ftab)
+TTPreg$ftab
+write.csv(as.matrix(TTPreg$ftab),file="./output/Q4_7_Mother_TT_immun_before_or_during_pregnancy.csv");
+cat(print(xtable(TTPreg$ftab,caption="Mother TT immun before or during pregnancy")),file="./tex/Q4_7_Mother_TT_immun_before_or_during_pregnancy.tex")
+
+##Q4_7 detail
+Q4_7D <- c("Mother_TT_immun_Card1","Mother_TT_immun_Card2","Mother_TT_immun_Card3","Mother_TT_immun_Card4","Mother_TT_immun_Card5")
+Q4_7Ds <- !is.na(lps[,Q4_7D[1]])
+TTPregCard <- t(sapply(Q4_7D,function(X){sapply(lgroups,function(G){sum(lps[G,X]==1,na.rm=T)})}))
+
+
+write.csv(TTPregCard,file="./output/Q4_7_Detail_TT_Pregnancy_Card.csv")
+cat(print(xtable(TTPregCard,caption="Pregnancy TT Imunization Card Records")),file="./tex/Q4_7_Detail_PregCard.tex")
+
+
+##Questions on delivery by SBA: 4.16
+Q4_16 <- "Mother_Birth_facility_type"
+Q4_16_codes  <- c("Private Hospital","District Hospital","Heath Clinic","Private clinic","Home") ##,"Other","In the Forest","Hospital in Thailand")
+Q4_16s<- !is.na(lps[,Q4_16])
+
+##all mothers respond!
+sum(Q4_16s)
+Q4_16Others  <- lps[,Q4_16]==6;
+##lps[Q4_16Others,Q4_16] <- lps[Q4_16Others,"Mother_Birth_facility_other_specify"]
+sum(Q4_16Others)
+#No others!
+lps[,Q4_16]<-factor(lps[,Q4_16],labels=Q4_16_codes)
+BirthFacility <- t(sapply(Q4_16_codes,function(X){sapply(lgroups,function(G){sum(lps[G,Q4_16]==X,na.rm=T)})}))
+colSums(BirthFacility)
+BirthFacility <- PercentifyTable(BirthFacility)
+write.csv(BirthFacility,file="./output/Q4_16_BirthFacility.csv")
+cat(print(xtable(BirthFacility,caption=("Reported Delivery Facility"))),file="./tex/Q4_16_BirthFacility.tex")
+
+
+
+##Questions on satisfaction: 4.31
+Q4_31 <- "Mother_Birth_Wait_long"
+Q4_31s <- !is.na(lps[,Q4_31])
+lps[,Q4_31] <- factor(lps[,Q4_31],labels=c("Yes","No"));
+sum(Q4_31s)
+##All responded
+WaitLong  <- sapply(lgroups,function(G){sapply(c("Yes","No"),function(X){sum(lps[G,Q4_31]==X,na.rm=T)})})
+WaitLongP <- PercentifyTable(WaitLong)
+
+write.csv(WaitLongP,file="./output/Q4_31_WaitLong.csv");
+cat(print(xtable(WaitLongP,caption=("Waited Long"))),file="./tex/Q4_32_WaitLong.tex")
+
+Q4_31_time <- "Mother_Birth_Wait_time"
+Q4_31_times = !is.na(lps[,Q4_31_time]) & lps[,Q4_31_time]!=0
+png(filename="./tex/Q4_31_waittimes.png")
+hist(lps[Q4_31_times,Q4_31_time],breaks=150)
+dev.off()
 
-
-#Questions on TT: 4.7
-#Questions on delivery by SBA: 4.16
-#Questions on satisfaction: 4.31
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Special focus: 
-## Questions on ANC: 4.2, 4.3, 4.4
-## Questions on TT: 4.7
-## Questions on delivery by SBA: 4.16
-## Questions on satisfaction: 4.31
-
-## Section 5: 	Mother <24 month Child status
-
-## List of frequency tables for all questions
-## Special focus: 
 ## Questions on child fully immunized: 5.6
+##   5.5 Do you have the monitoring (yellow) card or booklet...
+##   q5_5
+## Mother_Child_Have_monitoring_booklet
+Q5_5<-"Mother_Child_Have_monitoring_booklet"
+Q5_5s<-!is.na(lps[,Q5_5])
+sum(Q5_5s,na.rm=T)
+lps[,Q5_5] <- factor(lps[,Q5_5],labels=c("Yes","No"))
+lps[Q5_5s,Q5_5] 
+HaveBooklet  <- sapply(lgroups,function(G){sapply(c("Yes","No"),function(X){sum(lps[G,Q5_5]==X,na.rm=T)})})
+HaveBookletP <- PercentifyTable(HaveBooklet)
+write.csv(HaveBookletP,file="./output/Q5_5_Mother_Child_Have_monitoring_booklet.csv")
+cat(print(xtable(HaveBookletP,caption="Mothers has child monitoring booklet")),file="./tex/Q5_5_Mother_Child_Have_monitoring_booklet.tex")
+
+
+
 ## Questions on satisfaction: 5.17, 5.22, 5.27
+Q5_17 <- "Mother_Child_Last_diarhea_Received_Helpful"
+Q5_22 <- "Mother_Child_Last_respiratory_First_treatment_Helpful"
+Q5_27 <- "Mother_Child_Last_fever_First_treatment_Helpful"
+q <- c(Q5_17,  Q5_22,  Q5_27)
+qs <-  !is.na(lps[,q])
 
-## Section 6:	Mother <24 month Parents knowledge
+Q5Helpfull <-  t(sapply(q,function(Q){sapply(lgroups,function(G){sum(!is.na(lps[G,Q]))})}))
+SaveTables(Q5Helpfull,"Q5_17.22.27_Num_Reporting","Num Reporting on Literature Helpfullness by Group")
+Q5Helpfull
 
-## List of frequency tables for all questions
+Q5Helpfull <- t(sapply(q,function(Q){sapply(lgroups,function(G){sum(lps[G,Q]==1,na.rm=T)/sum(!is.na(lps[G,Q]))})}))
+Q5HelpfullP <- ToPercents(Q5Helpful)
+
+SaveTables(Q5HelpfulP,"Q5_17.22.27_Helpfull","Percent Reporting Literature was Helpfull by Group")

@@ -48,3 +48,9 @@ write.csv(ftable,"./output/DemogTable.csv")
 
 DemogTableX<-xtable(t(ftable),caption="Population Demographics")
 cat(print(DemogTableX),file="./tex/DemogTable.tex")
+
+
+Ethnicity <- t(sapply(levels(factor(lps$Ethnic_group)),function(X){sapply(lgroups,function(G){sum(lps[G,"Ethnic_group"]==X,na.rm=T)})}))
+Ethnicity <- PercentifyTable(Ethnicity)
+write.csv(Ethnicity,file="./output/Ethnicity.csv");
+cat(print(xtable(Ethnicity,caption="Ethnic Makeup")),file="./tex/EthnicMakeup.tex")
