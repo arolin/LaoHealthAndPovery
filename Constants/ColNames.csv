@@ -1224,7 +1224,7 @@ Overall average:                                                                
 " 3.5.10 Total how much did you/he pay for Others_If do not remember, write 98 If do not know, write 99                               ",q3.5.10.4,HH_Illness_2_Total_cost_Others
  3.5.10 Overall average:                                                                                                             ,q3.5.10.5,HH_Illness_2_Total_cost_Overall_average
 3.5.10 other                                                                                                                         ,q3.5.10_other,HH_Illness_2_Total_cost_other
- 3.6 What is the Identification number of the hh members                                                                             ,q3.6,HH_Illness_3_individual_number
+ 3.6 What is the Identification number of the hh members                                                                             ,q3.6,HH_Illness_3_report_individual_number
 The before last time a person of the household was very sick (admitted) how much did he/you pay?  - National Hospital                ,q3_7_1,HH_Illness_3_Consult_National_Hospital
 The before last time a person of the household was very sick (admitted) how much did he/you pay?  - Provincial Hospital              ,q3_7_2,HH_Illness_3_Consult_Provincial_Hospital
 The before last time a person of the household was very sick (admitted) how much did he/you pay? - District Hospital                 ,q3_7_3,HH_Illness_3_Consult_District_Hospital
@@ -1578,12 +1578,12 @@ Mebendazole date?                                                               
 " 7.2 What do you think, which services are free? -  Preventive services (immunization, baby check up)                                ",q7_2_1,Free_HS_for_CU5_in_Sekong_Includes_Preventive_services
 " 7.2 What do you think, which services are free? -  Outpatient consultations                                                         ",q7_2_2,Free_HS_for_CU5_in_Sekong_Includes_Outpatient_consultations
 " 7.2 What do you think, which services are free? -  Admissions                                                                       ",q7_2_3,Free_HS_for_CU5_in_Sekong_Includes_Admissions
-" 7.2 What do you think, which services are free? -  Don’t know                                                                       ",q7_2_4,Free_HS_for_CU5_in_Sekong_Includes_Don’tknow
+" 7.2 What do you think, which services are free? -  Don’t know                                                                       ",q7_2_4,Free_HS_for_CU5_in_Sekong_Includes_Dontknow
  7.3At what level? (possible multiple answers)  -  HC                                                                                ,q7_3_1,Free_HS_for_CU5_in_Sekong_At_level_HC
  7.3At what level? (possible multiple answers)  -  DH                                                                                ,q7_3_2,Free_HS_for_CU5_in_Sekong_At_level_DH
  7.3At what level? (possible multiple answers)  -  PH                                                                                ,q7_3_3,Free_HS_for_CU5_in_Sekong_At_level_PH
  7.3At what level? (possible multiple answers)  -  National Hospital                                                                 ,q7_3_4,Free_HS_for_CU5_in_Sekong_At_level_National_Hospital
- 7.3At what level? (possible multiple answers)  -  Don’t know                                                                        ,q7_3_5,Free_HS_for_CU5_in_Sekong_At_level_Don’tknow
+ 7.3At what level? (possible multiple answers)  -  Don’t know                                                                        ,q7_3_5,Free_HS_for_CU5_in_Sekong_At_level_Dontknow
   7.4Where did you get the information about free/paid se... -  Head if village                                                      ,q7_4_1,Free_HS_for_CU5_in_Sekong_Info_source_Head_of_village
   7.4Where did you get the information about free/paid se... -  Village health volunteer                                             ,q7_4_2,Free_HS_for_CU5_in_Sekong_Info_source_Village_health_volunteer
   7.4Where did you get the information about free/paid se... -  Health center/Hospital staff                                         ,q7_4_3,Free_HS_for_CU5_in_Sekong_Info_source_Health_center_staff
@@ -1610,7 +1610,7 @@ Mebendazole date?                                                               
  7.6 District Hospital                                                                                                               ,q7_6_1_district,Child_Admitted_Location_Name_District_Hospital
  7.6 Health Center                                                                                                                   ,q7_6_1_hc,Child_Admitted_Location_Name_Health_centre
  7.6 other                                                                                                                           ,q7_6_1_other,Child_Admitted_Location_Name_Other
- 7.7Type of services Interviewer should try to get the an...                                                                         ,q7_7,7.7TypeofservicesInterviewershouldtrytogetthean...
+ 7.7Type of services Interviewer should try to get the an...                                                                         ,q7_7,Child_Admitted_Types_of_service
  7.8 Did you have to pay by yourself?                                                                                                ,q7_8,Child_Admitted_Cost_OOP
 7.9 drugs/supplies in hospital ____/LAK                                                                                              ,q7_9,Child_Admitted_Cost_Drugs_supplies_in_hospital_LAK
 7.9 drugs/supplies outside hospital____/LAK                                                                                          ,q7_9_2,Child_Admitted_Cost_Drugs_supplies_outtside_hospital_LAK
@@ -1618,7 +1618,7 @@ Mebendazole date?                                                               
 "7.9 others, specify:..LAK                                                                                                            ",q7_9_4,Child_Admitted_Cost_Other_LAK
 7.9 Average amount:_/LAK                                                                                                             ,q7_9_5,Child_Admitted_Cost_Average_LAK
 7.9 other                                                                                                                            ,q7_9_other,Child_Admitted_Cost_Other_specify
-" 7.10 If HEF admitted child (code 3, 4, 5, 6), did you re...                                                                         ",q7_10,"7.10IfHEFadmittedchild(code3,4,5,6),didyoure..."
+" 7.10 If HEF admitted child (code 3, 4, 5, 6), did you re...                                                                         ",q7_10,"Child_Admitted_Code_3_4_5_6"
  7.11 Food allowance amount  (kip)                                                                                                   ,q7_11,Child_Admitted_Food_allowance_amount
  7.12Allowance receipt voucher available?                                                                                            ,q7_12,Child_Admitted_Food_allowance_receipt_voucher
  7.13 Did you receive food allowance daily?                                                                                          ,q7_13,Child_Admitted_Food_allowance_daily

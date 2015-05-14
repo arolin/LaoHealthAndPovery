@@ -1,0 +1,18 @@
+"","HEF PreID","HEF GeoID","NoAssis","All"
+"Care_At_No_care",63,293,47,403
+"Care_At_Homemade_medicine",9,53,8,70
+"Care_At_Village_modern_medical_practitioner",1,5,0,6
+"Care_At_Village_health_volunteer",79,193,72,344
+"Care_At_Traditional_healer",13,42,23,78
+"Care_At_Health_centre",855,944,836,2635
+"Care_At_District_hospital",357,454,396,1207
+"Care_At_Provincial_hospital/Regional",328,47,535,910
+"Care_At_National_hospital",3,0,15,18
+"Care_At_Private_pharmacy",305,248,763,1316
+"Care_At_Private_clinic",62,66,297,425
+"Care_At_Abroad",0,6,12,18
+"Care_At_Illegal_medical_practitioner",1,11,2,14
+"Care_At_Other",7,2,10,19
+"Care_At_Military_Hospital",5,2,4,11
+"Care_At_Religious_Healer",2,0,6,8
+"Total_Care_Events",2090,2366,3026,7482

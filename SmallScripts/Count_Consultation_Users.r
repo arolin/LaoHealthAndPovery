@@ -7,7 +7,7 @@
 
 ## How many people sought treatment
 ## How many questions had atleast 1 yes answer
-
+source ("./SmallScripts/Utility.r")
 ##"Private_Clinic",
 careCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer","Traditional_Healer","Private_Clinic","Private_Pharmacist","Religious_Healer");
 NationalCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer");
@@ -22,9 +22,9 @@ prefixes     = c("HH_Illness_1_","HH_Illness_2_","HH_Illness_3_");
 
 
 
-ConsultTableExtract <- function () {
+ConsultTableExtract <- function (prefixes) {
   paymentClass = c("Medicine","Medical_Fee","Transport","Others","Overall_average");
-  fnames =c ("Flag","Serial","Group",paymentClass,"CareCenter");
+  fnames =c ("Flag","Serial","Group","ID",paymentClass,"CareCenter");
   newTab <-data.frame();
   names <-NULL;
   for (prefix in prefixes) {
@@ -34,7 +34,8 @@ ConsultTableExtract <- function () {
 
       payFields<-sapply(paymentClass,function(X){paste(prefix,cc,"_cost_",X,sep="")});
       names<-c(names,payFields);
-      fields<-c(flag,"Serial","Group",payFields); 
+      ID<-paste(prefix,"report_individual_number",sep="");
+      fields<-c(flag,"Serial","Group",ID,payFields); 
       #lapply(fields,function(X){if (length(which(names(lps)==X)[1]==0)) {print(X)}})
       careEvents = lps[,fields];
       #careEvents = careEvents[!is.na(careEvents[1]),];
@@ -52,8 +53,20 @@ ConsultTableExtract <- function () {
   }
   return (newTab);
 }
-ConsultTable <- ConsultTableExtract()
 
+OutPatCostTable <- ConsultTableExtract(c("HH_Illness_1_","HH_Illness_2_"))
+OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
+OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
+sapply(OutPatGroups,sum)
+
+InPatCostTable <- ConsultTableExtract(c("HH_Illness_3_"))
+InPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable$Group==G})
+InPatGroups <- cbind.data.frame(InPatGroups,All=T)
+sapply(InPatGroups,sum)
+
+
+
+OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
 
 buildFlags <- function (prefixes = prefixes, careCenter=careCenters) {
     flags <- c();
@@ -235,25 +248,9 @@ ConsultationSummary <- function (paytype,carecenters,sdl=-1) {
 ## How many treatments include 0 in the estimate field
 ## How many treatments include 98 99 in the estimate field
 
-interleave <- function(v1,v2)
-{
-    ord1 <- 2*(1:length(v1))-1
-    ord2 <- 2*(1:length(v2))
-    c(v1,v2)[order(c(ord1,ord2))]
-}
-
-factHist <- function (X,...) {
-    c <- as.numeric(levels(factor(X)));
-    b <- interleave(c,c+1);
-    return (suppressWarnings(hist (X,b,na.rm=na.rm,freq=TRUE,plot=FALSE,right=FALSE)));
-}
 
 
-findOutliers <- function (X,lim) {
-  if (lim<0) {
-    return(rep(F,length(X)));
-  } else {
 
-    return (X>(mean(X)+lim*sd(X)));
-  }
-}
+
+
+

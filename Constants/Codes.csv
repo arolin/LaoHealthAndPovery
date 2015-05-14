@@ -1,0 +1,1877 @@
+Variable Values,,
+Value,,Label
+id.format,1,Mobile: Tablet
+,2,Web: Snap WebHost
+,3,Paper: Keyed
+id.completed,1,completed
+id.language,1,English
+,2,Lao (Lao P.D.R.)
+dist,1,Lamam
+,2,Kaleum
+,3,Dukjeung
+,4,Thateang
+Village,1001, Vat luang
+,1002, Tha luang
+,1003, Phonkham
+,1004, Mai huameung
+,1013, Dan
+,1016, kasang kang
+,1017, Pa oh
+,1024, Nava kang
+,1028, Parkkayong
+,1034, Non nong wah
+,1036, Phone
+,1037, Nongbong
+,1042, Kadonemai
+,2002, Kengkui
+,2003, Thongkai
+,2006, Bark
+,2020, Farkhuay
+,2021, Tim
+,2036, Don
+,2049, Bo beung-talong
+,2070, Panon
+,2071, Ling
+,2072, Tangkard
+,2080, Tangpreen
+,2082, Jakeiphoo-lakai
+,3007, Darkmi
+,3018, Darkhai
+,3020, Darkyoi
+,3027, Darkmun
+,3035, Tanyerng
+,3036, Tungbrohng
+,3040, Prao
+,3049, tungmi
+,3061, Darkjeung
+,3068, Tangtalang
+,3084, Darkdor
+,3090, Tongsieng
+,3095, Darknoy
+,3105, Darkkuang
+,3116, Darkmongyai
+,3121, Darkyang
+,3124, Darkhern
+,3125, Mongyeun
+,3130, Darkvai
+,4004, Huaxe
+,4009, Saentai
+,4011, Koh huaphoo
+,4013, Jalarmyai
+,4014, Jalarmkao
+,4016, Jakammai
+,4020, Plai
+,4024, Kokhai
+,4026, Tonenoytai
+,4032, Toneyaimai
+,4043, Kokphoonnuea
+,4047, Takio
+,4050, nongbuasai
+,4051, Palai
+,4054, Kandon
+,4063, Nongkan
+q1_4,1,Female
+,2,Male
+q1_5,1,Yes
+,2,Don’t know
+,3,No
+q1_6_2,1,Female
+,2,Male
+q1_7_1_1,1,Cannot write/read
+,2,Can read
+,3,Can read / write
+q1_7_1_2,1,Cannot write/read
+,2,Can read
+,3,Can read / write
+,4,No spouse
+q1_8_1,1,Civil servants (SASS)
+q1_8_2,2, Police/militar
+q1_8_3,3, Private employee (SSO)
+q1_8_4,4, informal CBHI
+q1_8_5,5, informal private health insurance
+q1_8_6,6, Poor HEF card
+q1_8_7,7, Poor List of government (HEF or not)
+q1_8_8,8, Informal no insurance
+q2_2_1,1,Male
+,2,Female
+q2_2_2,1,Male
+,2,Female
+q2_2_3,1,Male
+,2,Female
+q2_2_4,1,Male
+,2,Female
+q2_2_5,1,Male
+,2,Female
+q2_2_6,1,Male
+,2,Female
+q2_2_7,1,Male
+,2,Female
+q2_2_8,1,Male
+,2,Female
+q2_2_9,1,Male
+,2,Female
+q2_2_10,1,Male
+,2,Female
+q2_2_11,1,Male
+,2,Female
+q2_2_12,1,Male
+,2,Female
+q2_2_13,1,Male
+,2,Female
+q2_2_14,1,Male
+,2,Female
+q2_2_15,1,Male
+,2,Female
+q2_2_16,1,Male
+,2,Female
+q2_2_17,1,Male
+,2,Female
+q2_2_18,1,Male
+,2,Female
+q2_2_19,1,Male
+,2,Female
+q2_2_20,1,Male
+,2,Female
+q2_2_21,1,Male
+,2,Female
+q2_2_22,1,Male
+,2,Female
+q2_2_23,1,Male
+,2,Female
+q2_2_24,1,Male
+,2,Female
+q2_2_25,1,Male
+,2,Female
+q2_2_26,1,Male
+,2,Female
+q2_2_27,1,Male
+,2,Female
+q2_2_28,1,Male
+,2,Female
+q2_2_29,1,Male
+,2,Female
+q2_2_30,1,Male
+,2,Female
+q2_4_1,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_2,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_3,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_4,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_5,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_6,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_7,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_8,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_9,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_10,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_11,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_12,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_13,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_14,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_15,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_16,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_17,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_18,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_19,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_20,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_21,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_22,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_23,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_24,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_25,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_26,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_27,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_28,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_29,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_4_30,1,Single
+,2,Married
+,3,Divorced/separated
+,4,Widowed
+,5,Other
+q2_5_1,1,Yes
+,2,No
+q2_5_2,1,Yes
+,2, No
+q2_5_3,1,Yes
+,2, No
+q2_5_4,1,Yes
+,2, No
+q2_5_5,1,Yes
+,2, No
+q2_5_6,1,Yes
+,2, No
+q2_5_7,1,Yes
+,2, No
+q2_5_8,1,Yes
+,2, No
+q2_5_9,1,Yes
+,2, No
+q2_5_10,1,Yes
+,2,No
+q2_5_11,1,Yes
+,2,No
+q2_5_12,1,Yes
+,2,No
+q2_5_13,1,Yes
+,2,No
+q2_5_14,1,Yes
+,2,No
+q2_5_15,1,Yes
+,2,No
+q2_5_16,1,Yes
+,2,No
+q2_5_17,1,Yes
+,2,No
+q2_5_18,1,Yes
+,2,No
+q2_5_19,1,Yes
+,2,No
+q2_5_20,1,Yes
+,2,No
+q2_5_21,1,Yes
+,2,No
+q2_5_22,1,Yes
+,2,No
+q2_5_23,1,Yes
+,2,No
+q2_5_24,1,Yes
+,2,No
+q2_5_25,1,Yes
+,2,No
+q2_5_26,1,Yes
+,2,No
+q2_5_27,1,Yes
+,2,No
+q2_5_28,1,Yes
+,2,No
+q2_5_29,1,Yes
+,2,No
+q2_5_30,1,Yes
+,2,No
+q2_7_1_1,1, No care
+q2_7_1_2,2, Home-made medicine
+q2_7_1_3,3, Village modern medical practitioner
+q2_7_1_4,4, Village health volunteer
+q2_7_1_5,5, Traditional healer
+q2_7_1_6,6, Health centre
+q2_7_1_7,7, District hospital
+q2_7_1_8,8, Provincial hospital/Regional
+q2_7_1_9,9,
+q2_7_1_10,10, National hospital
+q2_7_1_11,11, Private pharmacy
+q2_7_1_12,12, Private clinic
+q2_7_1_13,13, Abroad
+q2_7_1_14,14, Illegal medical practitioner
+q2_7_1_15,15, Other
+q2_7_1_16,16, Do not remember
+q2_7_1_17,17, Do not know
+q2_7_other1,18.00,Religious healer
+,19.00,Military hospital
+q2_7_2_1,1, No care
+q2_7_2_2,2, Home-made medicine
+q2_7_2_3,3, Village modern medical practitioner
+q2_7_2_4,4, Village health volunteer
+q2_7_2_5,5, Traditional healer
+q2_7_2_6,6, Health centre
+q2_7_2_7,7, District hospital
+q2_7_2_8,8, Provincial hospital/Regional
+q2_7_2_9,9,
+q2_7_2_10,10, National hospital
+q2_7_2_11,11, Private pharmacy
+q2_7_2_12,12, Private clinic
+q2_7_2_13,13, Abroad
+q2_7_2_14,14, Illegal medical practitioner
+q2_7_2_15,15, Other
+q2_7_2_16,16, Do not remember
+q2_7_2_17,17, Do not know
+q2_7_other2,18,Religious healer
+,19,Military hospital
+q2_7_3_1,1, No care
+q2_7_3_2,2, Home-made medicine
+q2_7_3_3,3, Village modern medical practitioner
+q2_7_3_4,4, Village health volunteer
+q2_7_3_5,5, Traditional healer
+q2_7_3_6,6, Health centre
+q2_7_3_7,7, District hospital
+q2_7_3_8,8, Provincial hospital/Regional
+q2_7_3_9,9,
+q2_7_3_10,10, National hospital
+q2_7_3_11,11, Private pharmacy
+q2_7_3_12,12, Private clinic
+q2_7_3_13,13, Abroad
+q2_7_3_14,14, Illegal medical practitioner
+q2_7_3_15,15, Other
+q2_7_3_16,16, Do not remember
+q2_7_3_17,17, Do not know
+q2_7_other3,18,Religious healer
+,19,Military hospital
+q2_7_4_1,1, No care
+q2_7_4_2,2, Home-made medicine
+q2_7_4_3,3, Village modern medical practitioner
+q2_7_4_4,4, Village health volunteer
+q2_7_4_5,5, Traditional healer
+q2_7_4_6,6, Health centre
+q2_7_4_7,7, District hospital
+q2_7_4_8,8, Provincial hospital/Regional
+q2_7_4_9,9,
+q2_7_4_10,10, National hospital
+q2_7_4_11,11, Private pharmacy
+q2_7_4_12,12, Private clinic
+q2_7_4_13,13, Abroad
+q2_7_4_14,14, Illegal medical practitioner
+q2_7_4_15,15, Other
+q2_7_4_16,16, Do not remember
+q2_7_4_17,17, Do not know
+q2_7_other,18,Religious healer
+,19,Military hospital
+q2_7_5_1,1, No care
+q2_7_5_2,2, Home-made medicine
+q2_7_5_3,3, Village modern medical practitioner
+q2_7_5_4,4, Village health volunteer
+q2_7_5_5,5, Traditional healer
+q2_7_5_6,6, Health centre
+q2_7_5_7,7, District hospital
+q2_7_5_8,8, Provincial hospital/Regional
+q2_7_5_9,9,
+q2_7_5_10,10, National hospital
+q2_7_5_11,11, Private pharmacy
+q2_7_5_12,12, Private clinic
+q2_7_5_13,13, Abroad
+q2_7_5_14,14, Illegal medical practitioner
+q2_7_5_15,15, Other
+q2_7_5_16,16, Do not remember
+q2_7_5_17,17, Do not know
+q2_7_other5,18,Religious healer
+,19,Military hospital
+q2_7_6_1,1, No care
+q2_7_6_2,2, Home-made medicine
+q2_7_6_3,3, Village modern medical practitioner
+q2_7_6_4,4, Village health volunteer
+q2_7_6_5,5, Traditional healer
+q2_7_6_6,6, Health centre
+q2_7_6_7,7, District hospital
+q2_7_6_8,8, Provincial hospital/Regional
+q2_7_6_9,9,
+q2_7_6_10,10, National hospital
+q2_7_6_11,11, Private pharmacy
+q2_7_6_12,12, Private clinic
+q2_7_6_13,13, Abroad
+q2_7_6_14,14, Illegal medical practitioner
+q2_7_6_15,15, Other
+q2_7_6_16,16, Do not remember
+q2_7_6_17,17, Do not know
+q2_7_other6,19,Military hospital
+q2_7_7_1,1, No care
+q2_7_7_2,2, Home-made medicine
+q2_7_7_3,3, Village modern medical practitioner
+q2_7_7_4,4, Village health volunteer
+q2_7_7_5,5, Traditional healer
+q2_7_7_6,6, Health centre
+q2_7_7_7,7, District hospital
+q2_7_7_8,8, Provincial hospital/Regional
+q2_7_7_9,9,
+q2_7_7_10,10, National hospital
+q2_7_7_11,11, Private pharmacy
+q2_7_7_12,12, Private clinic
+q2_7_7_13,13, Abroad
+q2_7_7_14,14, Illegal medical practitioner
+q2_7_7_15,15, Other
+q2_7_7_16,16, Do not remember
+q2_7_7_17,17, Do not know
+q2_7_other7,18,Religious healer
+,19,Military hospital
+q2_7_8_1,1, No care
+q2_7_8_2,2, Home-made medicine
+q2_7_8_3,3, Village modern medical practitioner
+q2_7_8_4,4, Village health volunteer
+q2_7_8_5,5, Traditional healer
+q2_7_8_6,6, Health centre
+q2_7_8_7,7, District hospital
+q2_7_8_8,8, Provincial hospital/Regional
+q2_7_8_9,9,
+q2_7_8_10,10, National hospital
+q2_7_8_11,11, Private pharmacy
+q2_7_8_12,12, Private clinic
+q2_7_8_13,13, Abroad
+q2_7_8_14,14, Illegal medical practitioner
+q2_7_8_15,15, Other
+q2_7_8_16,16, Do not remember
+q2_7_8_17,17, Do not know
+q2_7_other8,19,Military hospital
+q2_7_9_1,1, No care
+q2_7_9_2,2, Home-made medicine
+q2_7_9_3,3, Village modern medical practitioner
+q2_7_9_4,4, Village health volunteer
+q2_7_9_5,5, Traditional healer
+q2_7_9_6,6, Health centre
+q2_7_9_7,7, District hospital
+q2_7_9_8,8, Provincial hospital/Regional
+q2_7_9_9,9,
+q2_7_9_10,10, National hospital
+q2_7_9_11,11, Private pharmacy
+q2_7_9_12,12, Private clinic
+q2_7_9_13,13, Abroad
+q2_7_9_14,14, Illegal medical practitioner
+q2_7_9_15,15, Other
+q2_7_9_16,16, Do not remember
+q2_7_9_17,17, Do not know
+q2_7_other9,19,Military hospital
+q2_7_10_1,1, No care
+q2_7_10_2,2, Home-made medicine
+q2_7_10_3,3, Village modern medical practitioner
+q2_7_10_4,4, Village health volunteer
+q2_7_10_5,5, Traditional healer
+q2_7_10_6,6, Health centre
+q2_7_10_7,7, District hospital
+q2_7_10_8,8, Provincial hospital/Regional
+q2_7_10_9,9,
+q2_7_10_10,10, National hospital
+q2_7_10_11,11, Private pharmacy
+q2_7_10_12,12, Private clinic
+q2_7_10_13,13, Abroad
+q2_7_10_14,14, Illegal medical practitioner
+q2_7_10_15,15, Other
+q2_7_10_16,16, Do not remember
+q2_7_10_17,17, Do not know
+q2_7_other10,18,Religious healer
+,19,Military hospital
+q2_7_11_1,1, No care
+q2_7_11_2,2, Home-made medicine
+q2_7_11_3,3, Village modern medical practitioner
+q2_7_11_4,4, Village health volunteer
+q2_7_11_5,5, Traditional healer
+q2_7_11_6,6, Health centre
+q2_7_11_7,7, District hospital
+q2_7_11_8,8, Provincial hospital/Regional
+q2_7_11_9,9,
+q2_7_11_10,10, National hospital
+q2_7_11_11,11, Private pharmacy
+q2_7_11_12,12, Private clinic
+q2_7_11_13,13, Abroad
+q2_7_11_14,14, Illegal medical practitioner
+q2_7_11_15,15, Other
+q2_7_11_16,16, Do not remember
+q2_7_11_17,17, Do not know
+q2_7_other11,18,Religious healer
+,19,Military hospital
+q2_7_12_1,1, No care
+q2_7_12_2,2, Home-made medicine
+q2_7_12_3,3, Village modern medical practitioner
+q2_7_12_4,4, Village health volunteer
+q2_7_12_5,5, Traditional healer
+q2_7_12_6,6, Health centre
+q2_7_12_7,7, District hospital
+q2_7_12_8,8, Provincial hospital/Regional
+q2_7_12_9,9,
+q2_7_12_10,10, National hospital
+q2_7_12_11,11, Private pharmacy
+q2_7_12_12,12, Private clinic
+q2_7_12_13,13, Abroad
+q2_7_12_14,14, Illegal medical practitioner
+q2_7_12_15,15, Other
+q2_7_12_16,16, Do not remember
+q2_7_12_17,17, Do not know
+q2_7_other12,18,Religious healer
+,19,Military hospital
+q2_7_13_1,1, No care
+q2_7_13_2,2, Home-made medicine
+q2_7_13_3,3, Village modern medical practitioner
+q2_7_13_4,4, Village health volunteer
+q2_7_13_5,5, Traditional healer
+q2_7_13_6,6, Health centre
+q2_7_13_7,7, District hospital
+q2_7_13_8,8, Provincial hospital/Regional
+q2_7_13_9,9,
+q2_7_13_10,10, National hospital
+q2_7_13_11,11, Private pharmacy
+q2_7_13_12,12, Private clinic
+q2_7_13_13,13, Abroad
+q2_7_13_14,14, Illegal medical practitioner
+q2_7_13_15,15, Other
+q2_7_13_16,16, Do not remember
+q2_7_13_17,17, Do not know
+q2_7_other13,18,Religious healer
+,19,Military hospital
+q2_7_14_1,1, No care
+q2_7_14_2,2, Home-made medicine
+q2_7_14_3,3, Village modern medical practitioner
+q2_7_14_4,4, Village health volunteer
+q2_7_14_5,5, Traditional healer
+q2_7_14_6,6, Health centre
+q2_7_14_7,7, District hospital
+q2_7_14_8,8, Provincial hospital/Regional
+q2_7_14_9,9,
+q2_7_14_10,10, National hospital
+q2_7_14_11,11, Private pharmacy
+q2_7_14_12,12, Private clinic
+q2_7_14_13,13, Abroad
+q2_7_14_14,14, Illegal medical practitioner
+q2_7_14_15,15, Other
+q2_7_14_16,16, Do not remember
+q2_7_14_17,17, Do not know
+q2_7_other14,18,Religious healer
+,19,Military hospital
+q2_7_15_1,1, No care
+q2_7_15_2,2, Home-made medicine
+q2_7_15_3,3, Village modern medical practitioner
+q2_7_15_4,4, Village health volunteer
+q2_7_15_5,5, Traditional healer
+q2_7_15_6,6, Health centre
+q2_7_15_7,7, District hospital
+q2_7_15_8,8, Provincial hospital/Regional
+q2_7_15_9,9,
+q2_7_15_10,10, National hospital
+q2_7_15_11,11, Private pharmacy
+q2_7_15_12,12, Private clinic
+q2_7_15_13,13, Abroad
+q2_7_15_14,14, Illegal medical practitioner
+q2_7_15_15,15, Other
+q2_7_15_16,16, Do not remember
+q2_7_15_17,17, Do not know
+q2_7_other15,18,Religious healer
+,19,Military hospital
+q2_7_16_1,1, No care
+q2_7_16_2,2, Home-made medicine
+q2_7_16_3,3, Village modern medical practitioner
+q2_7_16_4,4, Village health volunteer
+q2_7_16_5,5, Traditional healer
+q2_7_16_6,6, Health centre
+q2_7_16_7,7, District hospital
+q2_7_16_8,8, Provincial hospital/Regional
+q2_7_16_9,9,
+q2_7_16_10,10, National hospital
+q2_7_16_11,11, Private pharmacy
+q2_7_16_12,12, Private clinic
+q2_7_16_13,13, Abroad
+q2_7_16_14,14, Illegal medical practitioner
+q2_7_16_15,15, Other
+q2_7_16_16,16, Do not remember
+q2_7_16_17,17, Do not know
+q2_7_other16,18,Religious healer
+,19,Military hospital
+q2_7_17_1,1, No care
+q2_7_17_2,2, Home-made medicine
+q2_7_17_3,3, Village modern medical practitioner
+q2_7_17_4,4, Village health volunteer
+q2_7_17_5,5, Traditional healer
+q2_7_17_6,6, Health centre
+q2_7_17_7,7, District hospital
+q2_7_17_8,8, Provincial hospital/Regional
+q2_7_17_9,9,
+q2_7_17_10,10, National hospital
+q2_7_17_11,11, Private pharmacy
+q2_7_17_12,12, Private clinic
+q2_7_17_13,13, Abroad
+q2_7_17_14,14, Illegal medical practitioner
+q2_7_17_15,15, Other
+q2_7_17_16,16, Do not remember
+q2_7_17_17,17, Do not know
+q2_7_other17,18,Religious healer
+,19,Military hospital
+q2_7_18_1,1, No care
+q2_7_18_2,2, Home-made medicine
+q2_7_18_3,3, Village modern medical practitioner
+q2_7_18_4,4, Village health volunteer
+q2_7_18_5,5, Traditional healer
+q2_7_18_6,6, Health centre
+q2_7_18_7,7, District hospital
+q2_7_18_8,8, Provincial hospital/Regional
+q2_7_18_9,9,
+q2_7_18_10,10, National hospital
+q2_7_18_11,11, Private pharmacy
+q2_7_18_12,12, Private clinic
+q2_7_18_13,13, Abroad
+q2_7_18_14,14, Illegal medical practitioner
+q2_7_18_15,15, Other
+q2_7_18_16,16, Do not remember
+q2_7_18_17,17, Do not know
+q2_7_other18,18,Religious healer
+,19,Military hospital
+q2_7_19_1,1, No care
+q2_7_19_2,2, Home-made medicine
+q2_7_19_3,3, Village modern medical practitioner
+q2_7_19_4,4, Village health volunteer
+q2_7_19_5,5, Traditional healer
+q2_7_19_6,6, Health centre
+q2_7_19_7,7, District hospital
+q2_7_19_8,8, Provincial hospital/Regional
+q2_7_19_9,9,
+q2_7_19_10,10, National hospital
+q2_7_19_11,11, Private pharmacy
+q2_7_19_12,12, Private clinic
+q2_7_19_13,13, Abroad
+q2_7_19_14,14, Illegal medical practitioner
+q2_7_19_15,15, Other
+q2_7_19_16,16, Do not remember
+q2_7_19_17,17, Do not know
+q2_7_other19,18,Religious healer
+,19,Military hospital
+q2_7_20_1,1, No care
+q2_7_20_2,2, Home-made medicine
+q2_7_20_3,3, Village modern medical practitioner
+q2_7_20_4,4, Village health volunteer
+q2_7_20_5,5, Traditional healer
+q2_7_20_6,6, Health centre
+q2_7_20_7,7, District hospital
+q2_7_20_8,8, Provincial hospital/Regional
+q2_7_20_9,9,
+q2_7_20_10,10, National hospital
+q2_7_20_11,11, Private pharmacy
+q2_7_20_12,12, Private clinic
+q2_7_20_13,13, Abroad
+q2_7_20_14,14, Illegal medical practitioner
+q2_7_20_15,15, Other
+q2_7_20_16,16, Do not remember
+q2_7_20_17,17, Do not know
+q2_7_other20,18,Religious healer
+,19,Military hospital
+q2_7_21_1,1, No care
+q2_7_21_2,2, Home-made medicine
+q2_7_21_3,3, Village modern medical practitioner
+q2_7_21_4,4, Village health volunteer
+q2_7_21_5,5, Traditional healer
+q2_7_21_6,6, Health centre
+q2_7_21_7,7, District hospital
+q2_7_21_8,8, Provincial hospital/Regional
+q2_7_21_9,9,
+q2_7_21_10,10, National hospital
+q2_7_21_11,11, Private pharmacy
+q2_7_21_12,12, Private clinic
+q2_7_21_13,13, Abroad
+q2_7_21_14,14, Illegal medical practitioner
+q2_7_21_15,15, Other
+q2_7_21_16,16, Do not remember
+q2_7_21_17,17, Do not know
+q2_7_other21,18,Religious healer
+,19,Military hospital
+q2_7_22_1,1, No care
+q2_7_22_2,2, Home-made medicine
+q2_7_22_3,3, Village modern medical practitioner
+q2_7_22_4,4, Village health volunteer
+q2_7_22_5,5, Traditional healer
+q2_7_22_6,6, Health centre
+q2_7_22_7,7, District hospital
+q2_7_22_8,8, Provincial hospital/Regional
+q2_7_22_9,9,
+q2_7_22_10,10, National hospital
+q2_7_22_11,11, Private pharmacy
+q2_7_22_12,12, Private clinic
+q2_7_22_13,13, Abroad
+q2_7_22_14,14, Illegal medical practitioner
+q2_7_22_15,15, Other
+q2_7_22_16,16, Do not remember
+q2_7_22_17,17, Do not know
+q2_7_23_1,1, No care
+q2_7_23_2,2, Home-made medicine
+q2_7_23_3,3, Village modern medical practitioner
+q2_7_23_4,4, Village health volunteer
+q2_7_23_5,5, Traditional healer
+q2_7_23_6,6, Health centre
+q2_7_23_7,7, District hospital
+q2_7_23_8,8, Provincial hospital/Regional
+q2_7_23_9,9,
+q2_7_23_10,10, National hospital
+q2_7_23_11,11, Private pharmacy
+q2_7_23_12,12, Private clinic
+q2_7_23_13,13, Abroad
+q2_7_23_14,14, Illegal medical practitioner
+q2_7_23_15,15, Other
+q2_7_23_16,16, Do not remember
+q2_7_23_17,17, Do not know
+q2_7_24_1,1, No care
+q2_7_24_2,2, Home-made medicine
+q2_7_24_3,3, Village modern medical practitioner
+q2_7_24_4,4, Village health volunteer
+q2_7_24_5,5, Traditional healer
+q2_7_24_6,6, Health centre
+q2_7_24_7,7, District hospital
+q2_7_24_8,8, Provincial hospital/Regional
+q2_7_24_9,9,
+q2_7_24_10,10, National hospital
+q2_7_24_11,11, Private pharmacy
+q2_7_24_12,12, Private clinic
+q2_7_24_13,13, Abroad
+q2_7_24_14,14, Illegal medical practitioner
+q2_7_24_15,15, Other
+q2_7_24_16,16, Do not remember
+q2_7_24_17,17, Do not know
+q2_7_25_1,1, No care
+q2_7_25_2,2, Home-made medicine
+q2_7_25_3,3, Village modern medical practitioner
+q2_7_25_4,4, Village health volunteer
+q2_7_25_5,5, Traditional healer
+q2_7_25_6,6, Health centre
+q2_7_25_7,7, District hospital
+q2_7_25_8,8, Provincial hospital/Regional
+q2_7_25_9,9,
+q2_7_25_10,10, National hospital
+q2_7_25_11,11, Private pharmacy
+q2_7_25_12,12, Private clinic
+q2_7_25_13,13, Abroad
+q2_7_25_14,14, Illegal medical practitioner
+q2_7_25_15,15, Other
+q2_7_25_16,16, Do not remember
+q2_7_25_17,17, Do not know
+q2_7_26_1,1, No care
+q2_7_26_2,2, Home-made medicine
+q2_7_26_3,3, Village modern medical practitioner
+q2_7_26_4,4, Village health volunteer
+q2_7_26_5,5, Traditional healer
+q2_7_26_6,6, Health centre
+q2_7_26_7,7, District hospital
+q2_7_26_8,8, Provincial hospital/Regional
+q2_7_26_9,9,
+q2_7_26_10,10, National hospital
+q2_7_26_11,11, Private pharmacy
+q2_7_26_12,12, Private clinic
+q2_7_26_13,13, Abroad
+q2_7_26_14,14, Illegal medical practitioner
+q2_7_26_15,15, Other
+q2_7_26_16,16, Do not remember
+q2_7_26_17,17, Do not know
+q2_7_27_1,1, No care
+q2_7_27_2,2, Home-made medicine
+q2_7_27_3,3, Village modern medical practitioner
+q2_7_27_4,4, Village health volunteer
+q2_7_27_5,5, Traditional healer
+q2_7_27_6,6, Health centre
+q2_7_27_7,7, District hospital
+q2_7_27_8,8, Provincial hospital/Regional
+q2_7_27_9,9,
+q2_7_27_10,10, National hospital
+q2_7_27_11,11, Private pharmacy
+q2_7_27_12,12, Private clinic
+q2_7_27_13,13, Abroad
+q2_7_27_14,14, Illegal medical practitioner
+q2_7_27_15,15, Other
+q2_7_27_16,16, Do not remember
+q2_7_27_17,17, Do not know
+q2_7_28_1,1, No care
+q2_7_28_2,2, Home-made medicine
+q2_7_28_3,3, Village modern medical practitioner
+q2_7_28_4,4, Village health volunteer
+q2_7_28_5,5, Traditional healer
+q2_7_28_6,6, Health centre
+q2_7_28_7,7, District hospital
+q2_7_28_8,8, Provincial hospital/Regional
+q2_7_28_9,9,
+q2_7_28_10,10, National hospital
+q2_7_28_11,11, Private pharmacy
+q2_7_28_12,12, Private clinic
+q2_7_28_13,13, Abroad
+q2_7_28_14,14, Illegal medical practitioner
+q2_7_28_15,15, Other
+q2_7_28_16,16, Do not remember
+q2_7_28_17,17, Do not know
+q2_7_29_1,1, No care
+q2_7_29_2,2, Home-made medicine
+q2_7_29_3,3, Village modern medical practitioner
+q2_7_29_4,4, Village health volunteer
+q2_7_29_5,5, Traditional healer
+q2_7_29_6,6, Health centre
+q2_7_29_7,7, District hospital
+q2_7_29_8,8, Provincial hospital/Regional
+q2_7_29_9,9,
+q2_7_29_10,10, National hospital
+q2_7_29_11,11, Private pharmacy
+q2_7_29_12,12, Private clinic
+q2_7_29_13,13, Abroad
+q2_7_29_14,14, Illegal medical practitioner
+q2_7_29_15,15, Other
+q2_7_29_16,16, Do not remember
+q2_7_29_17,17, Do not know
+q2_7_30_1,1, No care
+q2_7_30_2,2, Home-made medicine
+q2_7_30_3,3, Village modern medical practitioner
+q2_7_30_4,4, Village health volunteer
+q2_7_30_5,5, Traditional healer
+q2_7_30_6,6, Health centre
+q2_7_30_7,7, District hospital
+q2_7_30_8,8, Provincial hospital/Regional
+q2_7_30_9,9,
+q2_7_30_10,10, National hospital
+q2_7_30_11,11, Private pharmacy
+q2_7_30_12,12, Private clinic
+q2_7_30_13,13, Abroad
+q2_7_30_14,14, Illegal medical practitioner
+q2_7_30_15,15, Other
+q2_7_30_16,16, Do not remember
+q2_7_30_17,17, Do not know
+q2_8_1,1,Yes
+,2,No
+q2_8_2,1,Yes
+,2,No
+q2_8_3,1,Yes
+,2,No
+q2_8_4,1,Yes
+,2,No
+q2_8_5,1,Yes
+,2,No
+q2_8_6,1,Yes
+,2,No
+q2_8_7,1,Yes
+,2,No
+q2_8_8,1,Yes
+,2,No
+q2_8_9,1,Yes
+,2,No
+q2_8_10,1,Yes
+,2,No
+q2_8_11,1,Yes
+,2,No
+q2_8_12,1,Yes
+,2,No
+q2_8_13,1,Yes
+,2,No
+q2_8_14,1,Yes
+,2,No
+q2_8_15,1,Yes
+,2,No
+q2_8_16,1,Yes
+,2,No
+q2_8_17,1,Yes
+,2,No
+q2_8_18,1,Yes
+,2,No
+q2_8_19,1,Yes
+,2,No
+q2_8_20,1,Yes
+,2,No
+q2_8_21,1,Yes
+,2,No
+q2_8_22,1,Yes
+,2,No
+q2_8_23,1,Yes
+,2,No
+q2_8_24,1,Yes
+,2,No
+q2_8_25,1,Yes
+,2,No
+q2_8_26,1,Yes
+,2,No
+q2_8_27,1,Yes
+,2,No
+q2_8_28,1,Yes
+,2,No
+q2_8_29,1,Yes
+,2,No
+q2_8_30,1,Yes
+,2,No
+q2_10_1,1,Yes
+,2,No
+q2_10_2,1,Yes
+,2,No
+q2_10_3,1,Yes
+,2,No
+q2_10_4,1,Yes
+,2,No
+q2_10_5,1,Yes
+,2,No
+q2_10_6,1,Yes
+,2,No
+q2_10_7,1,Yes
+,2,No
+q2_10_8,1,Yes
+,2,No
+q2_10_9,1,Yes
+,2,No
+q2_10_10,1,Yes
+,2,No
+q2_10_11,1,Yes
+,2,No
+q2_10_12,1,Yes
+,2,No
+q2_10_13,1,Yes
+,2,No
+q2_10_14,1,Yes
+,2,No
+q2_10_15,1,Yes
+,2,No
+q2_10_16,1,Yes
+,2,No
+q2_10_17,1,Yes
+,2,No
+q2_10_18,1,Yes
+,2,No
+q2_10_19,1,Yes
+,2,No
+q2_10_20,1,Yes
+,2,No
+q2_10_21,1,Yes
+,2,No
+q2_10_22,1,Yes
+,2,No
+q2_10_23,1,Yes
+,2,No
+q2_10_24,1,Yes
+,2,No
+q2_10_25,1,Yes
+,2,No
+q2_10_26,1,Yes
+,2,No
+q2_10_27,1,Yes
+,2,No
+q2_10_28,1,Yes
+,2,No
+q2_10_29,1,Yes
+,2,No
+q2_10_30,1,Yes
+,2,No
+q2_12_1,1,Yes
+,2,No
+q2_12_2,1,Yes
+,2,No
+q2_12_3,1,Yes
+,2,No
+q2_12_4,1,Yes
+,2,No
+q2_12_5,1,Yes
+,2,No
+q2_12_6,1,Yes
+,2,No
+q2_12_7,1,Yes
+,2,No
+q2_12_8,1,Yes
+,2,No
+q2_12_9,1,Yes
+,2,No
+q2_12_10,1,Yes
+,2,No
+q2_12_11,1,Yes
+,2,No
+q2_12_12,1,Yes
+,2,No
+q2_12_13,1,Yes
+,2,No
+q2_12_14,1,Yes
+,2,No
+q2_12_15,1,Yes
+,2,No
+q2_12_16,1,Yes
+,2,No
+q2_12_17,1,Yes
+,2,No
+q2_12_18,1,Yes
+,2,No
+q2_12_19,1,Yes
+,2,No
+q2_12_20,1,Yes
+,2,No
+q2_12_21,1,Yes
+,2,No
+q2_12_22,1,Yes
+,2,No
+q2_12_23,1,Yes
+,2,No
+q2_12_24,1,Yes
+,2,No
+q2_12_25,1,Yes
+,2,No
+q2_12_26,1,Yes
+,2,No
+q2_12_27,1,Yes
+,2,No
+q2_12_28,1,Yes
+,2,No
+q2_12_29,1,Yes
+,2,No
+q2_12_30,1,Yes
+,2,No
+q2_14_1,1,Yes
+,2,No
+q2_14_2,1,Yes
+,2,No
+q2_14_3,1,Yes
+,2,No
+q2_14_4,1,Yes
+,2,No
+q2_14_5,1,Yes
+,2,No
+q2_14_6,1,Yes
+,2,No
+q2_14_7,1,Yes
+,2,No
+q2_14_8,1,Yes
+,2,No
+q2_14_9,1,Yes
+,2,No
+q2_14_10,1,Yes
+,2,No
+q2_14_11,1,Yes
+,2,No
+q2_14_12,1,Yes
+,2,No
+q2_14_13,1,Yes
+,2,No
+q2_14_14,1,Yes
+,2,No
+q2_14_15,1,Yes
+,2,No
+q2_14_16,1,Yes
+,2,No
+q2_14_17,1,Yes
+,2,No
+q2_14_18,1,Yes
+,2,No
+q2_14_19,1,Yes
+,2,No
+q2_14_20,1,Yes
+,2,No
+q2_14_21,1,Yes
+,2,No
+q2_14_22,1,Yes
+,2,No
+q2_14_23,1,Yes
+,2,No
+q2_14_24,1,Yes
+,2,No
+q2_14_25,1,Yes
+,2,No
+q2_14_26,1,Yes
+,2,No
+q2_14_27,1,Yes
+,2,No
+q2_14_28,1,Yes
+,2,No
+q2_14_29,1,Yes
+,2,No
+q2_14_30,1,Yes
+,2,No
+q2_16_1,1,Yes
+,2,No
+q2_16_2,1,Yes
+,2,No
+q2_16_3,1,Yes
+,2,No
+q2_16_4,1,Yes
+,2,No
+q2_16_5,1,Yes
+,2,No
+q2_16_6,1,Yes
+,2,No
+q2_16_7,1,Yes
+,2,No
+q2_16_8,1,Yes
+,2,No
+q2_16_9,1,Yes
+,2,No
+q2_16_10,1,Yes
+,2,No
+q2_16_11,1,Yes
+,2,No
+q2_16_12,1,Yes
+,2,No
+q2_16_13,1,Yes
+,2,No
+q2_16_14,1,Yes
+,2,No
+q2_16_15,1,Yes
+,2,No
+q2_16_16,1,Yes
+,2,No
+q2_16_17,1,Yes
+,2,No
+q2_16_18,1,Yes
+,2,No
+q2_16_19,1,Yes
+,2,No
+q2_16_20,1,Yes
+,2,No
+q2_16_21,1,Yes
+,2,No
+q2_16_22,1,Yes
+,2,No
+q2_16_23,1,Yes
+,2,No
+q2_16_24,1,Yes
+,2,No
+q2_16_25,1,Yes
+,2,No
+q2_16_26,1,Yes
+,2,No
+q2_16_27,1,Yes
+,2,No
+q2_16_28,1,Yes
+,2,No
+q2_16_29,1,Yes
+,2,No
+q2_16_30,1,Yes
+,2,No
+q3_1,1,Yes
+,2,No
+q3_3_1,1,  National Hospital
+q3_3_2,2, Provincial Hospital
+q3_3_3,3, District Hospital
+q3_3_4,4, Health Center
+q3_3_5,5, Health Volunteer
+q3_3_6,6, Traditional Healer
+q3_3_7,7, Private Private Pharmacist
+q3_3_8,8, Private clinic / private modern medical practitioner
+q3_3_9,9, Religious healer
+q3.3.2_other,7,Incentives for doctor
+q3.3.3_other,6,Documentation
+q3.3.4_other,7,Incentives for doctor
+q3.3.5_other,7,Incentives for doctor
+q3.3.6_other,7,Incentives for doctor
+q3.3.7_other,7,Incentives for doctor
+q3.3.8_other,7,Incentives for doctor
+q3.3.9_other,7,Incentives for doctor
+q3.3.10_other,6,Documentation
+,7,Incentives for doctor
+q3_5_1,1, National Hospital
+q3_5_2,2, Provincial Hospital
+q3_5_3,3, District Hospital
+q3_5_4,4, Health Center
+q3_5_5,5, Health Volunteer
+q3_5_6,6, Traditional Healer
+q3_5_7,7, Private Private Pharmacist
+q3_5_8,8, Private clinic / private modern medical practitioner
+q3_5_9,9, Religious healer
+q3.5.1_other,7,Incentives for doctor
+q3.5.2_other,7,Incentives for doctor
+,8,Room
+q3.5.3_other,6,Documentation
+,7,Incentives for doctor
+,8,Room
+q3.5.10_other,6,Documentation
+,7,Incentives for doctor
+,8,Room
+q3_7_1,1, National Hospital
+q3_7_2,2, Provincial Hospital
+q3_7_3,3, District Hospital
+q3_7_4,4, Health Center
+q3_7_5,5, Health Volunteer
+q3_7_6,6, Traditional Healer
+q3_7_7,7, Private Private Pharmacist
+q3_7_8,8, Private clinic / private modern medical practitioner
+q3_7_9,9, Religious healer
+q3.7.2_other,10,Blood (for transfusion)
+q3.7.3_other,7,Incentives for doctor
+,11,Medicine outside the hospital
+q3.7.10_other,7,Incentives for doctor
+,10,Blood (for transfusion)
+,11,Medicine outside the hospital
+q3_8_1,1, Pay by yourself (OOP)
+q3_8_2,2, Received free health care services from the health center or hospital?
+q3_8_3,3, Promised to pay back the health center or hospital later?
+q3_8_4,4, Sold family possessions to get money?
+q3_8_5,5, Received money as a gift from relatives or friends?
+q3_8_6,6,  Borrow money?
+q3_10_1,1, Consultations
+q3_10_2,2,  Medicine
+q3_10_3,3,  Delivery
+q3_10_4,4,  Admission without surgery
+q3_10_5,5,  Admission with surgery
+q3_11_1,1, Health centre
+q3_11_2,2,  District hospital
+q3_11_3,3,  Provincial hospital
+q3_11_4,4,  National hospital
+q3_12_3,1,Yes
+,2,No
+q3_14,1,Yes
+,2,No
+q4_2,1,"Yes, normal mosquito net"
+,2,"Yes, treated mosquito net"
+,3,No
+q4_2_1,1,Yes
+,2,No
+q4_3,1,Yes
+,2,No
+q4_4_1,1,Yes
+,2,No
+,3,DK
+q4_4_2,1,Yes
+,2,No
+,3,DK
+q4_4_3,1,Yes
+,2,No
+,3,DK
+q4_4_4,1,Yes
+,2,No
+,3,DK
+q4_4_5,1,Yes
+,2,No
+,3,DK
+q4_5_1,1, Provincial Hospital
+q4_5_2,2, District Hospital
+q4_5_3,3, Health centre
+q4_5_4,4, Village (Mobile clinic of Health Centre)
+q4_5_5,5,  Private clinic
+q4_5_6,6, TBA
+q4_5_7,7, Other (explain) _____________________
+q4_6,1,0
+,2,1
+,3,2
+,4,3
+,5,4
+,6,>4
+q4_7,1,Yes
+,2,No
+q4_7_1,1,Yes
+,2,No
+,3,DK
+q4_7_2,1,Yes
+,2,No
+,3,DK
+q4_7_3,1,Yes
+,2,No
+,3,DK
+q4_7_4,1,Yes
+,2,No
+,3,DK
+q4_7_5,1,Yes
+,2,No
+,3,DK
+q4_8,1,Yes
+,2,No
+q4_9,1,Yes
+,2,No
+q4_10,1,Yes
+,2,No
+q4_12a,1,Yes
+,2,No
+q4_12b,1,Free for All
+,2,Free for poor
+q4_13,1,Delivery only
+,2,Delivery + ANC/PNC
+,3,Delivery + ANC/PNC + caesarean section if needed
+,4,Don’t know
+q4_14_1,1, HC
+q4_14_2,2, DH
+q4_14_3,3, PH
+q4_14_4,4, NH
+q4_14_5,5, Don’t know
+q4_15_1,1, Head of village
+q4_15_2,2, Village health volunteer
+q4_15_3,3, Health center/Hospital staff
+q4_15_4,4, Family/Friends
+q4_15_5,5, Others:__________
+q4_15_other,6,Radio
+,7,Village announcement
+q4_16,1, PH:             Name____________
+,2, DH:             Name:____________
+,3, HC:             Name______________
+,4, Private clinic
+,5, Home
+,6, Other (explain)  ____________
+q4_16_other,7,In the Forest
+,8,Hospital in Thailand
+q4_16_report,0,No
+,1,Yes
+q4_20_report,0,No
+,1,Yes
+q4_25_report,0,No
+,1,Yes
+q4_17,3,Normal Delivery
+,7,caesarian section
+,10,miscarriage
+,13,delivery complication
+q4_19_other,7,Incentives for doctor
+q4_20,1,Yes
+,2,No
+q4_22,1," yes,"
+,2," No, staff did not give it,"
+,3," No, lost"
+q4_23,1,Yes
+,2,in one time
+,3,others - explain.....
+q4_23_other,4,Every two days
+q4_25,1,"yes,"
+,2, no
+,3," no, less than 3 km from the health center"
+q4_27,1,yes
+,2,"No, staff did not give it"
+,3,"No, lost"
+q4_29_1,1, Doctor
+q4_29_2,2,  Midwife (pink blouse)
+q4_29_3,3, Nurse (white blouse)
+q4_29_4,4, TBA
+q4_29_5,5, Family member
+q4_29_6,6, Nobody
+q4_29_7,7, Other (explain) ________________________
+q4_29_other,8,Elderly people in the village
+,9,Village health volunteer
+q4_30_1,1,  anamnesis
+q4_30_2,2,   weight/height measurement
+q4_30_3,3,   body touch and palpation
+q4_30_4,4,   blood pressure measurement
+q4_30_5,5,   lung and heart stethoscope
+q4_30_6,6,"   Others, specify:_______________"
+q4_30_7,7,   no service
+q4_30_other,8,Blood testing
+q4_31,1,Yes
+,2,No
+q4_34,1,Immediately/Less than 1 hour
+,2,More than 1 hour
+,3,Do not remember
+,4,No breast feeding
+q4_35,1,Birth at home
+,2, Less than 24 hours
+,3, More than 24 hours
+,4, Do not remember
+q4_36,1,Yes
+,2,No
+q4_36_other,3,"I delivered by myself, I don’t like people helping, its annoying"
+q4_37,1,Yes
+,2,No
+q4_38_1,1,No PNC1 or does not remember
+,2,"Yes less than 7 days after birth, mother only"
+,3,"Yes less than 7 days after birth, mother and baby"
+q4_38_2,1, No PNC2 or does not remember (skip to 4.41)
+,2," Yes more than 7 days after birth, mother only"
+,3," Yes more than 7 days after birth, mother and baby"
+q4_39_1,1, Provincial Hospital
+q4_39_2,2,  District hospital
+q4_39_3,3,  Health center
+q4_39_4,4,  Village (outreach of health center)
+q4_39_5,5,  TBA
+q4_39_6,6,  Nurse/Private clinic
+q4_39_7,7,  Village visit
+q4_39_8,8, Other: explain
+q4_40,1,Yes
+,2,No
+q4_41,1,No because I am already pregnant
+,2,No and not pregnant
+,3,IUD
+,4,Injection progest.
+,5,Pill combined
+,6,Pill progest.
+,7,Condom
+,8,Ligation (wife or husband)
+,9,Chinese pill
+,10,Natural method
+,11,Other (explain): ___________________
+q4_42,1,planned
+,2,Surprise
+q4_43,1,Yes
+,2,No
+q4_44,1,Less than 2 months
+,2,Between 2 and 6 months
+,3,6 months to 1 year
+,4,More than 1 year
+,5,Does not know/remember
+q4_45_1,1,  Provincial Hospital
+q4_45_2,2,  District hospital
+q4_45_3,3,  Health centre
+q4_45_4,4,  Village volunteer
+q4_45_5,5,  Private Pharmacy 3
+q4_45_6,6,  Other (explain): ________
+q4_45_other,10,Natural method
+q5_2,1,Male
+,2,Female
+q5_3,1,Yes
+,2,No
+q5_4,1,Yes normal net
+,2,Yes treated net
+,3, No
+q5_5,1,Yes
+,2,No
+q5_6_1_1,1,Yes
+,2,No
+,3,DK
+q5_6_1_2,1,Yes
+,2,No
+,3,DK
+q5_6_1_3,1,Yes
+,2,No
+,3,DK
+q5_6_1_4,1,Yes
+,2,No
+,3,DK
+q5_6_1_5,1,Yes
+,2,No
+,3,DK
+q5_6_1_6,1,Yes
+,2,No
+,3,DK
+q5_6_1_7,1,Yes
+,2,No
+,3,DK
+q5_6_1_8,1,Yes
+,2,No
+,3,DK
+q5_6_1_9,1,Yes
+,2,No
+,3,DK
+q5_6_1_10,1,Yes
+,2,No
+,3,DK
+q5_7_1_1,1,Yes
+,2,No
+,3,DK
+q5_7_1_2,1,Yes
+,2,No
+,3,DK
+q5_9,1,Yes
+,2,No
+q5_10,1,Nothing at all apart from breast feeding
+,2,Does not remmber
+,3,Age in months
+q5_11_1,1,  Nothing at all apart from breast feeding
+q5_11_2,2,  Bottle milk/infant formula/cerelac
+q5_11_3,3,  Rice/Soft rice/noodles
+q5_11_4,4,  Soft fruits or fruit juice
+q5_11_5,5,  Soft meat/fish or meat/fish juice
+q5_11_6,6,  Vegetables
+q5_11_7,7,"  No, breast feeding"
+q5_11_8,8,  Other?: _______________________
+q5_11_other,9,Potato
+,10,Egg
+q5_12,1, He happened at the latrines
+,2,  Feaces were collected and put in latrines or buried deep in ground
+,3, Any other answer
+q5_12_other,4,"defacated to a cloth/diapers, then wash the diapers"
+,5,Defacate in the house area then the animals ate it
+,6,Open defacation
+,7,Thrown in the forest
+,8,Thrown into the Sewer
+,9,Thrown outside the house
+,10,Trash bin
+,11,Wash away with water
+q5_14,1, Provincial hospital
+,2, District hospital
+,3, Health centre
+,4, Village volunteer
+,5, Private Pharmacy
+,6, No Treatment >>>5.19
+,7, Other (explain): ___________________
+q5_14_other,8,Home remedy
+q5_15,1,Yes
+,2,No
+,3,DK
+q5_16,1,Yes
+,2,No
+,3,DK
+q5_17,1,Yes
+,2,No
+q5_19,1,Yes
+,2,No
+,3,DK
+q5_21,1,Provincial hospital
+,2,District hospital
+,3,Health centre
+,4,Village volunteer
+,5,Private Pharmacy 3
+,6,No treatment >>>5.24
+,7,Other (explain): ___________________
+q5_22,1,Yes
+,2,No
+q5_25,1,Provincial hospital
+,2,District hospital
+,3,Health centre
+,4,Village volunteer
+,5,Private Pharmacy 3
+,6,No treatment >>>6.1
+,7,Other (explain): ___________________
+q5_26,1,Yes
+,2,No
+,3,DK
+q5_27,1,Yes
+,2,No
+q6_1_1,1, High fever
+q6_1_2,2,  Persistent vomiting
+q6_1_3,3,  Severe abdominal pain
+q6_1_4,4,  Painful/burning when urinate
+q6_1_5,5,"  Dizziness, blurred vision"
+q6_1_6,6,  Severe headache
+q6_1_7,7,  Swelling of hands/face/legs
+q6_1_8,8,  Foetal movement reducing or stopped
+q6_1_9,9,  Loss of water from vagina
+q6_1_10,10,  Bleeding from vagina
+q6_1_11,11,  Premature uterus contractions
+q6_1_12,12,  Itching/burning in vagina and/or vaginal sores or discharge
+q6_1_13,13,  None of listed above
+q6_2_1,1, Wash hands
+q6_2_2,2,  Protect food from flies
+q6_2_3,3,  Always use latrines
+q6_2_4,4,  Throw faeces of baby in the latrines/burry in soil
+q6_2_5,5,"  Wash raw food such as fruits, vegetables?"
+q6_2_6,6, None of listed above
+q6_3_1,1, Continue feeding little by little
+q6_3_2,2,  Drink more fluid little by little
+q6_3_3,3,  Drink ORS little by little
+q6_3_4,4,  Eat soft rice porridge
+q6_3_5,5,  Drink herbal tea (guava leaves …)?
+q6_3_6,6,  None of listed above
+q6_4_1,1, Sunken eyes
+q6_4_2,2,  Dry mouth
+q6_4_3,3,  No or very dark urine
+q6_4_4,4,  Confusion
+q6_4_5,5,  Skin fold
+q6_4_6,6,  Over several days?
+q6_4_7,7,  None of listed above
+q6_5_1,1, Wash hands often
+q6_5_2,2,  Cough away from others
+q6_5_3,3,  Avoid exposure to fire smoke or dust
+q6_5_4,4,  Drink warm water rather than chilled water?
+q6_5_5,5,  None of listed above
+q6_6_1,1," Drink more fluid, warm"
+q6_6_2,2,  Avoid exposure to fire smoke or dust
+q6_6_3,3,  Eat soft food
+q6_6_4,4,  none of listed above
+q6_7_1,1,  Fast breathing
+q6_7_2,2,  Getting confused
+q6_7_3,3,  Pinched nostrils
+q6_7_4,4,  High fever?
+q6_7_5,5,  None of listed above
+q7_1_a,1,Yes
+,2,No
+q7_1_b,1, Free for all
+,2, Free for the poor
+q7_2_1,1,"  Preventive services (immunization, baby check up)"
+q7_2_2,2,  Outpatient consultations
+q7_2_3,3,  Admissions
+q7_2_4,4,  Don’t know
+q7_3_1,1,  HC
+q7_3_2,2,  DH
+q7_3_3,3,  PH
+q7_3_4,4,  National Hospital
+q7_3_5,5,  Don’t know
+q7_4_1,1,  Head if village
+q7_4_2,2,  Village health volunteer
+q7_4_3,3,  Health center/Hospital staff
+q7_4_4,4,  Family/Friends
+q7_4_5,5,  Others:__________
+q7_4_other,6,Radio
+q7_5,1,Yes
+,2,No
+q7_6_report,0,No
+,1,Yes
+q7_8_report,0,No
+,1,Yes
+q7_10_report,0,No
+,1,Yes
+q7_15_report,0,No
+,1,Yes
+q7_6_1,1, Provincial Hospital:           name:_____
+q7_6_2,2,  District Hospital:               name:______
+q7_6_3,3,  Health centre                    name:__________
+q7_6_4,4,  Private clinic
+q7_6_5,5,  Other (explain)               _____________
+q7_7,1,"IPD,"
+,2,"small surgery,"
+,3,"medium surgery,"
+,4,major surgery
+q7_8,1,Yes
+,2,No
+q7_9_other,6,Transportation
+,7,Incentives for Doctor
+q7_10,1,Yes
+,2,No
+q7_12,1,Yes
+,2,"No, staff did not give it"
+,3," No, lost"
+q7_13,1,Yes
+,2,in on time
+,3,others- explain....
+q7_15,1,yes
+,2,no
+,3,did not receive because live close to hospital <3 km
+q7_17,1,yes
+,2,"No, staff did not give it"
+,3,"No, lost"
+q7_19,1,yes
+,2,no
+q7_20_1,1, anamnesis
+q7_20_2,2,   weight/height measurement
+q7_20_3,3,   body touch and palpation
+q7_20_4,4,   blood pressure measurement
+q7_20_5,5,   lung and heart stethoscope
+q7_20_6,6,"   Others, specify:_______"
+q7_20_7,7,   don’t know
+q7_20_8,8,   do not remember
+q7_20_other,9,Received IV fluid
+q7_21,1,yes
+,2,no
+q8_1_1,1,Yes
+,2,No
+q8_1_2,1,Yes
+,2,No
+q8_1_3,1,yes
+,2,no
+q8_2_a,1,yes
+,2,no
+q8_2_b,1,Free for all
+,2,Free for the poor
+q8_3_1,1, HC
+q8_3_2,2,  DH
+q8_3_3,3,  PH
+q8_3_4,4,  National Hospital
+q8_3_5,5,  Don’t Know
+q8_4_1,1," Preventive services (immunization, baby check-up)"
+q8_4_2,2,  Outpatient consultations
+q8_4_3,3,  Admissions
+q8_4_4,4,  Food/Transport for all at all facilities
+q8_4_5,5,  Food/Transport for admissions at Hospitals only
+q8_4_6,6,  don’t know
+q8_5_1,1, Head if village
+q8_5_2,2, Village health volunteer
+q8_5_3,3, Health center/Hospital staff
+q8_5_4,4, Family/Friends
+q8_5_5,5, Others:__________
+q8_5_other,6,Radio
+q8_6,1,Yes
+,2,No
+q8_7_report,.00,No
+,1.00,Yes
+q8_8_report,0,No
+,1,Yes
+q8_10_report,0,No
+,1,Yes
+q8_15_report,0,No
+,1,Yes
+q8_7_1,1, Provincial Hospital:                        name:________________
+q8_7_2,2,District Hospital:                              name:________________
+q8_7_3,3,Health centre                                  name:________________
+q8_7_4,4,Private clinic                                    name:________________
+q8_7_5,5,Other (explain)                              name  _____________
+q8_8,1,yes
+,2,no
+q8_9_1_other,6,Transportation
+,7,Incentives for doctor
+,8,Room
+q8_10,1,yes
+,2,no
+q8_12,1,yes
+,2,"No, staff did not give it"
+,3,"No, lost"
+q8_13,1,yes
+,2,in one time
+,3,others explain
+q8_13_other,3,Every 2 days
+,4,Every 3 days
+q8_15,1,yes
+,2,no
+,3,did not receive because live close to hospital < 3km
+q8_17,1,yes
+,2,"no, staff did not give it"
+,3,"no, lost"
+q8_19,1,yes
+,2,no
+q8_20_1,1,   anamnesis
+q8_20_2,2,   weight/height measurement
+q8_20_3,3,   body touch and palpation
+q8_20_4,4,   blood pressure measurement
+q8_20_5,5,   lung and heart stethoscope
+q8_20_6,6,"   Others, specify:_______________"
+q8_20_7,7,   do not know
+q8_20_8,8,   do not remember
+q8_20_other,9,Blood testing
+,10,IV fluid
+q8_21,1,yes
+,2,no
+q9_3_1,1,Subsistence farming
+,2,Shop/restaurant
+,3,"Cash crops (maize, rice, Sesame…)"
+,4,"Small business (carpenter, repair bikes, bricks…)"
+,5,"Forest products (grass, spices)"
+,6,Government employee
+,7,Private sector employee
+,8,Other: ___________________
+q9_3_1_other,9,Unskilled worker
+,11,Fisheries
+,12,Fortune teller
+,13,Handicraft
+,14,Livestocks/poultry
+,15,Logging
+,16,Mining
+,17,Received money from other family member
+,18,Retirement allowance
+,19,Unemployed
+q9_3_2_1,1, Subsistence farming
+q9_3_2_2,2, Shop/restaurant
+q9_3_2_3,3," Cash crops (maize, rice, Sesame…)"
+q9_3_2_4,4," Small business (carpenter, repair bikes, bricks…)"
+q9_3_2_5,5," Forest products (grass, spices)"
+q9_3_2_6,6, Government employee
+q9_3_2_7,7, Private sector employee
+q9_3_2_8,8, Other: ___________________
+q9_3_2_9,9, no second source
+q9_3_2_other,9,Unskilled worker
+,11,Fisheries
+,13,Handicraft
+,14,Livestocks/poultry
+,15,Logging
+,17,Received money from other family member
+,21,Volunteer for UXO
+q9_4,1,Wood/ sawdust
+,2,Charcoal
+,3,Gaz/electricity
+q9_6,1,no plant cereals
+,2,0-500 Kg (16 Bags)
+,3,501-1000Kg (17-313 bags)
+,4,1001-1500Kg (34-50 bags)
+,5,">1,500Kg (>50Bags)"
+q9_7,1, Lao
+,2, Alak
+,3, Katu
+,4, Trieng
+,5, Hmong
+,6, Other
+q9_7_other,9,keumu
+,21,Yru
+,23,Taoey
+,24,Yae
+,25,Brao
+,29,Krieng
+,32,Xuay
+,34,Lavy
+q9_8_1,1,"River, pond"
+,2,water supply
+,3,Gravity fed system (Tape)
+,4,Borehole
+,5,Rain water
+,6,drinking water
+,7,Other (explain) ______________
+q9_8_other,8,Borehole
+,9,Spring water
+q9_8_2,1,"River, pond"
+,2,water supply
+,3,Gravity fed system (Tape)
+,4,Borehole
+,5,Rain water
+,6,drinking water
+,7,Other (explain) ______________
+q9_8_2_other,8,Borehole
+,9,Spring water
+q9_9,1,yes
+,2,no
+q9_10,1,yes
+,2,no
+q9_11,1,yes
+,2,no
+q9_12,1,yes
+,2,no
+q9_13_1,1, Brick
+q9_13_2,2, Concrete
+q9_13_3,3, Wood
+q9_13_4,4, Bamboo
+q9_13_5,5, Other___________________________
+q9_13_other,6,zinc board
+,7,Plywood
+,8,gypsum board
+,9,No wall
+q9_14_1,1, Grass or bamboo
+q9_14_2,2, Wood
+q9_14_3,3," Corrugated iron, ferro-cement"
+q9_14_4,4, Tiles
+q9_14_5,5, Other:____________
+q9_15_1,1, Modern toilet
+q9_15_2,2, Normal toilet
+q9_15_3,3," Dry toilet, (Pit latrine)"
+q9_15_4,4, Other latrine specify________
+q9_15_5,5, None

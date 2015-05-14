@@ -98,6 +98,6 @@ for (S in 1:maxRow) {
 
 
 
-IndiHealth$Gender=factor(IndiHealth$Gender,labels=c("F","M"));
+IndiHealth$Gender=factor(IndiHealth$Gender,labels=c("M","F"));
 IndiHealth$Marital_Status=factor(IndiHealth$Marital_Status,levels=c("1","2","3","4","5"),labels=c("Single","Married","Divorced/separated","Widowed","Other"));
 save(IndiHealth,file="IndiHealth.bin");

@@ -10,11 +10,14 @@ library("xtable")
 source("./Constants/Q4.r")
 source("./Constants/Q5.r")
 
+qCheck(q4,"4")
+qCheck(q5,"5")
+
 Mothers<-!is.na(lps[,"Mother_ID"])
 
 NumMothers <-sapply (lgroups,function(X){sum(X&Mothers)})
-write.csv(NumMothers,"./output/NumMothers.csv")
-cat(print(xtable(as.data.frame(NumMothers),caption="Number of mothers with ID cards")),file="./tex/NumMothers.tex")
+SaveTables(as.data.frame(NumMothers),"Q4_NumMothers.csv","Num of mothers with ID cards")
+
 
 #Questions on ANC: 4.2, 4.3, 4.4
 
@@ -25,6 +28,7 @@ MNet <- table(lps$Mother_Mosquito_net_last_night[Mothers],lps$Group[Mothers])
 All<-rowSums(MNet)
 MNet<-cbind(MNet,All)
 MNet<- t(t(MNet)/rowSums(t(MNet)))
+
  
 
 fMNet<-sapply(MNet[,1:4],function(X){lapply(X,function(X){sprintf(X*100,fmt="%.1f%%")})})
@@ -32,8 +36,7 @@ dim(fMNet)=c(3,4);
 colnames(fMNet)<-colnames(MNet)
 rownames(fMNet)<-rownames(MNet)
 fMNet
-write.csv(fMNet,"./output/MosquitoNet.cvs")
-cat(print(xtable(fMNet,caption="Mosquito Net Ussage")),file="./tex/MosquitoNet.tex")
+SaveTables(fMNet,"Q4_2_MosquitoNets","Mosquito net usage reports");
 ##4.2 - Have Mosquito net
 ########################################
 
@@ -62,8 +65,7 @@ NiceTable<-function(V,lv=NULL,lb=NULL) {
 
 
 PregCard <- NiceTable("Mother_have_a_pregnancy_monitoring_card",lv=c(1,2),lb=c("Yes","No"))
-write.csv(PregCard$ftab,file="./output/Have_Pregnancy_Monitoring_Card.csv")
-cat(print(xtable(PregCard$ftab,caption="Mother Has Pregnancy Monitoring Card")),file="./tex/PregCard.tex")
+SaveTables(PregCard$ftab,"Q4_3_Have_Pregnancy_Monitoring_Card","Percent of mothers with pregnancy monitoring cards")
 
 
 ##4.4
@@ -74,9 +76,7 @@ ANC <- sapply (Q4_4,function(X){sapply(lgroups,function(G){sum(lps[G&M4_4,X]==1)
 ANC <- t(ANC);
 colnames(ANC) <- names(lgroups)
 rownames(ANC) <- sapply(1:5,function(X){paste("Had at least",X,"ANC visit")})
-
-write.csv(ANC,file="./output/Q4_4_ANC_count.csv")
-cat(print(xtable(ANC,caption="Number of AnteNatal Care Visis")),file="./tex/Q4_4_ANC.tex")
+SaveTables(ANC,"Q4_4_ANC_count","Number of AnteNatal Care Visis")
 
 ##Questions on TT: 4.7
 Q4_7 <- "Mother_TT_immun_before_or_during_pregnancy"
@@ -85,17 +85,18 @@ TTPreg$ftab <- rbind.data.frame(TTPreg$ftab,sapply(lgroups,function(G){as.charac
 rownames(TTPreg$ftab)[3] <- "Num Resp"
 TTPreg$ftab <- as.data.frame(TTPreg$ftab)
 TTPreg$ftab
-write.csv(as.matrix(TTPreg$ftab),file="./output/Q4_7_Mother_TT_immun_before_or_during_pregnancy.csv");
-cat(print(xtable(TTPreg$ftab,caption="Mother TT immun before or during pregnancy")),file="./tex/Q4_7_Mother_TT_immun_before_or_during_pregnancy.tex")
+SaveTables(as.matrix(TTPreg$ftab),"Q4_7_Mother_TT_immun_before_or_during_pregnancy","Mother TT immun before or during pregnancy");
 
 ##Q4_7 detail
 Q4_7D <- c("Mother_TT_immun_Card1","Mother_TT_immun_Card2","Mother_TT_immun_Card3","Mother_TT_immun_Card4","Mother_TT_immun_Card5")
 Q4_7Ds <- !is.na(lps[,Q4_7D[1]])
 TTPregCard <- t(sapply(Q4_7D,function(X){sapply(lgroups,function(G){sum(lps[G,X]==1,na.rm=T)})}))
+SaveTables(TTPregCard,"Q4_7_Detail_TT_Pregnancy_Card","Pregnancy TT Imunization Card Records");
+t(t(TTPregCard)/NumMothers)
+PercentifyTable(TTPregCard)
 
 
-write.csv(TTPregCard,file="./output/Q4_7_Detail_TT_Pregnancy_Card.csv")
-cat(print(xtable(TTPregCard,caption="Pregnancy TT Imunization Card Records")),file="./tex/Q4_7_Detail_PregCard.tex")
+for(i in 1:5) {TTPregCard2 <- rbind(NumMothers-TTPregCard[i,],TTPregCard[i,]);print(chisq.test(TTPregCard2[,1:3])$p.value);}
 
 
 ##Questions on delivery by SBA: 4.16
@@ -113,8 +114,7 @@ lps[,Q4_16]<-factor(lps[,Q4_16],labels=Q4_16_codes)
 BirthFacility <- t(sapply(Q4_16_codes,function(X){sapply(lgroups,function(G){sum(lps[G,Q4_16]==X,na.rm=T)})}))
 colSums(BirthFacility)
 BirthFacility <- PercentifyTable(BirthFacility)
-write.csv(BirthFacility,file="./output/Q4_16_BirthFacility.csv")
-cat(print(xtable(BirthFacility,caption=("Reported Delivery Facility"))),file="./tex/Q4_16_BirthFacility.tex")
+SaveTables(BirthFacility,"Q4_16_BirthFacility","Reported Delivery Facility Type")
 
 
 
@@ -125,10 +125,10 @@ lps[,Q4_31] <- factor(lps[,Q4_31],labels=c("Yes","No"));
 sum(Q4_31s)
 ##All responded
 WaitLong  <- sapply(lgroups,function(G){sapply(c("Yes","No"),function(X){sum(lps[G,Q4_31]==X,na.rm=T)})})
-WaitLongP <- PercentifyTable(WaitLong)
+WaitLong
 
-write.csv(WaitLongP,file="./output/Q4_31_WaitLong.csv");
-cat(print(xtable(WaitLongP,caption=("Waited Long"))),file="./tex/Q4_32_WaitLong.tex")
+WaitLongP <- PercentifyTable(WaitLong)
+SaveTables(WaitLongP,"Q4_31_WaitLong","Waited Long")
 
 Q4_31_time <- "Mother_Birth_Wait_time"
 Q4_31_times = !is.na(lps[,Q4_31_time]) & lps[,Q4_31_time]!=0
@@ -147,8 +147,7 @@ lps[,Q5_5] <- factor(lps[,Q5_5],labels=c("Yes","No"))
 lps[Q5_5s,Q5_5] 
 HaveBooklet  <- sapply(lgroups,function(G){sapply(c("Yes","No"),function(X){sum(lps[G,Q5_5]==X,na.rm=T)})})
 HaveBookletP <- PercentifyTable(HaveBooklet)
-write.csv(HaveBookletP,file="./output/Q5_5_Mother_Child_Have_monitoring_booklet.csv")
-cat(print(xtable(HaveBookletP,caption="Mothers has child monitoring booklet")),file="./tex/Q5_5_Mother_Child_Have_monitoring_booklet.tex")
+SaveTables(HaveBookletP,"Q5_5_Mother_Child_Have_monitoring_booklet","Mothers has child monitoring booklet");
 
 
 
@@ -164,6 +163,27 @@ SaveTables(Q5Helpfull,"Q5_17.22.27_Num_Reporting","Num Reporting on Literature H
 Q5Helpfull
 
 Q5Helpfull <- t(sapply(q,function(Q){sapply(lgroups,function(G){sum(lps[G,Q]==1,na.rm=T)/sum(!is.na(lps[G,Q]))})}))
-Q5HelpfullP <- ToPercents(Q5Helpful)
+Q5HelpfullP <- ToPercents(Q5Helpfull)
 
-SaveTables(Q5HelpfulP,"Q5_17.22.27_Helpfull","Percent Reporting Literature was Helpfull by Group")
+SaveTables(Q5HelpfullP,"Q5_17.22.27_Helpfull","Percent Reporting Literature was Helpfull by Group")
+
+gM <- sapply (lps$Mother_ID[Mothers],function(M){paste("q2_2_",M,sep="")})
+lpsM <- lps[Mothers,]
+MotherIndv <- sapply(1:sum(Mothers),function(i){which(IndiHealth$SRow==lpsM$Serial[i])[lpsM$Mother_ID[i]]})
+IndiHealth$Gender[MotherIndv]
+IndiHealth$Age[MotherIndv]
+mean(IndiHealth$Age[MotherIndv])
+median(IndiHealth$Age[MotherIndv])
+
+png("./tex/HistMaternalAge.png")
+hist(IndiHealth$Age[MotherIndv],80,xlab="Age",ylab="Num of Mothers",main="Distribution of Mothers' Ages")
+dev.off()
+min(IndiHealth$Age[MotherIndv])
+
+
+qM <- sapply(gM,function(N){length(which(names(lps)==N))!=1})
+
+nullM <- sapply(1:length(gM),function(i){is.null(lpsM[i,gM[i]])})
+sapply(c(1:length(gM))[!nullM],function(i){lpsM[i,gM[i]]})
+
+

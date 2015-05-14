@@ -54,6 +54,7 @@ qCheck<-function(Q=q4,N=NULL) {
   print(gcn)
   colnames(qa)<-c("QName",gcn)
   write.csv(qa,paste("./output/Q_",N,"_Frequncies.csv",sep=""))
+  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
 }
 
 
@@ -84,5 +85,48 @@ ToPercents <- function(T,mult=100,dec=1) {
 ##write
 SaveTables <- function(T,N,C) {
   write.csv(T,file=paste("./output/",N,".csv",sep=""));
-  cat(print(xtable(T,caption=C)),file=paste("./tex/",N,".tex",sep=""));
+  sink (file=paste("./tex/",N,".tex",sep=""),type=c("output"))
+  print(xtable(T,caption=C));
+  sink(file=NULL)
+}
+
+
+interleave <- function(v1,v2)
+{
+    ord1 <- 2*(1:length(v1))-1
+    ord2 <- 2*(1:length(v2))
+    c(v1,v2)[order(c(ord1,ord2))]
+}
+
+
+interleave2d <- function(v1,v2)
+{
+  mat <- matrix(nrow=dim(v1)[1],ncol=dim(v1)[2]*2)
+  dim(v2) <- dim(v1)
+  for (c in 1:dim(v1)[2]){
+    mat[,c*2-1] <- v1[,c];
+    mat[,c*2] <- v2[,c];
+  }
+  return(mat)
+}
+a <- 1:16
+dim(a) <- c(4,4)
+b <- 17:32
+dim(b) <- c(4,4)
+interleave2d(a,b)
+
+factHist <- function (X,...) {
+    c <- as.numeric(levels(factor(X)));
+    b <- interleave(c,c+1);
+    return (suppressWarnings(hist (X,b,na.rm=na.rm,freq=TRUE,plot=FALSE,right=FALSE)));
+}
+
+
+findOutliers <- function (X,lim) {
+  if (lim<0) {
+    return(rep(F,length(X)));
+  } else {
+
+    return (X>(mean(X)+lim*sd(X)));
+  }
 }

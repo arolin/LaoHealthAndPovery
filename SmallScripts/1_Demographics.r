@@ -9,13 +9,19 @@
 #Comparison and adequacy with the official national and provincial population figures
 
 demcols <-c("Gender","Age")
-ligroups <- lapply(c("PreID","GeoID","NoAssist"),function(X){IndiHealth$Group==X})
-ligroups[[4]] =rep(T,length(IndiHealth[,1]));
+ligroups <- sapply(c(1,2,3),function(X){IndiHealth$Group==X})
+ligroups <- cbind.data.frame(ligroups,rep(T,length(IndiHealth[,1])));
 names(ligroups)<-c("HEF PreID","HEF GeoID","NoAssis","All");
-
+ligroups
 NumHouseHolds   <-sapply(lgroups,sum)
-NumIndivids     <-sapply(ligroups,sum)
+NumHouseHolds
+NumIndivids     <-colSums(ligroups)
+NumIndivids
+
 MeanHHSize      <-NumIndivids/NumHouseHolds
+MeanHHSize
+
+
 PercentMale     <-sapply(ligroups,function(X){100*sum(IndiHealth$Gender[X]=="M")/sum(X)})
 PercentFemale   <-sapply(ligroups,function(X){100*sum(IndiHealth$Gender[X]=="F")/sum(X)})
 PercentSingle   <-sapply(ligroups,function(X){100*sum(IndiHealth$Marital_Status[X]=="Single")/sum(X)})
@@ -32,25 +38,29 @@ Percent_HoH_Spouse_CanR        <-sapply(lgroups,function(X){100*sum(lps$HoH_Spou
 Percent_HoH_Spouse_CanRW       <-sapply(lgroups,function(X){100*sum(lps$HoH_Spouse_Literacy_Level[X]==3)/sum(X)})
 
 DemogTable <- data.frame(NumHouseHolds,NumIndivids,MeanHHSize,MeanAge,MedianAge,PercentMale,PercentFemale,PercentSingle,PercentMarried,PercentDivorced,PercentWidowed,Percent_HoH_CantRW,Percent_HoH_CanR,Percent_HoH_CanRW,Percent_HoH_Spouse_CantRW,Percent_HoH_Spouse_CanR,Percent_HoH_Spouse_CanRW)
+DemogTable <- t(DemogTable)
 
-precentRows<-c("PercentMale","PercentFemale","PercentSingle","PercentMarried","PercentDivorced","PercentWidowed","Percent_HoH_CantRW","Percent_HoH_CanR","Percent_HoH_CanRW","Percent_HoH_Spouse_CantRW","Percent_HoH_Spouse_CanR","Percent_HoH_Spouse_CanRW")
-write.csv(DemoGraphicsTable,"./output/Demographics.csv")
+percentRows<-c("PercentMale","PercentFemale","PercentSingle","PercentMarried","PercentDivorced","PercentWidowed","Percent_HoH_CantRW","Percent_HoH_CanR","Percent_HoH_CanRW","Percent_HoH_Spouse_CantRW","Percent_HoH_Spouse_CanR","Percent_HoH_Spouse_CanRW")
 
 ftable<-DemogTable;
-ftable$NumHouseHolds<-format(ftable$NumHouseHolds,digits=0,format="d",bigmark=",")
-ftable$NumIndivids  <-format(ftable$NumIndivids  ,digits=0,format="d",bigmark=",")
-ftable$MeanHHSize   <-sprintf(ftable$MeanHHSize   ,fmt="%.1f")
-ftable$MeanAge      <-sprintf(ftable$MeanAge    ,fmt="%.1f")
-ftable$MedianAge    <-format(ftable$MedianAge    ,digits=0)
-ftable[,percentRows]<-lapply(percentRows,function(X){sapply(ftable[,X],sprintf,fmt="%.1f%%")})
+ftable
 
-write.csv(ftable,"./output/DemogTable.csv")
+ftable["NumHouseHolds",]<-format  (ftable["NumHouseHolds",],digits=0,format="d",bigmark=",")
+ftable["NumIndivids",]  <-format  (ftable["NumIndivids",]  ,digits=0,format="d",bigmark=",")
+ftable["MeanHHSize",]   <-sprintf (as.numeric(ftable["MeanHHSize",])   ,fmt="%.1f")
+ftable["MeanAge",]      <-sprintf (as.numeric(ftable["MeanAge",])    ,fmt="%.1f")
+ftable["MedianAge",]    <-format  (as.numeric(ftable["MedianAge",])    ,digits=0)
+ftable[percentRows,]<-sapply(percentRows,function(X){sapply(as.numeric(ftable[X,]),sprintf,fmt="%.1f%%")})
 
-DemogTableX<-xtable(t(ftable),caption="Population Demographics")
-cat(print(DemogTableX),file="./tex/DemogTable.tex")
+## write.csv(ftable,"./output/DemogTable.csv")
 
+## DemogTableX<-xtable(t(ftable),caption="Population Demographics")
+## cat(print(DemogTableX),file="./tex/DemogTable.tex")
+SaveTables(ftable,"DemogTable","Population Demographics")
 
 Ethnicity <- t(sapply(levels(factor(lps$Ethnic_group)),function(X){sapply(lgroups,function(G){sum(lps[G,"Ethnic_group"]==X,na.rm=T)})}))
+Ethnicity
 Ethnicity <- PercentifyTable(Ethnicity)
-write.csv(Ethnicity,file="./output/Ethnicity.csv");
-cat(print(xtable(Ethnicity,caption="Ethnic Makeup")),file="./tex/EthnicMakeup.tex")
+## write.csv(Ethnicity,file="./output/Ethnicity.csv");
+## cat(print(xtable(Ethnicity,caption="Ethnic Makeup")),file="./tex/EthnicMakeup.tex")
+SaveTables(Ethnicity,"EthnicMakeup","Ethnic Distribution of Sampled Households")
