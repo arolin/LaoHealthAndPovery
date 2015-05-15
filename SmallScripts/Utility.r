@@ -86,7 +86,7 @@ ToPercents <- function(T,mult=100,dec=1) {
 SaveTables <- function(T,N,C) {
   write.csv(T,file=paste("./output/",N,".csv",sep=""));
   sink (file=paste("./tex/",N,".tex",sep=""),type=c("output"))
-  print(xtable(T,caption=C));
+  try(print(xtable(T,caption=C)));
   sink(file=NULL)
 }
 
@@ -109,11 +109,6 @@ interleave2d <- function(v1,v2)
   }
   return(mat)
 }
-a <- 1:16
-dim(a) <- c(4,4)
-b <- 17:32
-dim(b) <- c(4,4)
-interleave2d(a,b)
 
 factHist <- function (X,...) {
     c <- as.numeric(levels(factor(X)));
@@ -130,3 +125,54 @@ findOutliers <- function (X,lim) {
     return (X>(mean(X)+lim*sd(X)));
   }
 }
+
+LastQ <- ""
+Codes$Question <- as.character(Codes$Question)
+for (q in 1:length(Codes$Question)) {
+  if (Codes$Question[q]=="") {
+    Codes$Question[q] <- LastQ;
+  }else{
+    LastQ <- Codes$Question[q];
+  }
+}
+Codes$Question <- factor(Codes$Question)
+Codes$Label <- as.character(Codes$Label)
+CodeLables <- lapply(levels(Codes$Question),function(l) {sapply(which (Codes$Question==l),function(Q){return(Codes[Q,c("Value","Label")])})})
+names(CodeLables) <- levels(Codes$Question)
+
+#quick freq extractor
+qCheck2<-function(Q=q4,N=NULL,groups=lgroups) {
+  print(names(Q))
+  qa<-t(sapply(Q,function(X){
+                 qn<-colnames(lpsraw)[which(colnames(lps)==X)[1]]
+                 s<-"";
+                                        #        s='"'
+                 ##sapply over groups
+                 s <- sapply(groups,function(G)
+                   {
+                     N <- which(names(CodeLables)==qn)
+                     if (length(N)>0) {
+                       f<-factor(lps[G,X],levels=CodeLables[[N]][1,],labels=CodeLables[[N]][2,])
+                     }else{
+                       f<-factor(lps[G,X])
+                     }
+             
+                     for (i in 1:length(levels(f))){
+                       l=levels(f)[i]; nl="\r\n";
+                       if (i==length(levels(f))) nl="";
+                       s<-paste(s,l,"=",sum(f==l,na.rm=TRUE),nl,sep="")
+                     }
+                                        #             s<-paste(s,'"',sep="")
+                     return(c(sum(!is.na(lps[G,X])),s))
+                   })
+                 return(c(qn,s))
+               }))
+  gcn<-sapply(names(groups),function(G){return (c(paste(G,"RespCount"),paste(G,"Vals")))})
+  dim(gcn) <- 2*length(groups)
+  print(gcn)
+  colnames(qa)<-c("QName",gcn)
+  write.csv(qa,paste("./output/Q_",N,"_Frequncies.csv",sep=""))
+##  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
+}
+
+  

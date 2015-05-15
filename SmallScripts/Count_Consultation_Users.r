@@ -56,7 +56,7 @@ ConsultTableExtract <- function (prefixes) {
 
 OutPatCostTable <- ConsultTableExtract(c("HH_Illness_1_","HH_Illness_2_"))
 OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
-OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
+OutPatGroupsOutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
 sapply(OutPatGroups,sum)
 
 InPatCostTable <- ConsultTableExtract(c("HH_Illness_3_"))
@@ -67,6 +67,10 @@ sapply(InPatGroups,sum)
 
 
 OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
+OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
+OutPatGroups
+sapply(OutPatGroups,sum)
+
 
 buildFlags <- function (prefixes = prefixes, careCenter=careCenters) {
     flags <- c();

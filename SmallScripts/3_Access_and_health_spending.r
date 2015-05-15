@@ -234,7 +234,7 @@ GF <- function(Var) {
 OutTabs <- sapply(CCs,function(CC){
          tab <- paste("OutPatTotCost",CC,Var,sep="_")
          assign (tab , sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,Var,CC)}))
-         fname <- paste("./output/Q3_DKF_Outpatient_",Var,"_cost_",CC,".csv",sep="");
+         fname <- paste("./output/Q3_Outpatient_",Var,"_cost_",CC,".csv",sep="");
          print(fname)
          print(CC)
          print(get(tab))

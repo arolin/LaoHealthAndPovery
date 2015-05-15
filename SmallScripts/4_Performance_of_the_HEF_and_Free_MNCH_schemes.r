@@ -145,7 +145,6 @@ q4_26Mean <- formatC(sapply(lgroups,function(G){mean(lps[G&q4_25s,q4_26])}),form
 q4_26Median <- formatC(sapply(lgroups,function(G){median(lps[G&q4_25s,q4_26])}),format="f",big.mark=",",digits=0)
 
 
-
 Q4_20Tab <- rbind(interleave (NumHospitalBirths,sprintf(100*NumHospitalBirths/NumMothers,fmt="%1.f%%")),
                   interleave (RecievedAllowance,sprintf(100*RecievedAllowance/NumHospitalBirths,fmt="%1.f%%")),
                   interleave (q4_21Mean,q4_21Median),
@@ -156,6 +155,125 @@ rownames(Q4_20Tab) <- c("Hospital Births (%of total births)","Recieved Food Allo
 Q4_20Tab
 SaveTables(Q4_20Tab,"q4_20-25_Food_and_transportation_allowance_for_hospital_births","Food and transportation allowances for hospital births")
 
+
+
+##7.10, 7.15 Questions on allowances received:
+CodeLables[["q7_7"]][1,]
+q7_7 <- "Child_Admitted_Types_of_service"
+NumAdmitted <- sum(!is.na(lps[,q7_7]))
+NumAdmitted
+sapply(CodeLables[["q7_7"]][1,],function(C){sum(lps[,q7_7]==C,na.rm=T)})
+q7_10 <- "Child_Admitted_Code_3_4_5_6"
+NumAdmitted <- sum(!is.na(lps[,q7_10]))
+NumCode3456 <- sum(lps[,q7_10]==1,na.rm=T)
+NumCode3456
+
+
+
+FmtPer <- function(R) {sprintf(100*R,fmt="%.1f%%")}
+
+
 ##Questions on satisfaction: 7.17, 7.21
+q7_19 <- "Child_Admitted_Service_Good"
+q7_19s <- !is.na(lps[,q7_19])
+lps[q7_19s,q7_19]
+ChildAdmitted <- sapply(lgroups,function(G){sum(q7_19s[G])})
+GoodService <- sapply(lgroups,function(G){sum(lps[q7_19s&G,q7_19]==1)})
+GoodService
+
+q7_21 <- "Child_Admitted_Wait_long"
+WaitLong  <- sapply(lgroups,function(G){sum(lps[G,q7_21]==1,na.rm=T)})
+WaitLong
+
+Q7_SatTab <- rbind.data.frame(interleave(ChildAdmitted,rep(NA,length(ChildAdmitted))),
+                   interleave(GoodService,FmtPer(GoodService/ChildAdmitted)),
+                   interleave(WaitLong,FmtPer(WaitLong/ChildAdmitted)))
+rownames(Q7_SatTab) <- c("Num Child Admitted","Report Good Service (%of admitted)","Report Widted Long (%of admitted)")
+N <- interleave(names(ChildAdmitted),rep("",length(ChildAdmitted)))
+colnames(Q7_SatTab) <- N
+N                
+print(Q7_SatTab)
+SaveTables(Q7_SatTab,"Q7_17.21_Chiled_admitted_satifcation_measure","Measure of satisfaction with child inpatient procedure")
 
 
+## Questions on knowledge: 8.1 to 8.4
+## HEF_Knowledge
+## HEF_Recieved_card
+## HEF_Kept_card
+## HEF_Free_service_Know
+## HEF_Free_service_Available_to
+## HEF_Free_service_level_HC
+## HEF_Free_service_level_DH
+## HEF_Free_service_level_PH
+## HEF_Free_service_level_National_hospital
+## HEF_Free_service_level_Dont_know
+## HEF_Member_kown_rights_Preventive_services
+## HEF_Member_kown_rights_Outpatient_consultations
+## HEF_Member_kown_rights_Admissions
+## HEF_Member_kown_rights_Food_transport_all
+## HEF_Member_kown_rights_Food_transport_hospitals_only
+## HEF_Member_kown_rights_Dont_know
+hgroups <- list(PreID=lgroups[[1]],GeoID=lgroups[[2]],AllHEF=lgroups[[1]]|lgroups[[2]])
+hgroups
+
+
+NumGroups <- sapply(hgroups,function(G){sum(!is.na(lps[G,"HEF_Knowledge"]))})
+NumGroups
+q8_1_1 <- "HEF_Knowledge";
+NumKnow <- sapply(hgroups,function(G){sum(lps[G,q8_1_1]==1)})
+NumKnow
+q8_1_2 <- "HEF_Recieved_card";
+NumRecv <- sapply(hgroups,function(G){sum(lps[G,q8_1_2]==1,na.rm=T)})
+NumRecv
+q8_1_3 <- "HEF_Kept_card";
+NumKept <- sapply(hgroups,function(G){sum(lps[G,q8_1_3]==1,na.rm=T)})
+NumKept
+q8_2_a <- "HEF_Free_service_Know"
+FreeKnow <- sapply(hgroups,function(G){sum(lps[G,q8_2_a]==1,na.rm=T)})
+FreeKnow
+q8_2_b <- "HEF_Free_service_Available_to"
+FreeAvail <- sapply(hgroups,function(G){sum(lps[G,q8_2_b]==1,na.rm=T)})
+FreeAvail
+#sum (lps[,q8_2_b]==1 & lps[,q8_2_a]!=1,na.rm=T)
+
+FreeLevels <- c("HEF_Free_service_level_HC","HEF_Free_service_level_DH","HEF_Free_service_level_PH","HEF_Free_service_level_National_hospital","HEF_Free_service_level_Dont_know")
+FreeLoc <- sapply(hgroups,function(G){sapply(FreeLevels,function(F){sum(!is.na(lps[G,F]))})})
+
+FreeRights <- c("HEF_Member_kown_rights_Preventive_services","HEF_Member_kown_rights_Outpatient_consultations","HEF_Member_kown_rights_Admissions","HEF_Member_kown_rights_Food_transport_all","HEF_Member_kown_rights_Food_transport_hospitals_only","HEF_Member_kown_rights_Dont_know")
+FreeRightsK <- sapply(hgroups,function(G){sapply(FreeRights,function(F){sum(!is.na(lps[G,F]))})})
+FreeRightsRowNames <- c("Kown rights Preventive services","Kown rights Outpatient consultations","Kown rights Admissions","Kown rights Food transport all","Kown rights Food transport hospitals only","Kown rights Dont know")
+
+
+HEFTab <- rbind(interleave(NumGroups,rep(NA,length(names(NumGroups)))),
+                interleave(NumKnow,FmtPer(NumKnow/NumGroups)),
+                interleave(NumRecv,FmtPer(NumRecv/NumKnow)),
+                interleave(NumKept,FmtPer(NumKept/NumKnow)),
+                interleave(FreeKnow,FmtPer(FreeKnow/NumGroups)),
+                interleave(FreeAvail,FmtPer(FreeAvail/NumGroups)),
+                interleave2d(FreeLoc,FmtPer(t(t(FreeLoc)/FreeKnow))),
+                interleave2d(FreeRightsK,FmtPer(t(t(FreeRightsK)/FreeKnow))))
+HEFTab
+
+
+paste(FreeRightsRowNames,"(%of know free)")
+
+rownames(HEFTab) <- c("Count",
+                      "Know HEF (%of group)",
+                      "Num Reciev Card (%of know)",
+                      "Num Kept Card (%of know)",
+                      "Num know free services (%of group)",
+                      "Free services avaialbe (%of know free)",
+                      paste(FreeLevels,"(%of know free)"),
+                      paste(FreeRightsRowNames,"(%of know free)"))
+colnames(HEFTab) <- interleave(as.character(names(NumGroups)),rep(" ",length(names(NumGroups))))
+HEFTab
+SaveTables(HEFTab,"Q8_1..4_HEF_Awareness","Member awareness of HEF Services")
+
+interleave(as.character(names(NumGroups)),rep("",length(names(NumGroups))))
+
+length(interleave(names(NumGroups),rep("",length(names(NumGroups)))))
+
+names(NumGroups)
+## Questions on payments: 8.8
+## Questions on allowances received: 8.10, 8.15
+## Questions on satisfaction: 8.19, 8.21

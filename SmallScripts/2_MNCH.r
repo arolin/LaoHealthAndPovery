@@ -17,14 +17,21 @@ Mothers<-!is.na(lps[,"Mother_ID"])
 
 NumMothers <-sapply (lgroups,function(X){sum(X&Mothers)})
 SaveTables(as.data.frame(NumMothers),"Q4_NumMothers.csv","Num of mothers with ID cards")
+NumMothers
 
+
+haveCard <- lps[,"Mother_ANC_Card_1_Date"]!=""
+lagroups <- list(lgroups[[1]],lgroups[[1]]&haveCard,lgroups[[2]],lgroups[[2]]&haveCard,lgroups[[3]],lgroups[[3]]&haveCard,lgroups[[4]])
+names(lagroups) <- c("PreID","PreID\n+card","GeoID","GeoID\n+card","NoAssist","NoAssist\n+card","All")
+sapply(lagroups,sum)
+qCheck2(q4,"4_Card_NoCard",lagroups)
 
 #Questions on ANC: 4.2, 4.3, 4.4
 
 ########################################
 ##4.2 - Have Mosquito net
-lps$Mother_Mosquito_net_last_night <-factor(lps$Mother_Mosquito_net_last_night,labels=c("Normal","Treated","None"))
-MNet <- table(lps$Mother_Mosquito_net_last_night[Mothers],lps$Group[Mothers])
+lps$Mosquito_net_last_night <-factor(lps$Mother_Mosquito_net_last_night,labels=c("Normal","Treated","None"))
+MNet <- table(lps$Mosquito_net_last_night[Mothers],lps$Group[Mothers])
 All<-rowSums(MNet)
 MNet<-cbind(MNet,All)
 MNet<- t(t(MNet)/rowSums(t(MNet)))
@@ -66,7 +73,9 @@ NiceTable<-function(V,lv=NULL,lb=NULL) {
 
 PregCard <- NiceTable("Mother_have_a_pregnancy_monitoring_card",lv=c(1,2),lb=c("Yes","No"))
 SaveTables(PregCard$ftab,"Q4_3_Have_Pregnancy_Monitoring_Card","Percent of mothers with pregnancy monitoring cards")
-
+PregCard
+HaveANCCard   <- lps[,"Mother_have_a_pregnancy_monitoring_card"]==1
+sapply(lgroups,function(G){sum(HaveANCCard[Mothers&G],na.rm=T)})
 
 ##4.4
 Q4_4<-c("Mother_How_many_ANC_verbal_ANC1","Mother_How_many_ANC_verbal_ANC2","Mother_How_many_ANC_verbal_ANC3","Mother_How_many_ANC_verbal_ANC4","Mother_How_many_ANC_verbal_ANC5")
@@ -76,7 +85,41 @@ ANC <- sapply (Q4_4,function(X){sapply(lgroups,function(G){sum(lps[G&M4_4,X]==1)
 ANC <- t(ANC);
 colnames(ANC) <- names(lgroups)
 rownames(ANC) <- sapply(1:5,function(X){paste("Had at least",X,"ANC visit")})
-SaveTables(ANC,"Q4_4_ANC_count","Number of AnteNatal Care Visis")
+SaveTables(ANC,"Q4_4_ANC_verbal_count","Number of AnteNatal Care Visis")
+ANC
+
+sum(!is.na(lps[,"Mother_How_many_ANC_verbal_ANC1"]))
+sum(lps[,"Mother_ANC_Card_1_Date"]!="")
+q4_4_card <- c("Mother_ANC_Card_1_Date","Mother_ANC_Card_2_Date","Mother_ANC_Card_3_Date","Mother_ANC_Card_4_Date","Mother_ANC_Card_5_Date")
+
+ANCCard <- sapply(lgroups,function(G){sapply(q4_4_card,function(N){sum(lps[G,N]!="" & lps[G,N]!="00.00.0000",na.rm=T)})})
+sapply(lgroups,function(G){sapply(q4_4_card,function(N){sum(is.na(lps[G,"Mother_How_many_ANC_verbal_ANC1"]) & lps[G,N]!="" & lps[G,N]!="00.00.0000",na.rm=T)})})
+SaveTables(ANCCard,"Q4_4_ANC_Card_count","Count of ANC visits by card")
+
+q4_2_1 <- "Mother_been_to_ANC"
+sapply(lgroups,function(G){sum(lps[G,q4_2_1]==1,na.rm=T)})
+
+haveCard <- lps[,q4_4_card]!="" & lps[,q4_4_card]!="00.00.0000"
+haveCard <- haveCard[,1]
+haveCard[is.na(haveCard)]=F
+q4_3 <- "Mother_have_a_pregnancy_monitoring_card"
+sapply(lgroups,function(G){sum(lps[G,q4_3]==1,na.rm=T)})
+
+sum(haveCard&Mothers)
+sum(Mothers)
+lps[which(haveCard[,1])[1],q4_4_card]
+sum(!is.na(lps[,"Mother_How_many_ANC_verbal_ANC1"]))
+##Q4_5
+q4_5 <- c("Mother_ANC_Where_Provincial_Hospital","Mother_ANC_Where_District_Hospital","Mother_ANC_Where_Health_centre","Mother_ANC_Where_Village_mobile_clinic","Mother_ANC_Where_Private_clinic","Mother_ANC_Where_TBA","Mother_ANC_Where_Other")
+Q4_5_ANCLocations <- sapply(lgroups,function(G){sapply(q4_5,function(L){sum(!is.na(lps[G,L]))})})
+write.csv(Q4_5_ANCLocations,file="./output/Q4_5_ANCLocations.csv")
+Q4_5_ANCLocations_Card <- sapply(lagroups,function(G){sapply(q4_5,function(L){sum(!is.na(lps[G,L]))})})
+Q4_5_ANCLocations_Card
+write.csv(Q4_5_ANCLocations_Card,file="./output/Q4_5_ANCLocations_Card.csv")
+
+
+
+
 
 ##Questions on TT: 4.7
 Q4_7 <- "Mother_TT_immun_before_or_during_pregnancy"
@@ -112,10 +155,14 @@ sum(Q4_16Others)
 #No others!
 lps[,Q4_16]<-factor(lps[,Q4_16],labels=Q4_16_codes)
 BirthFacility <- t(sapply(Q4_16_codes,function(X){sapply(lgroups,function(G){sum(lps[G,Q4_16]==X,na.rm=T)})}))
-colSums(BirthFacility)
+BirthFacility <- t(sapply(Q4_16_codes,function(X){sapply(lgroups,function(G){sum(lps[G&haveCard,Q4_16]==X,na.rm=T)})}))
+BirthFacility
+
+
+    colSums(BirthFacility)
 BirthFacility <- PercentifyTable(BirthFacility)
 SaveTables(BirthFacility,"Q4_16_BirthFacility","Reported Delivery Facility Type")
-
+BirthFacility
 
 
 ##Questions on satisfaction: 4.31
