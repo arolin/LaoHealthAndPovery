@@ -126,6 +126,7 @@ findOutliers <- function (X,lim) {
   }
 }
 
+Codes <- read.csv(file="Constants/Codes.csv")
 LastQ <- ""
 Codes$Question <- as.character(Codes$Question)
 for (q in 1:length(Codes$Question)) {
@@ -168,11 +169,12 @@ qCheck2<-function(Q=q4,N=NULL,groups=lgroups) {
                  return(c(qn,s))
                }))
   gcn<-sapply(names(groups),function(G){return (c(paste(G,"RespCount"),paste(G,"Vals")))})
-  dim(gcn) <- 2*length(groups)
-  print(gcn)
+  ## dim(gcn) <- 2*length(groups)
+  ## print(gcn)
   colnames(qa)<-c("QName",gcn)
   write.csv(qa,paste("./output/Q_",N,"_Frequncies.csv",sep=""))
 ##  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
 }
 
   
+FmtPer <- function(R) {R[is.nan(R)] <- 0;sprintf(100*R,fmt="%.1f%%")}
