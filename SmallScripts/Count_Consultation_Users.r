@@ -10,6 +10,7 @@
 source ("./SmallScripts/Utility.r")
 ##"Private_Clinic",
 careCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer","Traditional_Healer","Private_Clinic","Private_Pharmacist","Religious_Healer");
+careCenters =c("Total")
 NationalCenters  = c("National_Hospital","Provincial_Hospital","District_Hospital","Health_Center","Health_Volunteer");
 paymentClass = c("_cost_Medicine","_cost_Medical_Fee","_cost_Transport","_cost_Others","_cost_Overall_average");
 
@@ -30,8 +31,6 @@ ConsultTableExtract <- function (prefixes) {
   for (prefix in prefixes) {
     for (cc in careCenters) {
       flag<-paste(prefix,"Consult_",cc,sep="");
-
-
       payFields<-sapply(paymentClass,function(X){paste(prefix,cc,"_cost_",X,sep="")});
       names<-c(names,payFields);
       ID<-paste(prefix,"report_individual_number",sep="");
@@ -54,22 +53,36 @@ ConsultTableExtract <- function (prefixes) {
   return (newTab);
 }
 
-OutPatCostTable <- ConsultTableExtract(c("HH_Illness_1_","HH_Illness_2_"))
-OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
-OutPatGroupsOutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
-sapply(OutPatGroups,sum)
-
-InPatCostTable <- ConsultTableExtract(c("HH_Illness_3_"))
-InPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable$Group==G})
-InPatGroups <- cbind.data.frame(InPatGroups,All=T)
-sapply(InPatGroups,sum)
-
-
-
+OutPatCostTable <- ConsultTableExtract(c("HH_Illness_1_"))
+for (i in c(96,238,883)){
+  OutPatCostTable <- OutPatCostTable[OutPatCostTable$Serial!=i,]
+}
 OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
 OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
-OutPatGroups
 sapply(OutPatGroups,sum)
+
+
+InPatCostTable <- ConsultTableExtract(c("HH_Illness_2_"))
+for (i in c(96,238,883)){
+  InPatCostTable <- InPatCostTable[InPatCostTable$Serial!=i,]
+}
+InPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable$Group==G})
+InPatGroups <- cbind.data.frame(InPatGroups,All=T)
+out <- findOutliers(InPatCostTable$Overall_average,3)
+InPatCostTable[out,]
+sapply(InPatGroups,sum)
+
+InPatCostTable2 <- ConsultTableExtract(c("HH_Illness_3_"))
+for (i in c(96,238,883)){
+  InPatCostTable2 <- InPatCostTable2[InPatCostTable2$Serial!=i,]
+}
+InPatGroups2 <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable2$Group==G})
+#Analyse the maximum values and remove the extremes: row 97 and 239 and certainly 884 (check)
+InPatGroups2 <- cbind.data.frame(InPatGroups2,All=T)
+sapply(InPatGroups2,sum)
+
+
+
 
 
 buildFlags <- function (prefixes = prefixes, careCenter=careCenters) {

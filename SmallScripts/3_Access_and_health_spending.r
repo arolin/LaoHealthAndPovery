@@ -209,22 +209,49 @@ SumGroup <- function(PatFrame,G,Var,Center=T) {
   Zeros <- sum(PatFrame[G&Center,Var]==0);
   DK <-PatFrame[,Var]==98 | PatFrame[,Var]==99
   Count  <- sum(G&Center);
-  Total <- sum(PatFrame[G&Center& !DK,Var])
-  Mean <- mean(PatFrame[G&Center& !DK,Var])
-  Median <- median(PatFrame[G&Center& !DK,Var])
-  Max <- max(PatFrame[G&Center& !DK,Var])
+  out <- findOutliers(PatFrame[G&Center& !DK,Var],OLim);
+  
+  Total <- sum(PatFrame[G&Center& !DK,Var][!out])
+  Mean <- mean(PatFrame[G&Center& !DK,Var][!out])
+  Median <- median(PatFrame[G&Center& !DK,Var][!out])
+  Max <- max(PatFrame[G&Center& !DK,Var][!out])
   DK <- sum(DK[G&Center]);
-  list(Zeros=Zeros,DK=DK,Count=Count,Total=Total,Mean=Mean,Median=Median,Max=Max)
+  Out <- sum(out);
+  if (OLim>0) {
+    list(Zeros=Zeros,DK=DK,Outliers=Out,Count=Count,Total=Total,Mean=Mean,Median=Median,Max=Max)
+  }else {
+    list(Zeros=Zeros,DK=DK,Count=Count,Total=Total,Mean=Mean,Median=Median,Max=Max)
+  }
 }
 
 
-InPatTotCostAll <- sapply(InPatGroups,function(G){SumGroup(InPatCostTable,G,"Overall_average")})
-InPatTotCostAll
-write.csv(InPatTotCostAll,file="./output/Q3_Inpatient_Overall_cost_All_services.csv")
 
+OLim=-1
 OutPatTotCostAll <- sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,"Overall_average")})
 OutPatTotCostAll
-write.csv(OutPatTotCostAll,file="./output/Q3_Outpatient_Overall_cost_All_services.csv")
+write.csv(OutPatTotCostAll,file="./output/Q3_2_Overall_cost_All_services.csv")
+
+InPatTotCostAll <- sapply(InPatGroups,function(G){SumGroup(InPatCostTable,G,"Overall_average")})
+InPatTotCostAll
+write.csv(InPatTotCostAll,file="./output/Q3_5_Overall_cost_All_services.csv")
+
+InPatTotCostAll2 <- sapply(InPatGroups2,function(G){SumGroup(InPatCostTable2,G,"Overall_average")})
+InPatTotCostAll2
+write.csv(InPatTotCostAll2,file="./output/Q3_7_Overall_cost_All_services.csv")
+
+
+OLim=3
+OutPatTotCostAll <- sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,"Overall_average")})
+OutPatTotCostAll
+write.csv(OutPatTotCostAll,file="./output/Q3_2_Overall_cost_All_services_limit3SD.csv")
+
+InPatTotCostAll <- sapply(InPatGroups,function(G){SumGroup(InPatCostTable,G,"Overall_average")})
+InPatTotCostAll
+write.csv(InPatTotCostAll,file="./output/Q3_5_Overall_cost_All_services_limit3SD.csv")
+
+InPatTotCostAll2 <- sapply(InPatGroups2,function(G){SumGroup(InPatCostTable2,G,"Overall_average")})
+InPatTotCostAll2
+write.csv(InPatTotCostAll2,file="./output/Q3_7_Overall_cost_All_services_limit3SD.csv")
 
 CCs <- levels(factor(InPatCostTable$CareCenter))
 
@@ -234,7 +261,7 @@ GF <- function(Var) {
 OutTabs <- sapply(CCs,function(CC){
          tab <- paste("OutPatTotCost",CC,Var,sep="_")
          assign (tab , sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,Var,CC)}))
-         fname <- paste("./output/Q3_Outpatient_",Var,"_cost_",CC,".csv",sep="");
+         fname <- paste("./output/Q3_3_",Var,"_cost_",CC,".csv",sep="");
          print(fname)
          print(CC)
          print(get(tab))
@@ -242,14 +269,21 @@ OutTabs <- sapply(CCs,function(CC){
          return(get(tab))
        })
 
-
-
-
-
 InTabs <- sapply(CCs,function(CC){
          tab <- paste("InPatTotCost",CC,Var,sep="_")
          assign (tab , sapply(InPatGroups,function(G){SumGroup(InPatCostTable,G,Var,CC)}))
-         fname <- paste("./output/Q3_DKF_InPatient_",Var,"_cost_",CC,".csv",sep="");
+         fname <- paste("./output/Q3_5_",Var,"_cost_",CC,".csv",sep="");
+         print(fname)
+         print(CC)
+         print(get(tab))
+         write.csv(get(tab),fname)
+         return(get(tab))
+       })
+
+InTabs <- sapply(CCs,function(CC){
+         tab <- paste("InPatTotCost",CC,Var,sep="_")
+         assign (tab , sapply(InPatGroups2,function(G){SumGroup(InPatCostTable2,G,Var,CC)}))
+         fname <- paste("./output/Q3_5_",Var,"_cost_",CC,".csv",sep="");
          print(fname)
          print(CC)
          print(get(tab))
@@ -270,40 +304,53 @@ CC1 <- lapply(vars,function(Var){
                     return(summ)
                   })
 
-PatGroup <- InPatGroups
-PatCostTable <- InPatCostTable
-patType <- "InPatient"
 
-
-PatGroup <- OutPatGroups
-PatCostTable <- OutPatCostTable
-patType <- "OutPatient"
-
-STable <- data.frame(stringsAsFactors=F)
-rnames <- c();
-CCNames <- c();
-CTNames <- c();
-for (c in 1:length(CCs)) {
-  CC <- CCs[c];
-  for(v in 1:length(vars)) {
-    Var <- vars[v];
-    summ <- sapply(PatGroup,function(G){SumGroup(PatCostTable,G,Var,CC)})
-    r <- as.vector(summ["DK",])
-    r <- as.numeric(sapply(summ["DK",],function(V){return(V)}))
-    r2 <- as.numeric(sapply(summ["Count",],function(V){return(V)}))
-    row <- c();
-    for (i in 1:4) {
-      row <- c(row,r2[i]-r[i],summ["Mean",i])
+GetCostMeans <- function(PatGroup,PatCostTable,patType) {
+  STable <- data.frame(stringsAsFactors=F)
+  rnames <- c();
+  CCNames <- c();
+  CTNames <- c();
+  for (c in 1:length(CCs)) {
+    CC <- CCs[c];
+    for(v in 1:length(vars)) {
+      Var <- vars[v];
+      summ <- sapply(PatGroup,function(G){SumGroup(PatCostTable,G,Var,CC)})
+      r <- as.vector(summ["DK",])
+      r <- as.numeric(sapply(summ["DK",],function(V){return(V)}))
+      r2 <- as.numeric(sapply(summ["Count",],function(V){return(V)}))
+      row <- c();
+      for (i in 1:4) {
+        row <- c(row,r2[i]-r[i],summ["Mean",i])
+      }
+      STable <- rbind(STable,row)
+      CCNames <- c(CCNames,CC);
+      CTNames <- c(CTNames,Var);
     }
-     STable <- rbind(STable,row)
-    CCNames <- c(CCNames,CC);
-    CTNames <- c(CTNames,Var);
   }
+  STable <- cbind(CCNames,CTNames,STable)
+  colnames(STable) <- c("Center Type","Cost Type","N PreID","Mean PreID","N GeoID","Mean GeoID","N No Assist","Mean No Assist","N All","Mean All")
+  print(STable)
+  write.csv(STable,paste("./output/Q3_",patType,"_Means.csv",sep=""));
 }
-STable <- cbind(CCNames,CTNames,STable)
-colnames(STable) <- c("Center Type","Cost Type","N PreID","Mean PreID","N GeoID","Mean GeoID","N No Assist","Mean No Assist","N All","Mean All")
-STable
-write.csv(STable,paste("./output/Q3_",patType,"_Means.csv",sep=""));
+
+OLim=-1
+GetCostMeans(InPatGroups, InPatCostTable, "5")
+GetCostMeans(InPatGroups2,InPatCostTable2,"7")
+GetCostMeans(OutPatGroups,OutPatCostTable,"3")
+
+OLim=3
+sapply (OutPatGroups,function(G){SumGroup(OutPatCostTable,
+                                         G,
+                                          vars[4],
+                                          CCs[2])})
+OutPa
+vars[4]
+
+OLim=3
+GetCostMeans(InPatGroups, InPatCostTable, "5_limit3sd")
+GetCostMeans(InPatGroups2,InPatCostTable2,"7_limit3sd")
+GetCostMeans(OutPatGroups,OutPatCostTable,"3_limit3sd")
+
 
 
 
