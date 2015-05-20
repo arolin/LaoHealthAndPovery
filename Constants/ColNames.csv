@@ -1687,7 +1687,7 @@ Mebendazole date?                                                               
 "8.9 others, specify_____/LAK                                                                                                         ",q8_9_4,Adult_Admitted_Cost_Other_LAK
 8.9 Average amount:____/LAK                                                                                                          ,q8_9_5,Adult_Admitted_Cost_Average_LAK
 8.9 other specify                                                                                                                    ,q8_9_1_other,Adult_Admitted_Cost_Other_specify
-"8.10 If HEF admitted adult (code 3, 4, 5, 6), did you re...                                                                          ",q8_10,"8.10IfHEFadmittedadult(code3,4,5,6),didyoure..."
+"8.10 If HEF admitted adult (code 3, 4, 5, 6), did you re...                                                                          ",q8_10,Adult_Admitted_Food_allowance
 8.11 Food allowance amount  (kip)                                                                                                    ,q8_11,Adult_Admitted_Food_allowance_amount
 8.12 Food allowance amount  (kip)                                                                                                    ,q8_12,Adult_Admitted_Food_allowance_receipt_voucher
  8.13 Did you receive food allowance daily?                                                                                          ,q8_13,Adult_Admitted_Food_allowance_daily
