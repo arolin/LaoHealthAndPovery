@@ -170,7 +170,7 @@ NumCode3456
 
 
 
-FmtPer <- function(R) {sprintf(100*R,fmt="%.1f%%")}
+
 
 
 ##Questions on satisfaction: 7.17, 7.21
