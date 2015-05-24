@@ -106,7 +106,8 @@ ANCCard
 
 ALLANC <- rbind(interleave(NumMothers,rep("",length(NumMothers))),
                 interleave2d (ANCCard + ANC,FmtPer( t(t(ANCCard + ANC)/NumMothers))))
-colnames(ALLANC) <- c("PreID","","GeoID","","NoAssist","")      
+ALLANC
+colnames(ALLANC) <- lgNames
 rownames(ALLANC) <- c("Num Mothers",
                       "At Least 1 ANC Visits",
                       "At Least 2 ANC Visits",
@@ -119,7 +120,7 @@ SaveTables(ALLANC,"Q4_4_Verbal_and_Card","ANC visit rates for verbal and card ve
 
 VerbalANC <- rbind(interleave(NumMothers,rep("",length(NumMothers))),
                 interleave2d (ANC,FmtPer( t(t(ANC)/NumMothers))))
-colnames(VerbalANC) <- c("PreID","","GeoID","","NoAssist","")      
+colnames(VerbalANC) <- lgNames
 rownames(VerbalANC) <- c("Num Mothers",
                       "At Least 1 ANC Visits",
                       "At Least 2 ANC Visits",
@@ -131,7 +132,7 @@ SaveTables(VerbalANC,"Q4_4_Verbal","ANC visit rates for verbal only")
 
 CardANC <- rbind(interleave(NumMothers,rep("",length(NumMothers))),
                 interleave2d (ANCCard,FmtPer( t(t( ANCCard)/NumMothers))))
-colnames(CardANC) <- c("PreID","","GeoID","","NoAssist","")      
+colnames(CardANC) <- lgNames 
 rownames(CardANC) <- c("Num Mothers",
                       "At Least 1 ANC Visits",
                       "At Least 2 ANC Visits",
@@ -160,7 +161,6 @@ sapply(lgroups,function(G){sum(lps[G,q4_3]==1,na.rm=T)})
 
 sum(haveCard&Mothers)
 sum(Mothers)
-lps[which(haveCard[,1])[1],q4_4_card]
 sum(!is.na(lps[,"Mother_How_many_ANC_verbal_ANC1"]))
 ##Q4_5
 q4_5 <- c("Mother_ANC_Where_Provincial_Hospital","Mother_ANC_Where_District_Hospital","Mother_ANC_Where_Health_centre","Mother_ANC_Where_Village_mobile_clinic","Mother_ANC_Where_Private_clinic","Mother_ANC_Where_TBA","Mother_ANC_Where_Other")
@@ -181,6 +181,7 @@ TTPreg$ftab <- rbind.data.frame(TTPreg$ftab,sapply(lgroups,function(G){as.charac
 rownames(TTPreg$ftab)[3] <- "Num Resp"
 TTPreg$ftab <- as.data.frame(TTPreg$ftab)
 TTPreg$ftab
+sapply(lgroups,function(G){sum(lps[G,Q4_7]==1,na.rm=T)})
 SaveTables(as.matrix(TTPreg$ftab),"Q4_7_Mother_TT_immun_before_or_during_pregnancy","Mother TT immun before or during pregnancy");
 
 ##Q4_7 detail
@@ -190,7 +191,7 @@ TTPregCard <- t(sapply(Q4_7D,function(X){sapply(lgroups,function(G){sum(lps[G,X]
 SaveTables(TTPregCard,"Q4_7_Detail_TT_Pregnancy_Card","Pregnancy TT Imunization Card Records");
 t(t(TTPregCard)/NumMothers)
 PercentifyTable(TTPregCard)
-
+TTPregCard
 
 for(i in 1:5) {TTPregCard2 <- rbind(NumMothers-TTPregCard[i,],TTPregCard[i,]);print(chisq.test(TTPregCard2[,1:3])$p.value);}
 
@@ -343,6 +344,18 @@ Q8_9Tab
 SaveTables(Q8_9Tab,"Q8_9_Food_allowaance_Rates_by_admission_facility","Food allowance rates by addmission facility type.")
 
 
+ AdmittedFood <- sapply(hgroups,function(G){sapply(admitLocs,function(L){admits <- !is.na(lps[,L]);sum(lps[admits&G,q8_9]==2,na.rm=T)})})
+AdmittedFood <- rbind(AdmittedFood,colSums(AdmittedFood))
+AdmittedFood
+Admitted
+Q8_9TabNo <- interleave2d(Admitted-AdmittedFood,FmtPer((Admitted-AdmittedFood)/Admitted))
+colnames(Q8_9TabNo) <- c("PreID","%No Allowance","GeoID","%No Allowance","All","%No Allowance")
+rownames(Q8_9TabNo) <- c(admitLocTypes,"Total")
+Q8_9TabNo
+SaveTables(Q8_9TabNo,"Q8_9_No_food_allowance_Rates_by_admission_facility","Food allowance rates by addmission facility type.")
+
+
+
 Codes[which(Codes$Question=="q8_15"),]
 q8_15 <- "Adult_Admitted_Outside_HEF_3km_radius"
 q8_15s <- !is.na(lps[,q8_15])
@@ -480,7 +493,7 @@ q4_34A <- sapply(lgroups,function(G){tabulate(lps[G&Mothers,q4_34])})
 q4_34A <- interleave2d(q4_34A,FmtPer(t(t(q4_34A)/NumMothers)))
 q4_34A <- rbind(interleave(NumMothers,rep("",length(lgroups))),q4_34A)
 rownames(q4_34A) <- c("Num Mothers",q4_34C$Label)
-colnames(q4_34A) <- interleave(names(lgroups),rep(""),length(lgroups))
+colnames(q4_34A) <- lgNames
 q4_34A
 SaveTables(q4_34A,"Q4_34_Mother_Breast_feed_time","Time to breast feeding")
 

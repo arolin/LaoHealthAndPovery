@@ -1,3 +1,4 @@
+library("xtable")
 lpsraw<-read.csv("./Data/LPS.csv");
 lps=lpsraw[1:930,];
 
@@ -34,14 +35,23 @@ lps$"dist" <- factor(lps$"dist",labels = DistNames);
 ## HEFCard <-!is.na(lps$HH_Insurance_HEFCard);
 ## GVTPoor <-!is.na(lps$HH_Insurance_GVTPoor);
 ## NoInsu <- !is.na(lps$HH_Insurance_Informal_no_insurance)
-## VilPoor <-lps$VilPoor=="Yes";
+## VilPoor <-lps$VilPoor=="Yes"
+q2_8x <- paste("q2_8_",1:30,sep="")
+for (i in 1:30) {lps[,q2_8x[i]] <- as.numeric(lps[,q2_8x[i]]);}
+
+
+lps$HH_Illness_1_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Illness_1_Total_cost_Overall_average))
+lps$HH_Illness_2_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Illness_2_Total_cost_Overall_average))
+lps$HH_Illness_3_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Illness_3_Total_cost_Overall_average))
+
+#Split Dependents
+#source("SplitDeps.R")
+load("IndiHealth.bin");
 
 source("./SmallScripts/DefineGroups.r")
 source("./SmallScripts/Count_Consultation_Users.r")
 
 
-#Split Dependents
-#source("SplitDeps.R")
-load("IndiHealth.bin");
+
 
 

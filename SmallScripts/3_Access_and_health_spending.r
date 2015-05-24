@@ -229,7 +229,7 @@ SumGroup <- function(PatFrame,G,Var,Center=T) {
 OLim=-1
 OutPatTotCostAll <- sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,"Overall_average")})
 OutPatTotCostAll
-write.csv(OutPatTotCostAll,file="./output/Q3_2_Overall_cost_All_services.csv")
+write.csv(OutPatTotCostAll,file="./output/Q3_3_Overall_cost_All_services.csv")
 
 InPatTotCostAll <- sapply(InPatGroups,function(G){SumGroup(InPatCostTable,G,"Overall_average")})
 InPatTotCostAll
@@ -353,10 +353,48 @@ GetCostMeans(OutPatGroups,OutPatCostTable,"3_limit3sd")
 
 
 
+AdmitPerHH <- sapply(seq(8,16,2),function(C){
+                       q2_xx <- paste("q2_",C,"_",1:30,sep="")
+                       ##admissions in the past year by HH
+                       admissions <- apply(lps[,q2_xx],1,function(R){
+                                             sum(as.numeric(R[])==1,na.rm=T)
+                                           })
+                       sapply(lgroups,function(G){
+                                sum(admissions[G]>0)
+                              })
+                     })
+AdmitPerHH <- t(AdmitPerHH);
+rownames(AdmitPerHH) <- c("HC","DH","PH","NH","PC")
+AdmitPerHH <- rbind(AdmitPerHH,Total=colSums(AdmitPerHH))
+AdmitPerHH
+SaveTables(AdmitPerHH,"Q2_8-16_1-30_HouseHolds_With_Admisions_in_past_year","House holds with atleast 1 admission")
+AdmitsPerHH <- sapply(seq(8,16,2),function(C){
+                       q2_xx <- paste("q2_",C,"_",1:30,sep="")
+                       ##admissions in the past year by HH
+                       admissions <- apply(lps[,q2_xx],1,function(R){
+                                             sum(as.numeric(R[])==1,na.rm=T)
+                                           })
+                       sapply(lgroups,function(G){
+                                sum(admissions[G])
+                              })
+                     })
+AdmitsPerHH <- t(AdmitsPerHH);
+rownames(AdmitsPerHH) <- c("HC","DH","PH","NH","PC")
+AdmitsPerHH <- rbind(AdmitsPerHH,Total=colSums(AdmitsPerHH))
+AdmitsPerHH
+SaveTables(AdmitsPerHH,"Q2_8-16_1-30_Total_Admisions_last_year","House holds with atleast 1 admission")
 
+
+sapply(lgroups,function(G) {sum(lps[G,"HH_Illness_3_report_individual_number"]>0,na.rm=T)})
+
+       
 ##% of HHs who borrowed money for health events by provider
 BorrowService <- c("HH_Services_Consultations","HH_Services_Medicine","HH_Services_Delivery","HH_Services_Admission_without_surgery","HH_Services_Admission_with_surgery")
-BorrowByGroup <- sapply(lgroups,function(G){sapply(BorrowService,function(S){sum(!is.na(lps[G,S]))})})
+BorrowByGroup <- sapply(lgroups,function(G){
+                          sapply(BorrowService,function(S){
+                                   sum(!is.na(lps[G,S]))
+                                 })
+                        })
 BorrowByGroup <- rbind(BorrowByGroup,Total=colSums(BorrowByGroup))
 BorrowByGroup
 write.csv(BorrowByGroup,"./output/Q3_10_Number_of_HH_borrowing_by_service_and_group.csv")

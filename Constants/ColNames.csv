@@ -1757,13 +1757,13 @@ Mebendazole date?                                                               
 9.13 What is the house made of? other specify                                                                                        ,q9_13_other,HH_Housing_Material_Other_specify
 9.14 What is the roof made of? - Grass or bamboo                                                                                     ,q9_14_1,HH_Roofing_Material_Grassorbamboo
 9.14 What is the roof made of? - Wood                                                                                                ,q9_14_2,HH_Roofing_Material_Wood
-"9.14 What is the roof made of? - Corrugated iron, ferro-cement                                                                       ",q9_14_3,HH_Roofing_Material_Corrugated_iron
+"9.14 What is the roof made of? - Corrugated iron, ferro-cement                                                                     ",q9_14_3,HH_Roofing_Material_Corrugated_iron
 9.14 What is the roof made of? - Tiles                                                                                               ,q9_14_4,HH_Roofing_Material_Tiles
 9.14 What is the roof made of? - Other:____________                                                                                  ,q9_14_5,HH_Roofing_Material_Other
 9.14 What is the roof made of? other specify                                                                                         ,q9_14_other,HH_Roofing_Material_Other_specify
 9.15. What type of latrine do household members use? - Modern toilet                                                                 ,q9_15_1,HH_Latrine_type_Modern_toilet
 9.15. What type of latrine do household members use? - Normal toilet                                                                 ,q9_15_2,HH_Latrine_type_Normal_toilet
-"9.15. What type of latrine do household members use? - Dry toilet, (Pit latrine)                                                     ",q9_15_3,HH_Latrine_type_Dry_toilet
+"9.15. What type of latrine do household members use? - Dry toilet, (Pit latrine)                                                   ",q9_15_3,HH_Latrine_type_Dry_toilet
 9.15. What type of latrine do household members use? - Other latrine specify________                                                 ,q9_15_4,HH_Latrine_type_Other
 9.15. What type of latrine do household members use? - None                                                                          ,q9_15_5,HH_Latrine_type_None
 9.15 What type of latrine do household members use? other specify                                                                    ,q9_15_other,HH_Latrine_type_Other_specify

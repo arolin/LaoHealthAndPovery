@@ -54,7 +54,7 @@ qCheck<-function(Q=q4,N=NULL) {
   print(gcn)
   colnames(qa)<-c("QName",gcn)
   write.csv(qa,paste("./output/Q_",N,"_Frequncies.csv",sep=""))
-  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
+  ##cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
 }
 
 
