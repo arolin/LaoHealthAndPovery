@@ -1,5 +1,6 @@
 #Access and health spending analysis
 source("./SmallScripts/Utility.r")
+
 library("xtable")
 
 
@@ -16,14 +17,117 @@ OvernightFTypes  <- c(
 HadCareQs <- sapply (OvernightFTypes,function(X){paste("Overnight",X,sep="_")})
 CareLenQs <- sapply (OvernightFTypes,function(X){paste("Nights",X,sep="_")})
 ##sanitize data --replace NA with 0 --probably not needed
-sapply(CareLenQs,function(Q) {IndiHealth[is.na(IndiHealth[,Q]),Q]=0})
+sapply(CareLenQs,function(Q) {IndiHealth[!is.na(IndiHealth[,Q]),Q]==1})
 
 ##get care flags and count by facility
 HadCare <- sapply (HadCareQs,function(X){IndiHealth[,X]==1})
 colSums(HadCare,na.rm=T)
 
 ##inspect care distribution
-OvernightCare  <- sapply(ligroups,function(G){sapply(HadCareQs,function(Q){sum(IndiHealth[G,Q]==1,na.rm=T)})})
+OvernightCare  <- sapply(ligroups,function(G){
+                           sapply(HadCareQs,function(Q){
+                                    sum(IndiHealth[G,Q]==1,na.rm=T)})
+                         })
+
+OvernightCareF <- rbind(interleaveBl(NumIndivids),
+                        intPer(OvernightCare,NumIndivids))
+rownames(OvernightCareF) <- c("Num Individuals",rownames(OvernightCare))
+colnames(OvernightCareF) <- lgNames
+OvernightCareF
+SaveTables(OvernightCareF,"Q2_8.10.12.14.16_Inpatient_Care_Rates","")
+
+
+##################################################
+InpCareCountQNs <- c(8,10,12,14,16)
+InpCareNames <- c("health centre","district hospital","provincial hospital","national hospital","private clinic")
+InpCareCountQs <-
+
+InpCareByHH <- t(sapply(InpCareCountQNs,function(C){
+                        InpCareCountQs <- paste("q2",C,1:30,sep="_");
+                        InpEvents <- apply(lps[,InpCareCountQs],1,function(X){sum(X==1,na.rm=T)})
+                        sapply(lgroups,function(G){
+                                 sum(InpEvents[G])
+                               })
+                      }))
+InpCareByHHF <- intPer(InpCareByHH,NumGroups)
+InpCareByHHF
+rownames(InpCareByHHF) <- InpCareNames
+InpCareByHHF
+SaveTables(InpCareByHHF,"Q2_8.10.12.14.16_Inpatient_HH_Care_Rates","")
+
+
+InpCareCountQs <-sapply(InpCareCountQNs,function(C){ paste("q2",C,1:30,sep="_")})
+InpEvents <- apply(lps[,InpCareCountQs],1,function(X){sum(X==1,na.rm=T)})
+InpEvents
+HHAdmitFreq <- sapply(lgroups,function(G){
+         sapply(as.numeric(levels(factor(InpEvents)))+1,function(L) {
+         sum( InpEvents[G]>=L)})
+       })
+HHAdmitFreq <- intPer(HHAdmitFreq,NumGroups)
+rownames(HHAdmitFreq) <- paste("At least",1:11,"Inpatient/HH")
+colnames(HHAdmitFreq) <- lgNames;
+HHAdmitFreq
+SaveTables(HHAdmitFreq,"Q2_8.10.12.14.16_Inpatient_HH_Admit_Freq","")
+
+
+InpNAdmitType <- apply(IndiHealth[,HadCareQs],1,function(X){sum(X==1,na.rm=T)})
+InpNFacility <- sapply(ligroups,function(G){
+                         sapply(as.numeric(levels(factor(InpNAdmitType)))+1,function(L){
+                                  sum(InpNAdmitType[G]>=L)})
+                       })
+InpNFacilityF <- rbind(interleaveBl(NumIndivids),
+                       intPer(InpNFacility,NumIndivids))
+rownames(InpNFacilityF) <- c("Num Individuals",paste("At least",1:3,"facilities"))
+colnames(InpNFacilityF) <- lgNames
+InpNFacilityF
+SaveTables(InpNFacilityF,"Q2_8.10.12.14.16_Inpatine_Num_Care_Types_Per_Indv","")
+
+
+InpEvents <- sapply(ligroups,function(G){
+         sapply(HadCareQs,function(C){
+                  sum(IndiHealth[G,C]==1,na.rm=T)})
+       })
+InpEvents <- rbind(InpEvents,Total=colSums(InpEvents))
+InpEvents
+InpLeng <- sapply(ligroups,function(G){
+                    sapply(CareLenQs,function(C){
+                             sum(IndiHealth[G,C],na.rm=T)})
+                  })
+InpLeng <- rbind(InpLeng,Total=colSums(InpLeng))
+InpLeng
+AveragSayLen <- InpLeng/InpEvents
+AveragSayLen <- interleave2d(InpEvents,AveragSayLen)
+rownames(AveragSayLen) <- rownames(InpLeng)
+colnames(AveragSayLen) <- lgNames
+AveragSayLen
+SaveTables(AveragSayLen,"Q2_8.10.12.14.16_Inpatient_Avg_Stay_Len","")
+
+
+
+
+InpCareCount <- sapply(lgroups,function(G){
+                         sapply(InpCareCountQNs,function(C){
+                                  sum(apply(lps[G,paste("q2",C,1:30,sep="_")],1,function(X){
+                                        sum(X==1,na.rm=T)>1
+                                      }))
+                                })
+                       })
+InpCareCount
+intPer(InpCareCount,NumGroups)
+
+rownames(InpCareCount) <- InpCareNames
+InpCareCountF <- rbind(interleave(NumIndivids,rep("",4)),
+                       interleave2d(InpCareCount,sprintf(fmt="%.3f",t(t(InpCareCount)/NumIndivids))))
+rownames(InpCareCountF) <- c("Num Individuals",InpCareNames)
+InpCareCount
+SaveTables(InpCareCountF,"Q2_8-16_X_Inpatient_Care_Utilization_Rates","Care Utilization rates by individuals in the past year");
+
+
+
+
+
+
+
 SaveTables (OvernightCare,"Q2_Inpatiant_Care_Counts","Number of inpatient care events by Group and Facility")
 NumIndivids
 OvernightCarePbyG <- t(t(OvernightCare)/NumIndivids)
@@ -67,14 +171,50 @@ CareLengths <- sapply(OvernightFTypes,function(Q){
 
 ##Outpatient Care
 opc<-c("Care_At_No_care","Care_At_Homemade_medicine","Care_At_Village_modern_medical_practitioner","Care_At_Village_health_volunteer","Care_At_Traditional_healer","Care_At_Health_centre","Care_At_District_hospital","Care_At_Provincial_hospital/Regional","Care_At_National_hospital","Care_At_Private_pharmacy","Care_At_Private_clinic","Care_At_Abroad","Care_At_Illegal_medical_practitioner","Care_At_Military_Hospital","Care_At_Religious_Healer")
+opcnames <- c("No Care","Homemade medicine","Village modern medical practitioner","Village health volunteer","Traditional healer","Health centre","District hospital","Provincial hospital","National hospital","Private pharmacy","Private clinic","Care received abroad","Unlicensed medical practitioner","Military hospital","Religious healer")
 sapply(opc,function(C){which(names(IndiHealth)==C)})
 IndiHealth[,32]
 
+opcnames
+
 
 OutPatientEvents <- t(sapply(opc,function(C){apply(ligroups,2,function(G){sum(!is.na(IndiHealth[G,C]))})}))
+rownames(OutPatientEvents) <- opcnames
+## Find Sick
+SickCount <- apply(IndiHealth,1,function(H){sum(!is.na(H[opc]))})
+NumNotSick  <- sapply(ligroups,function(G){sum(SickCount[G]==0)})
+## Order the events
+order(OutPatientEvents[2:length(OutPatientEvents[,1]),"All"],decreasing=T)+1
+OutPatientEvents <- rbind(Not_Sick=NumNotSick,
+                          OutPatientEvents[1,],
+                          OutPatientEvents[order(OutPatientEvents[2:length(OutPatientEvents[,1]),"All"],decreasing=T)+1,]
+                          )
+rownames(OutPatientEvents)[2] <- "No Care"
+colSums(OutPatientEvents)
+OutPatientEvents
+
+
+
+
 OutPatientEventsT <- rbind(OutPatientEvents,Total_Care_Events=colSums(OutPatientEvents))
 SaveTables(OutPatientEventsT,"Q2_Outpatient_event_count","Individual care event counts (max one per individual)")
-OutPatientEvents
+OutPatientEvents <- OutPatientEvents[,order(OutPatientEvents[,"All"])]## Order the events
+OutPatientEventsF <- rbind(interleaveBl(NumIndivids),
+                           intPer(OutPatientEvents,NumIndivids))
+rownames(OutPatientEventsF) <- c("Num Individuals",rownames(OutPatientEvents))
+colnames(OutPatientEventsF) <- lgNames
+OutPatientEventsF
+SaveTables(OutPatientEventsF,"Q2_7_Outpatient_events_per_individual","")
+
+OutPatientEventsF <- rbind(interleaveBl(NumGroups),
+                           intPer(OutPatientEvents,NumGroups))
+rownames(OutPatientEventsF) <- c("Num Individuals",rownames(OutPatientEvents))
+colnames(OutPatientEventsF) <- lgNames
+OutPatientEventsF
+SaveTables(OutPatientEventsF,"Q2_7_Outpatient_events_per_HH","")
+
+
+
 OutPatientUsageDist <- ToPercents(t(t(OutPatientEventsT)/NumIndivids))
 OutPatientUsageDist
 SaveTables(OutPatientUsageDist,"Q2_Outpatient_service_utilitzation_rates","Percent of group utilizing services")
@@ -334,9 +474,51 @@ GetCostMeans <- function(PatGroup,PatCostTable,patType) {
 }
 
 OLim=-1
+GetCostMeans(OutPatGroups,OutPatCostTable,"3")
 GetCostMeans(InPatGroups, InPatCostTable, "5")
 GetCostMeans(InPatGroups2,InPatCostTable2,"7")
-GetCostMeans(OutPatGroups,OutPatCostTable,"3")
+GetCostMeans(InPatGroupsAll,InPatCostTableAll,"5+7")
+
+#########################################
+##Get the means for all oupatient Services
+write.csv(interleave2d(sapply(OutPatGroups,function(G){
+                                sapply(vars,function(V){a <- SumGroup(OutPatCostTable,G,V);
+                                                        a$Count-a$DK})
+                              }),
+                       sapply(OutPatGroups,function(G){
+                                sapply(vars,function(V){SumGroup(OutPatCostTable,G,V)$Mean})
+                              })),"./output/3_3_Total_Means.csv")
+
+#########################################
+##Get the means for all inpatient Services
+write.csv(interleave2d(sapply(InPatGroupsAll,function(G){
+                                sapply(vars,function(V){a <- SumGroup(InPatCostTableAll,G,V);
+                                                        a$Count-a$DK})
+                              }),
+                       sapply(InPatGroupsAll,function(G){
+                                sapply(vars,function(V){SumGroup(InPatCostTableAll,G,V)$Mean})
+                              })),"./output/3_5+7_Total_Means.csv")
+
+
+OverallInpMean <- sapply(InPatGroupsAll,function(G){
+                           sapply(CCs,function(C){
+                                    SumGroup(InPatCostTableAll,G,"Overall_average",C)$Mean;})
+                         })
+OverallInpMean <- OverallInpMean[order(OverallInpMean[,4],decreasing=T),]
+OverallInpMean
+write.csv(OverallInpMean,"./output/Q3_5+7_Inpatient_Overall_Mean.csv")
+
+OverallOutpMean <- sapply(OutPatGroups,function(G){
+                           sapply(CCs,function(C){
+                                    SumGroup(OutPatCostTable,G,"Overall_average",C)$Mean;})
+                         })
+OverallOutpMean <- OverallOutpMean[order(OverallOutpMean[,4],decreasing=T),]
+OverallOutpMean
+write.csv(OverallOutpMean,"./output/Q3_3_Outpatient_Overall_Mean.csv")
+
+sapply(OutPatGroups,function(G){SumGroup(OutPatCostTable,G,"Overall_average",T)$Mean;})
+
+
 
 OLim=3
 sapply (OutPatGroups,function(G){SumGroup(OutPatCostTable,
@@ -397,12 +579,16 @@ BorrowByGroup <- sapply(lgroups,function(G){
                         })
 BorrowByGroup <- rbind(BorrowByGroup,Total=colSums(BorrowByGroup))
 BorrowByGroup
-write.csv(BorrowByGroup,"./output/Q3_10_Number_of_HH_borrowing_by_service_and_group.csv")
+BorrowByGroupF <- rbind(interleaveBl(NumGroups),
+                        intPer(BorrowByGroup,NumGroups));
+rownames(BorrowByGroupF) <- c("Num Groups",rownames(BorrowByGroup))
+colnames(BorrowByGroupF) <- lgNames
+write.csv(BorrowByGroupF,"./output/Q3_10_Number_of_HH_borrowing_by_service_and_group.csv")
 
 BorrowMean <- sapply(lgroups,function(G){mean(lps[G,"HH_Payment_Borrowed_TOTAL_LAK"],na.rm=T)})
 BorrowMax  <- sapply(lgroups,function(G){max(lps[G,"HH_Payment_Borrowed_TOTAL_LAK"],na.rm=T)})
 
-write.csv(rbind(BorrowMean,BorrowMax),"./Q3_9_total_Money_borrowed_by_group_Mean_and_Max.csv")
+SaveTables(rbind(BorrowMean,BorrowMax),"Q3_9_total_Money_borrowed_by_group_Mean_and_Max.csv","")
 
 
 ##Household Assets
@@ -447,4 +633,216 @@ sapply(lgroups,function(G){mean(minCellAge[Have2Phone&G])}))
 rownames(CellUseAge) <- c("Mean mobile phone user age","Mean mobile phone user age in multiphone house hold","Mean youngest phone user age","Mean youngest phone user age in multiphone house hold")
 CellUseAge  
 
-sapply(groups
+
+#Calculate the OOP/year by pers & HH = utilization OPD x median/average/mean OPD cost (3.3) + utilization IPD x
+#median/average/mean IPD costs (avg 3.5+3.7)
+
+numtimesSick <- sapply(lgroups,function(G){
+         nutimesSickQ <- paste("q2_6",1:30,sep="_")
+         sum(lps[G,nutimesSickQ],na.rm=T)})
+cat("Num Times Sick Per Individual\n")
+print(numtimesSick/NumIndivids)
+
+
+CareLocs <- c(
+ 1 "No care",
+ 2 "Home-made medicine",
+ 3 "Village modern medical practitioner",
+ 4 "Village health volunteer",
+ 5 "Traditional healer",
+ 6 "Health centre",
+ 7 "District hospital",
+ 8 "Provincial hospital/Regional",
+ 9 " ",
+10 "National hospital",
+11 "Private pharmacy",
+12 "Private clinic",
+13 "Abroad",
+14 "Illegal medical practitioner",
+15 "Other",
+16 "Do not remember",
+17 "Do not know")
+
+IndiCareQ <- c(10,8,7,6,4,5,12,11)
+IndiCareQ <- c(10,8,7,6,4,5,12,11)
+CareCounts <- sapply(lgroups,function(G){
+                       sapply(IndiCareQ,function(L) {
+                                CareLocQs  <- paste(paste("q2_7_",1:30,sep=""),L,sep="_")
+                                sum (!is.na(lps[G,CareLocQs]))})
+                     })
+rownames(CareCounts) <- CareLocs[IndiCareQ]
+CareCounts
+colSums(CareCounts)/NumIndivids
+
+CareCountsF <- rbind(interleave(NumIndivids,rep("",4)),
+                     interleave2d(CareCounts,sprintf(fmt="%.3f",t(t(CareCounts)/NumIndivids))))
+rownames(CareCountsF) <- c("Num",CareLocs[IndiCareQ])
+CareCountsF
+SaveTables(CareCountsF,"Q2_7_X_X_Counts_of_outp_care_in_past_year","Outpatient events in past year")
+
+
+
+length(CareLocs)
+
+SumGroup(OutPatCostTable,rep(length(OutPatCostTable[,1]),T),"Overall_average","Private_Pharmacist")                  
+
+#Q2 8,10,12,16 we get that the following number of HH had admissions in the past year: YES
+OutPatMeans <- sapply(OutPatGroups,function(G){
+                        sapply(CCs,function(C){
+                                 SumGroup(OutPatCostTable,G,"Overall_average",C)$Mean
+                               })
+                      })
+SaveTables(OutPatMeans,"Q3_3_Overall_Means","Mean Overall Spending by department")
+OutPatMeans
+SaveTables(t(t(CareCounts)/NumIndivids)*OutPatMeans,"Q2xQ3 Ouptatient spending by individual","Outpatien spending by individual")
+NumPerHH <- NumIndivids/sapply(lgroups,sum)
+
+OutpMeanOOP  <- t(t(CareCounts)/NumGroups)*OutPatMeans
+OutpMeanOOPF <- rbind(OutpMeanOOP,Total=colSums(OutpMeanOOP,na.rm=T))
+OutpMeanOOPF
+SaveTables(OutpMeanOOPF,"Outpatient_Mean_OOP_Extrapolation","")
+
+
+
+OutPatMedians <- sapply(OutPatGroups,function(G){
+                        sapply(CCs,function(C){
+                                 SumGroup(OutPatCostTable,G,"Overall_average",C)$Median
+                               })
+                      })
+SaveTables(OutPatMedians,"Q3_3_Overall_Medians","Median Overall Spending by department")
+OutPatMedians
+SaveTables(t(t(CareCounts)/NumIndivids)*OutPatMedians,"Q2xQ3 Ouptatient median spending by individual","Outpatient media spending by individual")
+NumPerHH <- NumIndivids/sapply(lgroups,sum)
+SaveTables(NumPerHH*t(t(CareCounts)/NumIndivids)*OutPatMedians,"Q2xQ3 Ouptatient median spending by HH","Outpatient median spending by HH")
+
+
+
+
+##Inpatient Extrapolation
+InpCareCountQNs <- c(8,10,12,14,16)
+InpCareNames <- c("health centre","district hospital","provincial hospital","national hospital","private clinic")
+InpCareCount <- sapply(lgroups,function(G){
+                         sapply(InpCareCountQNs,function(C){
+                                  sum(lps[G,paste("q2",C,1:30,sep="_")]==1,na.rm=T)})
+                       })
+rownames(InpCareCount) <- InpCareNames
+InpCareCountF <- rbind(interleave(NumIndivids,rep("",4)),
+                       interleave2d(InpCareCount,sprintf(fmt="%.3f",t(t(InpCareCount)/NumIndivids))))
+rownames(InpCareCountF) <- c("Num Individuals",InpCareNames)
+InpCareCount
+SaveTables(InpCareCountF,"Q2_8-16_X_Inpatient_Care_Utilization_Rates","Care Utilization rates by individuals in the past year");
+
+InpAllMeanCost <- sapply(InPatGroupsAll,function(G){
+                           sapply(CCs[c(4,3,2,1,7)],function(C){
+                                    SumGroup(InPatCostTableAll,G,"Overall_average",C)$Mean
+                                  })
+                         })
+write.csv(InpAllMeanCost,"./output/InpAllMeanCost.csv")
+InpAllMeanCost
+
+
+
+InpAllMedianCost <- sapply(InPatGroupsAll,function(G){
+                           sapply(CCs[c(4,3,2,1,7)],function(C){
+                                    SumGroup(OutPatCostTable,G,"Overall_average",C)$Median
+                                  })
+                         })
+
+sapply(InPatGroupsAll,function(G){
+                           sapply(CCs[c(4,3,2,1,7)],function(C){
+                                    SumGroup(OutPatCostTable,G,"Overall_average",C)$Count
+                                  })
+                         })
+
+InpCareCount
+InpAllMeanCost
+InpMeanOOP  <- t(t(InpCareCount)/NumGroups)*InpAllMeanCost
+InpMeanOOPF <- rbind(InpMeanOOP,Total=colSums(InpMeanOOP,na.rm=T))
+InpMeanOOPF
+SaveTables(InpMeanOOPF,"Inpatient_Mean_OOP_Extrapolation","")
+
+colSums(NumPerHH*t(t(CareCounts)/NumIndivids)*OutPatMeans,na.rm=T)/12
+
+SaveTables(InpAllMedianCost,"Q3_5+7_Median_Overall_Cost","Median overall cost by department")
+SaveTables(t(t(InpCareCount)/NumIndivids)*InpAllMedianCost,"Q2XQ3 Inpatient Median Care Cost By Individual","Inpatient Median Care Cost by Individual")
+SaveTables(t(t(InpCareCount)/NumGroups)*InpAllMedianCost,"Q2XQ3 Inpatient Median Care Cost By HH","Inpatient Median Care Cost by HH")
+NumGroups <- sapply(lgroups,sum)
+
+
+
+
+
+
+sapply(OutPatGroups,function(G){
+         sapply(CCs,function(C){
+                  SumGroup(OutPatCostTable,G,"Overall_average",C)$
+                })
+              })
+
+
+
+
+
+       
+##% Catastrophic health expenditure (> 500,000, >1million kips, > 20% cash income)   
+InPatG500k  <- sapply(InPatGroupsAll,function(G){sum(InPatCostTableAll$Overall_average[G]>500000)})
+sapply(InPatGroupsAll,sum)
+InPatG500k   <- lps$HH_Illness_2_Total_cost_Overall_average>500000 | lps$HH_Illness_3_Total_cost_Overall_average>500000
+InPatG500k[is.na(InPatG500k)] <- F;
+InPatG1M   <- lps$HH_Illness_2_Total_cost_Overall_average>1000000 | lps$HH_Illness_3_Total_cost_Overall_average>1000000
+InPatG1M[is.na(InPatG1M)] <- F
+InPatG20P <- apply(lps,1,function(X){
+                     crit <- as.numeric(X["HH_Cash_income"])*.2;
+                     X["HH_Illness_2_Total_cost_Overall_average"]>crit | X["HH_Illness_3_Total_cost_Overall_average"]>crit;
+                   })
+InPatG20P[is.na(InPatG20P)] <- F
+
+InpCatExp  <- rbind (sapply(lgroups,function(G){sum(InPatG500k[G])}),
+                     sapply(lgroups,function(G){sum(InPatG1M[G])}),
+                     sapply(lgroups,function(G){sum(InPatG20P[G])}))
+InpCatExp
+
+totInp <- apply(lps,1,function(X) {sum(as.numeric(c(X["HH_Illness_2_Total_cost_Overall_average"],X["HH_Illness_3_Total_cost_Overall_average"])),na.rm=T)})
+totInp
+InPatG500k   <- totInp>500000
+InPatG1M   <- totInp>1000000
+InPatG20P <-totInp>lps$HH_Cash_income*.2
+
+
+InpCatExp  <- rbind (sapply(lgroups,function(G){sum(InPatG500k[G])}),
+                     sapply(lgroups,function(G){sum(InPatG1M[G])}),
+                     sapply(lgroups,function(G){sum(InPatG20P[G])}))
+InpCatExpF <- rbind(interleaveBl(NumGroups),
+                    intPer(InpCatExp,NumGroups));
+rownames(InpCatExpF) <- c("Num Households",
+                          "Last 2 Inpatient Expenditures >   500,000 LAK",
+                          "Last 2 Inpatient Expenditures > 1,000,000 LAK",
+                          "Last 2 Inpatient Expenditures > 20% Cash Income")
+colnames(InpCatExpF) <- lgNames
+SaveTables(InpCatExpF,"Q3_5.7_Catastrophic_Expenditure","")
+
+totOutp <- lps$HH_Illness_1_Total_cost_Overall_average
+totOutp[is.na(totOutp)] <- 0;
+OutPatG500k   <- totOutp>500000
+OutPatG1M   <- totOutp>1000000
+OutPatG20P <-totOutp>lps$HH_Cash_income*.2
+
+
+OutpCatExp  <- rbind (sapply(lgroups,function(G){sum(OutPatG500k[G])}),
+                     sapply(lgroups,function(G){sum(OutPatG1M[G])}),
+                     sapply(lgroups,function(G){sum(OutPatG20P[G])}))
+OutpCatExpF <- rbind(interleaveBl(NumGroups),
+                    intPer(OutpCatExp,NumGroups));
+rownames(OutpCatExpF) <- c("Num Households",
+                          "Last Outpatient Expenditure >   500,000 LAK",
+                          "Last Outpatient Expenditure > 1,000,000 LAK",
+                          "Last Outpatient Expenditure > 20% Cash Outcome")
+colnames(OutpCatExpF) <- lgNames
+SaveTables(OutpCatExpF,"Q3_3_Catastrophic_Expenditure","")
+
+
+##OOP check
+
+!is.na(lps$Adult_Admitted_Cost_OOP)&lps$Adult_Admitted_Cost_OOP==1
+
+!is.na(lps$HH_Payment_OOP)

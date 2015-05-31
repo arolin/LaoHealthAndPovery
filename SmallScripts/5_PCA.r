@@ -198,17 +198,84 @@ Score <- apply(lps,1,function(lps){
 cgroups <- lapply(lgroups,function(G){G[c(96,238,883)]=F;return(G)})
 sapply(cgroups,sum)
 
-png(file="./output/PCAScores.png")
+PCARes <- rbind(formatC(sapply(lgroups,function(G){mean(Score[G])}),1,format="f"),
+                sapply(lgroups,function(G){median(Score[G])}),
+                FmtPer(sapply(lgroups,function(G){sum(Score[G]>16)/sum(G)})),
+                FmtPer(sapply(lgroups,function(G){sum(Score[G]>25)/sum(G)})))
+rownames(PCARes) <- c("Mean Score","Median Score","% above 16","% above 25")
+PCARes
+SaveTables(PCARes,"PCA_Results","")
+
+SaveTables(sapply(lgroups,function(G){summary(Score[G])}),"PCA_Summary","")
+
+for (i in 1:3) {
+  name <- names(lgroups)[i];
+  png(filename=paste("./output/",name,"_PCA_hist.png",sep=""))
+  plot(hist(Score[lgroups[[i]]],1:50,freq=T),ylim=c(0,40),xlab="PCA Score",ylab="Count",main=paste("PCA Wealth Scores for",name))
+  dev.off()
+}
+
+
 h <- lapply(lgroups,function(G){hist(Score[G],40)})
 plot(h[[3]],col = rgb(0,0,1),xlab="PCA Score",ylab="Count",main="PCA Score distribution by group",legend=c("PreID","GeoID","NoAssist"))
 plot(h[[2]],col = rgb(0,1,0),add=T)
 plot(h[[1]],col = rgb(1,0,0),add=T)
-dev.off()
+
+
+h1 <- hist(Score[is.na(lps$HH_Insurance_HEFCard) & lps$Group=="PreID"],40)
+h2 <- hist(Score[!is.na(lps$HH_Insurance_HEFCard)],40)
+plot(h1,col = rgb(0,0,1),xlab="PCA Score",ylab="Count",main="PCA Score distribution by group")
+plot(h2,col=rgb(1,0,0),add=T)
+
+
+##1.6.7
+
+
+print(sapply(lgroups,function(G){mean(Score[G])}))
 
 print(100*sapply(lgroups,function(G){sum(Score[G]<16)/sum(G)}),digits=1)
 
 breaks <- matrix(c(0,5,5,10,10,15,15,20,20,25,25,30,30,35,35,40),2,8)
 apply(breaks,2,function(B){Score>=B[1] & Score<B[2]})
+
+
+boxplot(lapply(lgroups,function(G){Score[G]}))
+lpoor <- list(VillagePoor=lps$VilPoor==1,NotPoor=lps$VilPoor!=1)
+
+GroupNPoor <- interleave2d( sapply(lgroups,function(G){G&lpoor[[2]]}),sapply(lgroups,function(G){G&lpoor[[1]]}))
+colnames(GroupNPoor) <- c("PreID","PreID Vil Poor","GeoID","GeoID Vil Poor","No Assist","No Assist Vil Poor","All","All Vil Poor")
+
+
+png("./output/VillagePoor.png")
+b <- boxplot(apply(GroupNPoor,2,function(G){Score[G]}),names=colnames(GroupNPoor),las=2,main="PCA Score Comparison With Village Poor List")
+rownames(GroupNPoor)
+GroupNPoor.Means <- apply(GroupNPoor,2,function(G){mean(Score[G])})
+text(seq_along(GroupNPoor[1,]),b$stats[3,]+1,paste("N=",b$n))
+text(seq_along(GroupNPoor[1,]),b$stats[3,]-1,formatC(GroupNPoor.Means,1,format="f"))
+points(GroupNPoor.Means,pch=10,col=rgb(1,0,0))
+dev.off()
+
+insQ <- which(names(lps)=="HH_Insurance_Civil_servants_(SASS)"):which(names(lps)=="HH_Insurance_Informal_no_insurance")
+insQns <- c("Civil_servants_(SASS)","Police_military","Private_Employee_(SSO)","Informal_CBHI","Informal_Private","HEFCard","GVTPoor","Informal_no_insurance")
+insGroups <- lapply(insQ,function(I){!is.na(lps[,I])})
+
+
+for (n in c(1,2,3,4,6,7,8)) {
+  L <- insQ[n];
+  png(filename=paste("./output/",insQns[n],".png",sep=""))
+  b <- boxplot(lapply(lgroups,function(G){Score[G & !is.na(lps[,insQ[n]])]}),ylim=c(0,50),main=insQns[n])
+  text(seq_along(lgroups),b$stats[3,]+1,paste("N=",b$n))
+  text(seq_along(lgroups),b$stats[3,]-1,b$stats[3,])
+  dev.off()
+}
+
+png("./output/GVTPoor_HEF.png")
+HEFv <- list(lgroups[[1]]&is.na(lps$HH_Insurance_HEFCard),lgroups[[1]]&!is.na(lps$HH_Insurance_HEFCard))
+boxplot(lapply(HEFv,function(I){Score[I]}),names=c("Government Poor","HEF Card"),ylan="PCA Score")
+text(seq_along(lgroups),b$stats[3,]+1,paste("N=",b$n))
+text(seq_along(lgroups),b$stats[3,]-1,b$stats[3,])
+dev.off()
+
 
 SummCosts <- function(V) {
   sapply(cgroups,function(G){
@@ -231,7 +298,7 @@ Inp1TCOA <- SummCosts(lps$HH_Illness_2_Total_cost_Overall_average)
 SaveTables(Inp1TCOA,"q3.5.10.5_In_Patient1_Total_cost_Overall_average","Total_cost_Overall_average")
 print(Inp1TCOA)
 Inp2TCOA <- SummCosts(lps$HH_Illness_3_Total_cost_Overall_average)
-SaveTables(Inp1TCOA,"q3.7.10.5_In_Patient2_Total_cost_Overall_average","Total_cost_Overall_average")
+SaveTables(Inp2TCOA,"q3.7.10.5_In_Patient2_Total_cost_Overall_average","Total_cost_Overall_average")
 print(Inp2TCOA)
 
 Ill1 <- !is.na(lps$HH_Illness_1_Total_cost_Overall_average) 

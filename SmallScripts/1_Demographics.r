@@ -9,10 +9,6 @@
 #Comparison and adequacy with the official national and provincial population figures
 
 demcols <-c("Gender","Age")
-ligroups <- sapply(c(1,2,3),function(X){IndiHealth$Group==X})
-ligroups <- cbind.data.frame(ligroups,rep(T,length(IndiHealth[,1])));
-names(ligroups)<-c("HEF PreID","HEF GeoID","NoAssis","All");
-ligroups
 
 NumHouseHolds   <-sapply(lgroups,sum)
 print("Num Households")
@@ -50,6 +46,7 @@ Percent_HoH_Spouse_CanR    <- FmtPer( Percent_HoH_Spouse_CanR  )
 Percent_HoH_Spouse_CanRW   <- FmtPer( Percent_HoH_Spouse_CanRW )
 DemogTable <- rbind(NumHouseHolds,NumIndivids,MeanHHSize,MeanAge,MedianAge,PercentMale,PercentFemale,PercentSingle,PercentMarried,PercentDivorced,PercentWidowed,Percent_HoH_CantRW,Percent_HoH_CanR,Percent_HoH_CanRW,Percent_HoH_Spouse_CantRW,Percent_HoH_Spouse_CanR,Percent_HoH_Spouse_CanRW)
 rownames(DemogTable) <- c("Num Households","Num Individuals","Mean HH Size","Mean Age","Median Age","% Males","% Females","% Single","% Married","% Divorced","% Widowed","% HoH Can't R/W","% HoH Can Read","% HoH Can R/W","% HoH Spouse Can't R/W","% HoH Spouse Can Read","% HoH Spouse Can R/W");
+
 DemogTable["Num Households",]<-format  (DemogTable["Num Households",],digits=0,format="d",bigmark=",")
 DemogTable["Num Individuals",]  <-format  (DemogTable["Num Individuals",]  ,digits=0,format="d",bigmark=",")
 DemogTable["Mean HH Size",]   <-sprintf (as.numeric(DemogTable["Mean HH Size",])   ,fmt="%.1f")
@@ -60,8 +57,12 @@ print(DemogTable)
 
 
 Ethnicity <- t(sapply(levels(factor(lps$Ethnic_group)),function(X){sapply(lgroups,function(G){sum(lps[G,"Ethnic_group"]==X,na.rm=T)})}))
+EthnicityF <- interleave2d(Ethnicity,FmtPer(t(t(Ethnicity)/NumGroups)))
+rownames(EthnicityF) <- c(levels(factor(lps$Ethnic_group)),"Total")
+colnames(EthnicityF)  <- lgNames
+EthnicityF
 Ethnicity <- PercentifyTable(Ethnicity)
 ## write.csv(Ethnicity,file="./output/Ethnicity.csv");
 ## cat(print(xtable(Ethnicity,caption="Ethnic Makeup")),file="./tex/EthnicMakeup.tex")
-SaveTables(Ethnicity,"EthnicMakeup","Ethnic Distribution of Sampled Households")
+SaveTables(EthnicityF,"EthnicMakeup","Ethnic Distribution of Sampled Households")
 print(Ethnicity)

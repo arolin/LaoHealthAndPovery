@@ -158,13 +158,67 @@ SaveTables(Q4_20Tab,"q4_20-25_Food_and_transportation_allowance_for_hospital_bir
 
 
 ##7.10, 7.15 Questions on allowances received:
+Q7_5 <- "Child_Admitted_Past_year"
+Q7_5s <- !is.na(lps[,Q7_5])
+CU5Admitt <- which(lps[,Q7_5]==1)
+NumCU5Admitt <- sapply(lgroups,function(G){sum(lps[G,Q7_5]==1,na.rm=T)})
+
 CodeLables[["q7_7"]][1,]
 q7_7 <- "Child_Admitted_Types_of_service"
 NumAdmitted <- sum(!is.na(lps[,q7_7]))
+lps[!is.na(lps[,q7_7]),q7_7]
 NumAdmitted
-sapply(CodeLables[["q7_7"]][1,],function(C){sum(lps[,q7_7]==C,na.rm=T)})
-q7_10 <- "Child_Admitted_Code_3_4_5_6"
-NumAdmitted <- sum(!is.na(lps[,q7_10]))
+
+
+CU5Food <- sapply(lgroups,function(G){sum(lps[G,q7_10]==1,na.rm=T)})
+q7_13 <- "Child_Admitted_Food_allowance_daily"
+FoodDaily <- sapply(lgroups,function(G){sum(lps[G,q7_13]==1,na.rm=T)})
+FoodDaily
+q7_11 <- "Child_Admitted_Food_allowance_amount"
+q7_15 <- "Child_Admitted_Outside_HEF_3km_radius"
+q7_16 <- "Child_Admitted_Transport_allowance_amount"
+CU5OutsideRad <- sapply(lgroups,function(G){sum(lps[G&!is.na(lps[,q7_15]),q7_15]!=3,na.rm=T)})
+CU5Trans <- sapply(lgroups,function(G){sum(lps[G,q7_15]==1,na.rm=T)})
+CU5Trans
+CU5Tab <- rbind(interleaveBl(NumCU5Admitt),
+                interleave(CU5Food,FmtPer(CU5Food/NumCU5Admitt)),
+                interleave(FoodDaily,FmtPer(FoodDaily/CU5Food)),
+                interleave(
+                    formatC(sapply(lgroups,function(G){mean(lps[G,q7_11],na.rm=T)}),0),
+                    sapply(lgroups,function(G){median(lps[G,q7_11],na.rm=T)})),
+                interleave(CU5OutsideRad,FmtPer(CU5OutsideRad/NumCU5Admitt)),
+                interleave(CU5Trans,FmtPer(CU5Trans/CU5OutsideRad)),
+                interleave(
+                    formatC(sapply(lgroups,function(G){mean(lps[G,q7_16],na.rm=T)}),0),
+                    sapply(lgroups,function(G){median(lps[G,q7_16],na.rm=T)}))
+                )
+rownames(CU5Tab) <- c("Num CU5 Admitted",
+                      "Recieved Food Allowance (% CU5Admit)",
+                      "Received Allowance Daily (% Recieve Allowance)",
+                      "Food Allowance LAK (mean/median)",
+                      "Outside 3km Rad (% CU5Admit)",
+                      "Receive Transp Allowance (% >3k)",
+                      "Transp Allowance Lak (mean/median)")
+CU5Tab
+SaveTables(CU5Tab,"Q7_10-16_CU5_Admitt_Allowances","")
+
+
+
+
+sum(lps[,Q7_5]==1,na.rm=T)
+
+lps[which(lps[,Q7_5]==1),q7_10]
+lps[addmits,q7_10]
+
+
+
+
+lps[q7_10s,Q7_5]
+which(q7_10s)
+which(lps[,Q7_5]==1)
+
+lps[lps[,Q7_5]==1,q7_10]
+
 NumCode3456 <- sum(lps[,q7_10]==1,na.rm=T)
 NumCode3456
 
@@ -275,5 +329,9 @@ length(interleave(names(NumGroups),rep("",length(names(NumGroups)))))
 
 names(NumGroups)
 ## Questions on payments: 8.8
+## [Q8_8_OOP_Rates_by_admission_facility.csv]
+
 ## Questions on allowances received: 8.10, 8.15
+
 ## Questions on satisfaction: 8.19, 8.21
+

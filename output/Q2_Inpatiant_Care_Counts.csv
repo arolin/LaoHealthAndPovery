@@ -1,6 +1,6 @@
-"","HEF PreID","HEF GeoID","NoAssis","All"
-"Health_Centre",28,83,57,168
-"District_Hospital",81,191,66,338
-"Provincial_Hospital",83,29,131,243
-"National_Hospital",1,0,6,7
-"Private_Clinic",0,3,4,7
+"","PreID","GeoID","NoAssist","All"
+"Health_Centre",855,944,836,2635
+"District_Hospital",357,454,396,1207
+"Provincial_Hospital",326,47,534,907
+"National_Hospital",3,0,15,18
+"Private_Clinic",59,60,277,396

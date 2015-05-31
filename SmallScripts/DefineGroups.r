@@ -15,21 +15,15 @@ HEF_PreID<-lps$Group=="PreID";
 HEF_GeoID<-lps$Group=="GeoID";
 No_Assist<-lps$Group=="NoAssist";
 All<-rep(T,length(HEF_PreID));
-lgroups<-list(HEF_PreID,HEF_GeoID,No_Assist,All)
-names(lgroups) <- c("PreID","GeoID","NoAssist","All")
+lgroups <- list(HEF_PreID,HEF_GeoID,No_Assist,All)
+names(lgroups) <- c("PreID","GeoID","No Assist","All")
 
+lgNames <-  interleave(names(lgroups),rep("",length(lgroups)))
 
-
-HEF_PreID<-IndiHealth$Group=="PreID";
-HEF_GeoID<-IndiHealth$Group=="GeoID";
-No_Assist<-IndiHealth$Group=="NoAssist";
-All<-rep(T,length(HEF_PreID));
-ligroups<-list(HEF_PreID,HEF_GeoID,No_Assist,All)
-names(ligroups) <- c("PreID","GeoID","NoAssist","All")
-
-
-
-
+ligroups <- sapply(c(1,2,3),function(X){IndiHealth$Group==X})
+ligroups <- cbind.data.frame(ligroups,rep(T,length(IndiHealth[,1])));
+names(ligroups)<-c("HEF PreID","HEF GeoID","No Assist","All");
+ligroups
 
 lps$Ethnic_group<-lps$HoH_Ethnic_group
 lps$Ethnic_group[lps$HoH_Ethnic_group==6]<-lps$HoH_Ethnic_group_other[lps$HoH_Ethnic_group==6]

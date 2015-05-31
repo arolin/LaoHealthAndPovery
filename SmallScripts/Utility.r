@@ -84,6 +84,8 @@ ToPercents <- function(T,mult=100,dec=1) {
 
 ##write
 SaveTables <- function(T,N,C) {
+#  T <- rbind(c(C,rep("",dim(T)[2]-1)),T)
+  print(T)
   write.csv(T,file=paste("./output/",N,".csv",sep=""));
   sink (file=paste("./tex/",N,".tex",sep=""),type=c("output"))
   try(print(xtable(T,caption=C)));
@@ -107,6 +109,7 @@ interleave2d <- function(v1,v2)
     mat[,c*2-1] <- v1[,c];
     mat[,c*2] <- v2[,c];
   }
+  rownames(mat) <- rownames(v1)
   return(mat)
 }
 
@@ -161,14 +164,14 @@ qCheck2<-function(Q=q4,N=NULL,groups=lgroups) {
                      for (i in 1:length(levels(f))){
                        l=levels(f)[i]; nl="\r\n";
                        if (i==length(levels(f))) nl="";
-                       s<-paste(s,l,"=",sum(f==l,na.rm=TRUE),nl,sep="")
+                       s<-paste(s,sum(f==l,na.rm=TRUE),"----",l,nl,sep="")
                      }
                                         #             s<-paste(s,'"',sep="")
                      return(c(sum(!is.na(lps[G,X])),s))
                    })
                  return(c(qn,s))
                }))
-  gcn<-sapply(names(groups),function(G){return (c(paste(G,"RespCount"),paste(G,"Vals")))})
+  gcn<-sapply(names(groups),function(G){return (c(paste(G,"Resp Count"),paste(G,"Vals")))})
   ## dim(gcn) <- 2*length(groups)
   ## print(gcn)
   colnames(qa)<-c("QName",gcn)
@@ -176,5 +179,51 @@ qCheck2<-function(Q=q4,N=NULL,groups=lgroups) {
 ##  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
 }
 
+
+{
+  Q <- colnames(IndiHealth)
+  qa<-t(sapply(Q,function(X){
+                 qn<-colnames(lpsraw)[which(colnames(lps)==X)[1]]
+                 s<-"";
+                                        #        s='"'
+                 ##sapply over groups
+                 s <- sapply(groups,function(G)
+                   {
+                     N <- which(names(CodeLables)==qn)
+                     if (length(N)>0) {
+                       f<-factor(lps[G,X],levels=CodeLables[[N]][1,],labels=CodeLables[[N]][2,])
+                     }else{
+                       f<-factor(lps[G,X])
+                     }
+             
+                     for (i in 1:length(levels(f))){
+                       l=levels(f)[i]; nl="\r\n";
+                       if (i==length(levels(f))) nl="";
+                       s<-paste(s,sum(f==l,na.rm=TRUE),"----",l,nl,sep="")
+                     }
+                                        #             s<-paste(s,'"',sep="")
+                     return(c(sum(!is.na(lps[G,X])),s))
+                   })
+                 return(c(qn,s))
+               }))
+  gcn<-sapply(names(groups),function(G){return (c(paste(G,"Resp Count"),paste(G,"Vals")))})
+  ## dim(gcn) <- 2*length(groups)
+  ## print(gcn)
+  colnames(qa)<-c("QName",gcn)
+  write.csv(qa,paste("./output/Q_",N,"_Frequncies.csv",sep=""))
+##  cat(print(xtable(qa)),file=paste("./tex/Q_",N,"_Frequncies.tex",sep=""))
+}
+
+
+
+
   
 FmtPer <- function(R) {R[is.nan(R)] <- 0;sprintf(100*R,fmt="%.1f%%")}
+
+interleaveBl  <- function (X) {
+  interleave(X,rep("",length(X)))
+}
+
+intPer <- function(X,D) {
+  interleave2d(X,FmtPer(t(t(X)/D)))
+}

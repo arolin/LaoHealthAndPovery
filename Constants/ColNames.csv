@@ -1348,16 +1348,16 @@ Overall average:                                                                
  4.5 other specify                                                                                                                   ,q4_5_other,Mother_ANC_Where_Other_specify
  4.6 Were you informed of any risk attached to your pregnancy?                                                                       ,q4_6,Mother_Informed_of_Pregnancy_Risk
  4.7 Did you receive TT immunization before or during your pregnancy?                                                                ,q4_7,Mother_TT_immun_before_or_during_pregnancy
-TT1                                                                                                                                  ,q4_7_1,Mother_TT_immun_Card1
-TT2                                                                                                                                  ,q4_7_2,Mother_TT_immun_Card2
-TT3                                                                                                                                  ,q4_7_3,Mother_TT_immun_Card3
-TT4                                                                                                                                  ,q4_7_4,Mother_TT_immun_Card4
-TT5                                                                                                                                  ,q4_7_5,Mother_TT_immun_Card5
-4.7.card.1 Did you receive TT 1 immunization before or during your pregnancy?_Date                                                   ,q4_7_card_1,Mother_TT_immun_preg_Card_Date
-4.7.card.2 Did you receive TT2  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_2,Mother_TT_immun_preg_Card_Date
-4.7.card.3 Did you receive TT3  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_3,Mother_TT_immun_preg_Card_Date
-4.7.card.4 Did you receive TT4  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_4,Mother_TT_immun_preg_Card_Date
-4.7.card.5  Did you receive TT5  immunization before or during your pregnancy?_Date                                                  ,q4_7_card_5,Mother_TT_immun_preg_Card_Date
+TT1                                                                                                                                  ,q4_7_1,Mother_TT_immun_Verbal1
+TT2                                                                                                                                  ,q4_7_2,Mother_TT_immun_Verbal2
+TT3                                                                                                                                  ,q4_7_3,Mother_TT_immun_Verbal3
+TT4                                                                                                                                  ,q4_7_4,Mother_TT_immun_Verbal4
+TT5                                                                                                                                  ,q4_7_5,Mother_TT_immun_Verbal5
+4.7.card.1 Did you receive TT 1 immunization before or during your pregnancy?_Date                                                   ,q4_7_card_1,Mother_TT_immun_preg_Card_Date1
+4.7.card.2 Did you receive TT2  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_2,Mother_TT_immun_preg_Card_Date2
+4.7.card.3 Did you receive TT3  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_3,Mother_TT_immun_preg_Card_Date3
+4.7.card.4 Did you receive TT4  immunization before or during your pregnancy?_Date                                                   ,q4_7_card_4,Mother_TT_immun_preg_Card_Date4
+4.7.card.5  Did you receive TT5  immunization before or during your pregnancy?_Date                                                  ,q4_7_card_5,Mother_TT_immun_preg_Card_Date5
 4.8Was the blood pressure measured?                                                                                                  ,q4_8,Mother_Blood_pressure_measured
 4.8 Was the ferrous and folic acid tablet given?                                                                                     ,q4_9,Mother_Ferrous_and_folic_acid
 4.10 Did you pay by yourself for ANCs?                                                                                               ,q4_10,Mother_OOP_ANCs
@@ -1643,13 +1643,13 @@ Mebendazole date?                                                               
  8.1.2 Have you received the HEF card?                                                                                               ,q8_1_2,HEF_Recieved_card
  8.1.3Do you still have the HEF card?                                                                                                ,q8_1_3,HEF_Kept_card
  8.2a Have you heard about free health services for adults in public facilities of Sekong?                                           ,q8_2_a,HEF_Free_service_Know
-" 8.2b If yes, who can have access to these free services?                                                                            ",q8_2_b,HEF_Free_service_Available_to
+" 8.2b If yes, who can have access to these free services?                                                                          ",q8_2_b,HEF_Free_service_Available_to
  8.3At what level?  - HC                                                                                                             ,q8_3_1,HEF_Free_service_level_HC
  8.3At what level?  -  DH                                                                                                            ,q8_3_2,HEF_Free_service_level_DH
  8.3At what level?  -  PH                                                                                                            ,q8_3_3,HEF_Free_service_level_PH
  8.3At what level?  -  National Hospital                                                                                             ,q8_3_4,HEF_Free_service_level_National_hospital
  8.3At what level?  -  Don’t Know                                                                                                    ,q8_3_5,HEF_Free_service_level_Dont_know
-" 8.4 Do you know what services you have right as HEF memb... - Preventive services (immunization, baby check-up)                     ",q8_4_1,HEF_Member_kown_rights_Preventive_services
+" 8.4 Do you know what services you have right as HEF memb... - Preventive services (immunization, baby check-up)                   ",q8_4_1,HEF_Member_kown_rights_Preventive_services
  8.4 Do you know what services you have right as HEF memb... -  Outpatient consultations                                             ,q8_4_2,HEF_Member_kown_rights_Outpatient_consultations
  8.4 Do you know what services you have right as HEF memb... -  Admissions                                                           ,q8_4_3,HEF_Member_kown_rights_Admissions
  8.4 Do you know what services you have right as HEF memb... -  Food/Transport for all at all facilities                             ,q8_4_4,HEF_Member_kown_rights_Food_transport_all
@@ -1684,10 +1684,10 @@ Mebendazole date?                                                               
 8.9 drugs/supplies in hospital___/LAK                                                                                                ,q8_9_1,Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK
 8.9 drugs/supplies outside hospital___/LAK                                                                                           ,q8_9_2,Adult_Admitted_Cost_Drugs_supplies_outtside_hospital_LAK
 8.9 service charge___/LAK                                                                                                            ,q8_9_3,Adult_Admitted_Cost_Service_charge_LAK
-"8.9 others, specify_____/LAK                                                                                                         ",q8_9_4,Adult_Admitted_Cost_Other_LAK
+"8.9 others, specify_____/LAK                                                                                                       ",q8_9_4,Adult_Admitted_Cost_Other_LAK
 8.9 Average amount:____/LAK                                                                                                          ,q8_9_5,Adult_Admitted_Cost_Average_LAK
 8.9 other specify                                                                                                                    ,q8_9_1_other,Adult_Admitted_Cost_Other_specify
-"8.10 If HEF admitted adult (code 3, 4, 5, 6), did you re...                                                                          ",q8_10,Adult_Admitted_Food_allowance
+"8.10 If HEF admitted adult (code 3, 4, 5, 6), did you re...                                                                        ",q8_10,Adult_Admitted_Food_allowance
 8.11 Food allowance amount  (kip)                                                                                                    ,q8_11,Adult_Admitted_Food_allowance_amount
 8.12 Food allowance amount  (kip)                                                                                                    ,q8_12,Adult_Admitted_Food_allowance_receipt_voucher
  8.13 Did you receive food allowance daily?                                                                                          ,q8_13,Adult_Admitted_Food_allowance_daily

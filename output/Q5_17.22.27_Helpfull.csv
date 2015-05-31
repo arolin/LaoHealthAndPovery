@@ -1,4 +1,5 @@
-"","PreID","GeoID","NoAssist","All"
-"Mother_Child_Last_diarhea_Received_Helpful",100.0%,96.4%,100.0%,98.7%
-"Mother_Child_Last_respiratory_First_treatment_Helpful",100.0%,98.3%,100.0%,99.5%
-"Mother_Child_Last_fever_First_treatment_Helpful",100.0%,95.7%,100.0%,99.0%
+"","PreID","","GeoID","","No Assist","","All",""
+"Mother_Child_Last_diarhea_Received_Helpful","39","54.2%","55","40.7%","65","40.9%","159","43.4%"
+"Mother_Child_Last_respiratory_First_treatment_Helpful","52","72.2%","58","43.0%","112","70.4%","222","60.7%"
+"Mother_Child_Last_fever_First_treatment_Helpful","30","41.7%","23","17.0%","47","29.6%","100","27.3%"
+"","121","168.1%","136","100.7%","224","140.9%","481","131.4%"
