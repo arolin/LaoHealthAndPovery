@@ -265,7 +265,7 @@ VerbalTTYesF
 SaveTables(VerbalTTYesF,"Q4_7_TTimmu_Verbal","")
 
 
-for(i in 1:5) {TTPregCard2 <- rbind(NumMothers-TTPregCard[i,],TTPregCard[i,]);print(chisq.test(TTPregCard2[,1:3])$p.value);}
+## for(i in 1:5) {TTPregCard2 <- rbind(NumMothers-TTPregCard[i,],TTPregCard[i,]);print(chisq.test(TTPregCard2[,1:3])$p.value);}
 
 
 ##Questions on delivery by SBA: 4.16
@@ -649,9 +649,14 @@ Q4_25Tab
 SaveTables(Q4_25Tab,"Q4_25_Tranposrtation_allowance_for_births_>3k","")
 
 
+
 q4_34 <- "Mother_Breast_feed_time"
 q4_34C <- Codes[which(Codes$Question=="q4_34"),]
 q4_34A <- sapply(lgroups,function(G){tabulate(lps[G&Mothers,q4_34])})
+
+print (q4_34A)
+print (NumMothers)
+
 q4_34A <- interleave2d(q4_34A,FmtPer(t(t(q4_34A)/NumMothers)))
 q4_34A <- rbind(interleave(NumMothers,rep("",length(lgroups))),q4_34A)
 rownames(q4_34A) <- c("Num Mothers",q4_34C$Label)

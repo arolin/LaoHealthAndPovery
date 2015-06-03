@@ -61,7 +61,7 @@ OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
 sapply(OutPatGroups,sum)
 
 
-InPatCostTable <- ConsultTableExtract(c("HH_Illness_2_"))
+InPatCostTable1 <- ConsultTableExtract(c("HH_Illness_2_"))
 for (i in c(96,238,883)){
   InPatCostTable <- InPatCostTable[InPatCostTable$Serial!=i,]
 }
@@ -80,14 +80,18 @@ InPatGroups2 <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable2
 InPatGroups2 <- cbind.data.frame(InPatGroups2,All=T)
 sapply(InPatGroups2,sum)
 
-InPatCostTableAll <- ConsultTableExtract(c("HH_Illness_2_","HH_Illness_3_"))
-for (i in c(96,238,883)){
-  InPatCostTableAll <- InPatCostTableAll[InPatCostTableAll$Serial!=i,]
+
+recinded_events <- c(96,238,327)
+InPatCostTable <- ConsultTableExtract(c("HH_Illness_2_","HH_Illness_3_"))
+for (i in recinded_events){
+  InPatCostTable <- InPatCostTable[InPatCostTable$Serial!=i,]
 }
-InPatGroupsAll <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTableAll$Group==G})
-#Analyse the maximum values and remove the extremes: row 97 and 239 and certainly 884 (check)
-InPatGroupsAll <- cbind.data.frame(InPatGroupsAll,All=T)
-sapply(InPatGroupsAll,sum)
+InPatCostTableAll  <- InPatCostTable
+InPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){InPatCostTable$Group==G})
+                                        #Analyse the maximum values and remove the extremes: row 97 and 239 and certainly 884 (check)
+InPatGroups <- cbind.data.frame(InPatGroups,All=T)
+sapply(InPatGroups,sum)
+InPatGroupsAll <- InPatGroups
 
 
 

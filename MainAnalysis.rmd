@@ -1,0 +1,280 @@
+---
+title: "Baseline Report Main"
+author: "Leah Hale"
+date: "02/05/2015"
+output: html_document
+---
+
+
+```{r,echo=F,results='html'}
+library("ggplot2")
+library("xtable")
+load("InitialAnalysis.RData")
+source("./SmallScripts/Utility.r")
+source("LoadData.R")
+
+```
+
+#Cost modeling:
+
+###Mean Outpatient Costs by department
+```{r,echo=F,results='hide'}
+
+OutpatientMeanCosts <-     sapply(OutPatGroups,function(G){
+                                sapply(CCs,function(C){
+                                         c <- OutPatCostTable$CareCenter==C
+                                         mean(OutPatCostTable[c&G,"Overall_average"])
+                                       })
+                              })
+OutpatientMeanCostsF <- formatC(OutpatientMeanCosts,digits=0,big.mark=",",format="f")
+OutpatientMeanCostsF
+
+OutpatientMedianCosts <-     sapply(OutPatGroups,function(G){
+                                sapply(CCs,function(C){
+                                         c <- OutPatCostTable$CareCenter==C
+                                         median(OutPatCostTable[c&G,"Overall_average"])
+                                       })
+                              })
+OutpatientMedianCostsF <- formatC(OutpatientMedianCosts,digits=0,big.mark=",",format="f")
+OutpatientMedianCostsF
+
+
+OutpatientModelCosts  <- (OutpatientMeanCosts +OutpatientMedianCosts)/2
+OutpatientModelCosts["Traditional_Healer","PreID"] <-OutpatientModelCosts["Traditional_Healer","All"]
+OutpatientModelCosts["National_Hospital","GeoID"] <- OutpatientModelCosts["National_Hospital","All"]
+OutpatientModelCostsF <- formatC(OutpatientModelCosts,digits=0,big.mark=",",format="f")
+OutpatientModelCostsF
+
+```
+
+```{r,echo=F,results='asis'}
+
+print(xtable(OutpatientMeanCostsF),type="html")
+
+```
+
+###Median Outpatient Costs by department
+```{r,echo=F,results='asis'}
+
+print(xtable(OutpatientMedianCostsF),type="html")
+
+```
+
+###Outpatient Cost Model by department
+```{r,echo=F,results='asis'}
+
+print(xtable(OutpatientModelCostsF),type="html")
+ModelOutpCosts <-OutpatientModelCosts;
+  
+```
+
+
+###Mean Inpatient Costs by department
+```{r,echo=F,results='asis'}
+
+## Print InpAllMeanCost
+InpAllMeanCostF <- formatC(InpAllMeanCost,digits = 0,format = "f",big.mark = ",");
+print(xtable(InpAllMeanCostF),type="html")
+
+```
+###Median Inpatient Costs by department
+```{r,echo=F,results='asis'}
+
+## Print InpAllMedianCost
+print(xtable(formatC(InpAllMedianCost,digits = 0,format = "f",big.mark = ",")),type="html")
+
+```
+
+###Model Inpatient Costs
+```{r,echo=F,results='asis'}
+
+missing <- which(is.na(InpAllMeanCost))
+ModelInpCosts <- (InpAllMeanCost + InpAllMedianCost)/2
+##Get NA Model values filled in
+for(I in missing){
+  nrows <- length(InpAllMeanCost[,1])
+  row <- I%%nrows;
+  if(row==0){row <- nrows}
+  col <- round(I/nrows);
+  ## get valus from all
+  ModelInpCosts[row,col] <- (InpAllMeanCost[row,"All"]  +
+                               InpAllMedianCost[row,"All"])/2;
+}
+ModelInpCostsF=formatC(ModelInpCosts,digits=0,format="f",big.mark=",")
+print(xtable(ModelInpCostsF),type="html")
+
+
+
+
+```
+
+
+
+
+###Inpatient Cost Patterns
+```{r,echo=F,results='asis'}
+
+a <- sapply(InPatGroups,function(G){InPatCostTable$Overall_average[G]})
+boxplot(a,main="Overall Average for all Inpatient events by group")
+boxplot(a,main="Overall Average for all Inpatient events by group (detail)",ylim=c(0,1e6))
+means <- sapply(InPatGroups,function(G){mean(InPatCostTable$Overall_average[G])})
+
+
+
+```
+
+```{r,echo=F,results='asis'}
+
+trim <- 12E6
+trim <- 1E6
+trim <- 1E5
+
+PlotTrimedGroups  <- function (trim=12E6,trimLow=0,breaks=30) {
+  keep <- InPatCostTable$Overall_average<trim & InPatCostTable$Overall_average>=trimLow;
+  InPatCostTrim <- InPatCostTable[keep,];
+  InPatTrimGroups <- lapply(InPatGroups,function(G){G[keep]})
+  #Build the histograms
+  h4 <- hist( InPatCostTrim$Overall_average[InPatTrimGroups[[4]]],breaks,plot=F)
+  h1 <- hist( InPatCostTrim$Overall_average[InPatTrimGroups[[1]]],h4$breaks,plot=F)
+  h2 <- hist( InPatCostTrim$Overall_average[InPatTrimGroups[[2]]],h4$breaks,plot=F)
+  h3 <- hist( InPatCostTrim$Overall_average[InPatTrimGroups[[3]]],h4$breaks,plot=F)
+  #create the composite bar plot
+  area <- h1$breaks[2:length(h1$breaks)] - h1$breaks[1:(length(h1$breaks)-1)]
+  area*h1$density
+   T <- rbind.data.frame(area*h1$density,area*h2$density,area*h2$density)
+   T <- rbind.data.frame(h1$counts,h2$counts,h2$counts)
+  if (trimLow!=0){
+    colnames(T)  <- as.character(h4$breaks)[2:length(colnames(T))]
+  }else{
+    colnames(T)  <- as.character(h4$breaks)[1:length(colnames(T))]
+  }
+  barplot(as.matrix(T),las=2,col=c(rgb(1,0,0),rgb(0,1,0),rgb(0,0,1)))
+ }
+
+
+```
+
+```{r,echo=F,results='asis'}
+
+PlotTrimedGroups(200000,breaks=10)
+PlotTrimedGroups(2000000,50000,breaks=30)
+PlotTrimedGroups(2000000,400000,breaks=10)
+PlotTrimedGroups(200000000,60000,breaks=30)
+
+
+```
+
+
+
+
+
+```{r,echo=F,results='html'}
+
+MeanInpCostByIndv <- sapply(ligroups,function(G){mean(IndivInpCost[G])})
+
+```
+###Median Inpatient Costs by department
+```{r,echo=F,results='html'}
+
+MedianInpCostByIndv <- sapply(ligroups,function(G){median(IndivInpCost[G])})
+
+```
+
+
+```{r,echo=F,results='html'}
+ source("./SmallScripts/CostIndividualsCare.r")
+```
+
+IndivInpCost Has a numeric vector of each individual's estimated cost.
+
+```{r,results='asis'}
+boxplot(sapply(ligroups,function(G){IndivInpCost[G]}))
+```
+
+###Mean Outpatien Costs by Indv
+```{r,echo=F,results='asis'}
+
+OutpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$OutpCost[G])}),
+                       Median=sapply(ligroups,function(G){median(IndiHealth$OutpCost[G])}))
+OutpCostByIndvF <- formatC(OutpCostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(OutpCostByIndvF),type="html")
+
+```
+###Mean Outpatien Costs by HH
+```{r,echo=F,results='asis'}
+
+OutpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$OutpCost[G])}),
+                       Median=sapply(lgroups,function(G){median(lps$OutpCost[G])}))
+OutpCostByHHF <- formatC(OutpCostByHH,digits=0,format="f",big.mark=",")
+print(xtable(OutpCostByHHF),type="html")
+
+```
+
+###Mean Total Inp Costs by Indv
+
+```{r,echo=F,results='asis'}
+
+InpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$InpCost[G])}),
+                         Median=sapply(ligroups,function(G){median(IndiHealth$InpCost[G])}))
+MeanInpCostByIndvF <- formatC(InpCostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(MeanInpCostByIndvF),type="html")
+
+```
+
+###Mean Total Inp Costs by HH
+```{r,echo=F,results='asis'}
+
+##HHInpCost
+
+InpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$InpCost[G])}),
+                         Median=sapply(lgroups,function(G){median(lps$InpCost[G])}))
+InpCostByHHF <- formatC(InpCostByHH,digits=0,format="f",big.mark=",")
+print(xtable(InpCostByHHF),type="html")
+
+
+```
+
+###Mean Total Costs by Indv
+```{r,echo=F,results='asis'}
+
+CostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$CostTot[G])}),
+                       Median=sapply(ligroups,function(G){median(IndiHealth$CostTot[G])}))
+CostByIndvF <- formatC(CostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(OutpCostByIndvF),type="html")
+
+```
+###Mean Total Costs by HH
+```{r,echo=F,results='asis'}
+
+CostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$CostTot[G])}),
+                       Median=sapply(lgroups,function(G){median(lps$CostTot[G])}))
+CostByHHF <- formatC(CostByHH,digits=0,format="f",big.mark=",")
+print(xtable(CostByHHF),type="html")
+
+```
+
+
+
+
+
+```{r,echo=T,results='html'}
+
+p <-ggplot(subset(lps,,aes(CostTot))
+p <- p + geom_histogram()
+p <- p + facet_grid(. ~ Group)
+p
+
+```
+
+```{r,results='asis'}
+boxplot(sapply(lgroups,function(G){HHInpCost[G]}),ylim=c(0,7000000))
+```
+
+```{r,results='asis'}
+
+p <-ggplot(lps,aes(Score))
+p <- p + geom_histogram()
+p <- p + facet_grid(. ~ Group)
+p
+
+```

@@ -7,7 +7,7 @@
 
 ########################3
 ##Real Group Definietions
-
+source("./SmallScripts/Utility.r")
 ################################################################################
 ###Populate the groups back into the table for MWW tests
 lps$Group<-factor(lps$Group,levels=c(1,2,3),labels=c("PreID","GeoID","NoAssist"))
@@ -19,6 +19,8 @@ lgroups <- list(HEF_PreID,HEF_GeoID,No_Assist,All)
 names(lgroups) <- c("PreID","GeoID","No Assist","All")
 
 lgNames <-  interleave(names(lgroups),rep("",length(lgroups)))
+
+NumGroups <- sapply(lgroups,sum)
 
 ligroups <- sapply(c(1,2,3),function(X){IndiHealth$Group==X})
 ligroups <- cbind.data.frame(ligroups,rep(T,length(IndiHealth[,1])));
@@ -61,3 +63,5 @@ lps$Ethnic_group<-factor(lps$Ethnic_group,levels=ethnicCode,labels=ethnicName)
 ## gNames <- c("PreId_HEF,GEO_HEF,NoAssist,All")
 ## gSigNames <-c("PreId vs Geo", "PreId vs NoAssist", "Geo vs NoAssist")
 ## liGroups <- list(HEF_PreID_Indv,Geo_Poor_Indv,NoAssist_Indv,OnAList_Indv)
+
+

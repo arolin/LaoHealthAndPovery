@@ -196,9 +196,31 @@ Score2 <- apply(lps,1,function(lps){
       }
       )
 
+rebuildScore=T
+if (rebuildScore) {
+  ScoreTab <- data.frame(matrix(unlist(Score2), nrow=930, byrow=T),stringsAsFactors=FALSE)
+  colnames(ScoreTab) <- names(Score2[[1]])
+  save(ScoreTab,file="ScoreTab.RData");
+}
 
-Score3 <- data.frame(matrix(unlist(Score2), nrow=930, byrow=T),stringsAsFactors=FALSE)
-colnames(Score3) <- names(Score2[[1]])
+if(length(grep("Score.",names(lps)))==0) {
+  lps <- cbind(lps,Score=rowSums(ScoreTab))
+  lps <- cbind(lps,Score=ScoreTab)
+  names(lps)[grep("Score.",names(lps))] <- paste("Score.",names(Score2[[1]]),sep="")
+}else {
+  lps$Score  <- rowSums(ScoreTab)
+  lps[,grep("Score.",names(lps))] <- ScoreTab;
+}
+names(lps)[grep("Score",names(lps))]
+
+
+p <-ggplot(lps,aes(Score))
+p <- p + geom_histogram()
+p <- p + facet_grid(. ~ Group)
+p
+
+head(lps)
+
 
 png("./output/PCABreakdown.png")
 ScoreMeans <- sapply(lgroups,function(G){apply(Score3[G,],2,mean)})
@@ -216,6 +238,7 @@ for(i in 1:4) {
   points(apply(Score3[lgroups[[i]],sord],2,mean),pch=12,col=pars$col[i])
 }
 dev.off()
+
 
 
 

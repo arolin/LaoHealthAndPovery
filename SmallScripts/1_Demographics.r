@@ -56,13 +56,14 @@ SaveTables(DemogTable,"DemogTable","Population Demographics")
 print(DemogTable)
 
 
-Ethnicity <- t(sapply(levels(factor(lps$Ethnic_group)),function(X){sapply(lgroups,function(G){sum(lps[G,"Ethnic_group"]==X,na.rm=T)})}))
-EthnicityF <- interleave2d(Ethnicity,FmtPer(t(t(Ethnicity)/NumGroups)))
-rownames(EthnicityF) <- c(levels(factor(lps$Ethnic_group)),"Total")
-colnames(EthnicityF)  <- lgNames
-EthnicityF
-Ethnicity <- PercentifyTable(Ethnicity)
+## Ethnicity <- t(sapply(levels(factor(lps$Ethnic_group)),function(X){sapply(lgroups,function(G){sum(lps[G,"Ethnic_group"]==X,na.rm=T)})}))
+## EthnicityF <- interleave2d(Ethnicity,FmtPer(t(t(Ethnicity)/NumGroups)))
+## rownames(EthnicityF) <- c(levels(factor(lps$Ethnic_group)),"Total")
+## colnames(EthnicityF)  <- lgNames
+## EthnicityF
+## Ethnicity <- PercentifyTable(Ethnicity)
+
 ## write.csv(Ethnicity,file="./output/Ethnicity.csv");
 ## cat(print(xtable(Ethnicity,caption="Ethnic Makeup")),file="./tex/EthnicMakeup.tex")
-SaveTables(EthnicityF,"EthnicMakeup","Ethnic Distribution of Sampled Households")
-print(Ethnicity)
+## SaveTables(EthnicityF,"EthnicMakeup","Ethnic Distribution of Sampled Households") 
+## print(Ethnicity)

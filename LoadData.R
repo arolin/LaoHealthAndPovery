@@ -1,4 +1,9 @@
-library("xtable")
+
+BuildImage <- F
+#BuildImage <- T
+
+if (BuildImage) {
+
 lpsraw<-read.csv("./Data/LPS.csv");
 lps=lpsraw[1:930,];
 
@@ -48,10 +53,22 @@ lps$HH_Illness_3_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Il
 #source("SplitDeps.R")
 load("IndiHealth.bin");
 
+
+print("D3")
+
 source("./SmallScripts/DefineGroups.r")
+
+print("D4")
 source("./SmallScripts/Count_Consultation_Users.r")
 
-
+print("Data Rebuilt")
+source("./SmallScripts/PCA2.r")
+save.image(file="InitialAnalysis.RData")
+print("Data Saved")
+}else{
+  load(file="InitialAnalysis.RData")
+  print("Data Fully Loaded")
+}
 
 
 
