@@ -41,8 +41,25 @@
 ## [38] "Group"                     
 
 ##"NumIllnesses"
-print("hello")
 IndiHealth$Group <- as.numeric(IndiHealth$Group)
+
+lps$OutTotOveralRep <- rowSums(lps[, c("HH_Illness_1_National_Hospital_cost_Overall_average"  ,"HH_Illness_1_Provincial_Hospital_cost_Overall_average","HH_Illness_1_District_Hospital_cost_Overall_average"  ,"HH_Illness_1_Health_Center_cost_Overall_average"      ,"HH_Illness_1_Health_Volunteer_cost_Overall_average"   ,"HH_Illness_1_Traditional_Healer_cost_Overall_average" ,"HH_Illness_1_Private_Pharmacist_cost_Overall_average" ,"HH_Illness_1_Private_Clinic_cost_Overall_average"     ,"HH_Illness_1_Religious_Healer_cost_Overall_average"   )],na.rm=T);
+lps$OutTotOveralRep[which(rowSums (!is.na(lps[, c("HH_Illness_1_National_Hospital_cost_Overall_average"  ,"HH_Illness_1_Provincial_Hospital_cost_Overall_average","HH_Illness_1_District_Hospital_cost_Overall_average"  ,"HH_Illness_1_Health_Center_cost_Overall_average"      ,"HH_Illness_1_Health_Volunteer_cost_Overall_average"   ,"HH_Illness_1_Traditional_Healer_cost_Overall_average" ,"HH_Illness_1_Private_Pharmacist_cost_Overall_average" ,"HH_Illness_1_Private_Clinic_cost_Overall_average"     ,"HH_Illness_1_Religious_Healer_cost_Overall_average"   )]))==0)] <- NA
+head(lps$OutTotOveralRep)
+lps$OutTotRep <- lps[,"HH_Illness_1_Total_cost_Overall_average"              ]
+
+
+
+inpcosts <- c("HH_Illness_2_National_Hospital_cost_Overall_average","HH_Illness_2_Provincial_Hospital_cost_Overall_average","HH_Illness_2_District_Hospital_cost_Overall_average","HH_Illness_2_Health_Center_cost_Overall_average","HH_Illness_2_Health_Volunteer_cost_Overall_average","HH_Illness_2_Traditional_Healer_cost_Overall_average","HH_Illness_2_Private_Pharmacist_cost_Overall_average","HH_Illness_2_Private_Clinic_cost_Overall_average","HH_Illness_2_Religious_Healer_cost_Overall_average","HH_Illness_3_National_Hospital_cost_Overall_average","HH_Illness_3_Provincial_Hospital_cost_Overall_average","HH_Illness_3_District_Hospital_cost_Overall_average","HH_Illness_3_Health_Center_cost_Overall_average","HH_Illness_3_Health_Volunteer_cost_Overall_average","HH_Illness_3_Traditional_Healer_cost_Overall_average","HH_Illness_3_Private_Pharmacist_cost_Overall_average","HH_Illness_3_Private_Clinic_cost_Overall_average","HH_Illness_3_Religious_Healer_cost_Overall_average")
+lps$InpTotOveralRep <- rowSums(lps[,inpcosts],na.rm=T)
+lps$InpTotOveralRep[which(rowSums(!is.na(lps[,inpcosts]))==0)] <- NA
+lps$InpTotRep <- rowSums(lps[,c("HH_Illness_2_Total_cost_Overall_average","HH_Illness_3_Total_cost_Overall_average")],na.rm=T)
+
+which(lps$InpTotOveralRep==0)
+
+
+
+
 
 
 
@@ -226,6 +243,10 @@ lps$HH_Illness_2_report_individual_number[96] <- 0;
 lps$HH_Illness_2_report_individual_number[238] <- 0;
 lps$HH_Illness_2_report_individual_number[327] <- 0;
 
+
+
+
+
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 lps$HH_Illness_1_National_Hospital_cost_Overall_average   <- as.numeric(trim(as.character(lps$HH_Illness_1_National_Hospital_cost_Overall_average)))
 lps$HH_Illness_1_Provincial_Hospital_cost_Overall_average <- as.numeric(trim(as.character(lps$HH_Illness_1_Provincial_Hospital_cost_Overall_average)))
@@ -297,6 +318,6 @@ if(RunCostModel){
 
 
 
-breaks <- 30;
+
 
 

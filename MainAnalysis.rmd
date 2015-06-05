@@ -1,12 +1,20 @@
 ---
-title: "Baseline Report Main"
-author: "Leah Hale"
-date: "02/05/2015"
+title: "Cost Modeling Investigation"
+date: "02/06/2015"
 output: html_document
 ---
 
+This is an R Markdown exploratory analysis of Cost Modeling
+
+A model is created based on the mean and median values of each service type for each demographic.
+The mean is melded with the median to decrease the outlier effects while still allowing them to drive some of the input.
+
+The model is implemented for each individual, each service used is assigned it's model cost for that individual. Any known costs are used instead of the model when available.
+In this way we get the influence of the individual usage rates.
+
 
 ```{r,echo=F,results='html'}
+
 library("ggplot2")
 library("xtable")
 load("InitialAnalysis.RData")
@@ -14,6 +22,73 @@ source("./SmallScripts/Utility.r")
 source("LoadData.R")
 
 ```
+
+
+###Mean Total Costs by Indv
+```{r,echo=F,results='asis'}
+
+CostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$CostTot[G])}),
+                       Median=sapply(ligroups,function(G){median(IndiHealth$CostTot[G])}))
+CostByIndvF <- formatC(CostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(CostByIndvF),type="html")
+
+```
+###Mean Total Costs by HH
+```{r,echo=F,results='asis'}
+
+CostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$CostTot[G])}),
+                       Median=sapply(lgroups,function(G){median(lps$CostTot[G])}))
+CostByHHF <- formatC(CostByHH,digits=0,format="f",big.mark=",")
+print(xtable(CostByHHF),type="html")
+
+```
+
+
+###Mean Outpatien Costs by Indv
+```{r,echo=F,results='asis'}
+
+OutpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$OutpCost[G])}),
+                       Median=sapply(ligroups,function(G){median(IndiHealth$OutpCost[G])}))
+OutpCostByIndvF <- formatC(OutpCostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(OutpCostByIndvF),type="html")
+
+```
+###Mean Outpatien Costs by HH
+```{r,echo=F,results='asis'}
+
+OutpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$OutpCost[G])}),
+                       Median=sapply(lgroups,function(G){median(lps$OutpCost[G])}))
+OutpCostByHHF <- formatC(OutpCostByHH,digits=0,format="f",big.mark=",")
+print(xtable(OutpCostByHHF),type="html")
+
+```
+
+###Mean Total Inp Costs by Indv
+
+```{r,echo=F,results='asis'}
+
+InpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$InpCost[G])}),
+                         Median=sapply(ligroups,function(G){median(IndiHealth$InpCost[G])}))
+MeanInpCostByIndvF <- formatC(InpCostByIndv,digits=0,format="f",big.mark=",")
+print(xtable(MeanInpCostByIndvF),type="html")
+
+```
+
+###Mean Total Inp Costs by HH
+```{r,echo=F,results='asis'}
+
+##HHInpCost
+
+InpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$InpCost[G])}),
+                         Median=sapply(lgroups,function(G){median(lps$InpCost[G])}))
+InpCostByHHF <- formatC(InpCostByHH,digits=0,format="f",big.mark=",")
+print(xtable(InpCostByHHF),type="html")
+
+
+```
+
+
+
 
 #Cost modeling:
 
@@ -154,17 +229,6 @@ PlotTrimedGroups  <- function (trim=12E6,trimLow=0,breaks=30) {
 
 ```
 
-```{r,echo=F,results='asis'}
-
-PlotTrimedGroups(200000,breaks=10)
-PlotTrimedGroups(2000000,50000,breaks=30)
-PlotTrimedGroups(2000000,400000,breaks=10)
-PlotTrimedGroups(200000000,60000,breaks=30)
-
-
-```
-
-
 
 
 
@@ -191,90 +255,144 @@ IndivInpCost Has a numeric vector of each individual's estimated cost.
 boxplot(sapply(ligroups,function(G){IndivInpCost[G]}))
 ```
 
-###Mean Outpatien Costs by Indv
-```{r,echo=F,results='asis'}
-
-OutpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$OutpCost[G])}),
-                       Median=sapply(ligroups,function(G){median(IndiHealth$OutpCost[G])}))
-OutpCostByIndvF <- formatC(OutpCostByIndv,digits=0,format="f",big.mark=",")
-print(xtable(OutpCostByIndvF),type="html")
-
-```
-###Mean Outpatien Costs by HH
-```{r,echo=F,results='asis'}
-
-OutpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$OutpCost[G])}),
-                       Median=sapply(lgroups,function(G){median(lps$OutpCost[G])}))
-OutpCostByHHF <- formatC(OutpCostByHH,digits=0,format="f",big.mark=",")
-print(xtable(OutpCostByHHF),type="html")
-
-```
-
-###Mean Total Inp Costs by Indv
-
-```{r,echo=F,results='asis'}
-
-InpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$InpCost[G])}),
-                         Median=sapply(ligroups,function(G){median(IndiHealth$InpCost[G])}))
-MeanInpCostByIndvF <- formatC(InpCostByIndv,digits=0,format="f",big.mark=",")
-print(xtable(MeanInpCostByIndvF),type="html")
-
-```
-
-###Mean Total Inp Costs by HH
-```{r,echo=F,results='asis'}
-
-##HHInpCost
-
-InpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$InpCost[G])}),
-                         Median=sapply(lgroups,function(G){median(lps$InpCost[G])}))
-InpCostByHHF <- formatC(InpCostByHH,digits=0,format="f",big.mark=",")
-print(xtable(InpCostByHHF),type="html")
-
-
-```
-
-###Mean Total Costs by Indv
-```{r,echo=F,results='asis'}
-
-CostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$CostTot[G])}),
-                       Median=sapply(ligroups,function(G){median(IndiHealth$CostTot[G])}))
-CostByIndvF <- formatC(CostByIndv,digits=0,format="f",big.mark=",")
-print(xtable(OutpCostByIndvF),type="html")
-
-```
-###Mean Total Costs by HH
-```{r,echo=F,results='asis'}
-
-CostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$CostTot[G])}),
-                       Median=sapply(lgroups,function(G){median(lps$CostTot[G])}))
-CostByHHF <- formatC(CostByHH,digits=0,format="f",big.mark=",")
-print(xtable(CostByHHF),type="html")
-
-```
 
 
 
 
-
+#Total Cost Distribution
 ```{r,echo=T,results='html'}
 
-p <-ggplot(subset(lps,,aes(CostTot))
+p <-ggplot(subset(lps,CostTot<2e7),aes(CostTot))
+p <- p + geom_histogram()
+p <- p + facet_grid(. ~ Group)
+p
+
+p <- qplot(Score,CostTot,data=lps)
+p <- p + facet_grid(. ~ Group)
+p <- p + stat_smooth(method="lm",se=F)
+p
+
+p <- qplot(Score,CostTot,data=subset(lps,CostTot<2E7))
+p <- p + facet_grid(. ~ Group)
+p <- p + stat_smooth(method="lm",se=F)
+p
+
+p <- qplot(Score,CostTot,data=subset(lps,CostTot<5E6))
+p <- p + facet_grid(. ~ Group)
+p <- p + stat_smooth(method="lm",se=F)
+p
+
+```
+
+#Income VS Cost
+```{r,results='html'}
+
+p <- qplot(HH_Cash_income,CostTot,data=lps)
+p
+
+p <- qplot(HH_Cash_income,CostTot,data=subset(lps,HH_Cash_income<2e8))
+p
+
+p <- qplot(HH_Cash_income,CostTot,data=subset(lps,HH_Cash_income<5e7 & CostTot<2e7))
+p
+
+p <- qplot(HH_Cash_income,CostTot,data=subset(lps,HH_Cash_income<2e7 & CostTot<2e7))
+p
+
+p <- qplot(HH_Cash_income,CostTot,data=subset(lps,HH_Cash_income<5e6 & CostTot<2e7))
+p <- aes(colour=Group)
+p
+```
+
+#Total Inpatient Reported cost vs Income
+```{r,results='html'}
+
+p <- ggplot(lps,aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=2,alpha=.75)
+
+p <- ggplot(subset(lps),
+            aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+p <- ggplot(subset(lps,HH_Cash_income< 1e8 & InpTotOveralRep <2e7),
+            aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+
+p <- ggplot(subset(lps,HH_Cash_income< 2.5e7 & InpTotOveralRep <5e6),
+            aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+p <- ggplot(subset(lps,HH_Cash_income<3e7 & InpTotOveralRep <2e5 ),
+            aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+p <- ggplot(subset(lps,HH_Cash_income<2e8 & InpTotOveralRep<10000 ),aes(x=HH_Cash_income,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=2,alpha=.5)
+
+
+
+p <- ggplot(subset(lps),
+            aes(x=Score,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+p <- ggplot(subset(lps,InpTotOveralRep < 1e6),
+            aes(x=Score,y=InpTotOveralRep))
+p + geom_point(aes(colour=Group),size=3,alpha=.75)
+
+p <- ggplot(subset(lps,InpTotOveralRep < 1e6),
+            aes(x=Score,y=InpTotOveralRep))
+p + geom_point(size=3,alpha=.75) + facet_grid(.~Group)
+
+
+
+
+
+```
+
+#inpatient's who report no cost
+```{r,results='asis'}
+p <- ggplot(subset(lps,InpTotOveralRep==0),aes(x=HH_Cash_income))
 p <- p + geom_histogram()
 p <- p + facet_grid(. ~ Group)
 p
 
 ```
+
 
 ```{r,results='asis'}
 boxplot(sapply(lgroups,function(G){HHInpCost[G]}),ylim=c(0,7000000))
 ```
 
-```{r,results='asis'}
+```{r,results='html'}
 
-p <-ggplot(lps,aes(Score))
-p <- p + geom_histogram()
+p <-ggplot(lps,aes(x=Score))
+p <- p + geom_histogram(aes(y=..density..,color=Group)) + geom_density(fill=NA,aes(color=Group),size=2)
 p <- p + facet_grid(. ~ Group)
 p
+
+```
+
+
+
+
+##Relationship between sum of Overall_Average for each Service vs Total Overall Average
+```{r,echo=T,results='html'}
+
+qplot(OutTotOveralRep,OutTotRep,data=subset(lps,OutTotOveralRep<2500000))
+
+```
+## Num Illnesses
+```{r,echo=T,results='html'}
+
+ggplot(IndiHealth,aes(x=NumIllnesses))+geom_histogram(binwidth=1)+facet_grid(.~Group)
+
+qplot(NumIllnessesTotal,InpTotOveralRep,data=lps)
+
+qplot(Age,NumIllnesses,data=IndiHealth)
+library("GGally")
+ggpairs(IndiHealth[,c("Age","Gender","NumIllnesses","CostTot","Group")])
+           
+
 
 ```

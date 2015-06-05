@@ -18,10 +18,6 @@ prefixes     = c("HH_Illness_1_","HH_Illness_2_","HH_Illness_3_");
 
 
 
-
-
-
-
 ConsultTableExtract <- function (prefixes) {
   paymentClass = c("Medicine","Medical_Fee","Transport","Others","Overall_average");
   fnames =c ("Flag","Serial","Group","ID",paymentClass,"CareCenter");
@@ -37,7 +33,8 @@ ConsultTableExtract <- function (prefixes) {
       #lapply(fields,function(X){if (length(which(names(lps)==X)[1]==0)) {print(X)}})
       careEvents = lps[,fields];
       #careEvents = careEvents[!is.na(careEvents[1]),];
-      careEvents = cbind.data.frame (careEvents,cc);
+      
+      careEvents = cbind.data.frame (careEvents,cc,);
       #print (dim(careEvents))
       colnames(careEvents)<-fnames;
       newTab<-rbind.data.frame (newTab,careEvents)
@@ -59,7 +56,24 @@ for (i in c(96,238,883)){
 OutPatGroups <- sapply(c("PreID","GeoID","NoAssist"),function(G){OutPatCostTable$Group==G})
 OutPatGroups <- cbind.data.frame(OutPatGroups,All=T)
 sapply(OutPatGroups,sum)
+OutPatCostTable$TotalCost <- lps$HH_Illness_1_Total_cost_Overall_average[OutPatCostTable$Serial]
 
+
+col <- paste(prefix,CCs,"_cost_","Overall_average",sep="")
+OutPatCostTable$SumOfTotals <- rowSums(lps[,col],na.rm=T)[OutPatCostTable$Serial]
+
+
+RepIndiv <- data.frame(matrix(nrow=length(OutPatCostTable[,1]),ncol=length(IndiHealth[1,])))
+colnames(RepIndiv) <- colnames(IndiHealth)
+for (i in 1:length(OutPatCostTable[,1]) ) {
+  srow <- which(IndiHealth$SRow==OutPatCostTable$Serial[i])
+  srow <- srow[  which(IndiHealth$SN[srow]==OutPatCostTable$ID[i] )]
+  RepIndiv[i,] <- IndiHealth[srow,]
+}
+  
+                               
+OutPatCostTable <- cbind(OutPatCostTable,RepIndiv)
+  
 
 InPatCostTable1 <- ConsultTableExtract(c("HH_Illness_2_"))
 for (i in c(96,238,883)){
@@ -279,6 +293,62 @@ ConsultationSummary <- function (paytype,carecenters,sdl=-1) {
 
 
 
+
+
+
+X11()
+ggplot(data=subset(OutPatCostTable,TotalCost<1e7),aes(x=SumOfTotals,y=TotalCost )) +geom_point()
+ggplot(data=subset(OutPatCostTable,TotalCost<1e6 & SumOfTotals<1e6),aes(x=SumOfTotals,y=TotalCost )) +geom_point()
+
+library("GGally")
+cols <-c("Age","NumIllnesses","Overall_average","Group","Gender","CareCenter")
+p <- ggpairs(data=subset(OutPatCostTable[,cols],Overall_average<5e5))
+p
+
+p <- qplot(Age,data=IndiHealth) +geom_histogram(aes(y=..density..))
+p+facet_grid(Group~.)+ggtitle("Age Distribution in Population")
+
+x11()
+p <- qplot(Age,data=subset(OutPatCostTable)) +geom_histogram(aes(y=..density..))
+p+facet_grid(Group~.)+ggtitle("Age Distribution in Outpatient Cost Reports")
+which(OutPatCostTable$Age==0)
+
+
+
+p <- ggplot(data=subset(OutPatCostTable),aes(x=Overall_average))
+p <- p+ geom_histogram(aes(color=Group))
+p+facet_grid(Group~CareCenter)
+
+p <- ggplot(data=subset(OutPatCostTable,Overall_average<1e6),aes(x=Overall_average))
+p <- p+ geom_histogram(aes(color=Group))
+p+facet_grid(Group~CareCenter)
+
+p <- ggplot(data=subset(OutPatCostTable,Overall_average<1e5),aes(x=Overall_average))
+p <- p+ geom_histogram(aes(color=Group))
+p <- p+ geom_vline( aes(xintercept = mean(Overall_average)), colour="black")
+p <- p+ geom_vline( aes(xintercept = median(Overall_average)), colour="blue")
+p+facet_grid(Group~CareCenter,)
+
+CCs <- levels(OutPatCostTable$CareCenter)
+sapply(CCs,function(cc){
+
+         cc <- CCs[7]
+         cc
+         p <- ggplot(data=subset(OutPatCostTable,CareCenter==cc & Overall_average<1e6),aes(x=Overall_average))
+         p <- p+ geom_histogram(aes(color=Group))
+         p <- p+ geom_vline( aes(xintercept = mean(Overall_average)), colour="black")
+         p <- p+ geom_vline(data=ddply(data,Group~.,mean,na.rm=T), 
+                            mapping=aes(xintercept=val), color="red")
+         p+facet_grid(Group~.)
+
+
+         library("plyr")
+         ggplot(df) + geom_histogram(mapping=aes(x=val)) 
+         + geom_vline(data=ddply(df, cat1~cat2, numcolwise(mean)), 
+      mapping=aes(xintercept=val), color="red") 
+  + facet_grid(cat1~cat2)
+         
+       }
 
 
 

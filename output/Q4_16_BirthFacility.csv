@@ -1,6 +1,7 @@
-"","PreID","GeoID","NoAssist","All"
-"Private Hospital",26.8%,3.1%,35.3%,27.4%
-"District Hospital",19.5%,12.5%,27.5%,22.9%
-"Heath Clinic",4.9%,18.8%,8.8%,9.7%
-"Private clinic",48.8%,62.5%,27.5%,38.9%
-"Home",0.0%,3.1%,1.0%,1.1%
+"","PreID","GeoID","No Assist","All"
+"Private Hospital",NaN%,NaN%,NaN%,NaN%
+"District Hospital",NaN%,NaN%,NaN%,NaN%
+"Heath Clinic",NaN%,NaN%,NaN%,NaN%
+"Private clinic",NaN%,NaN%,NaN%,NaN%
+"Home",NaN%,NaN%,NaN%,NaN%
+"Other",NaN%,NaN%,NaN%,NaN%

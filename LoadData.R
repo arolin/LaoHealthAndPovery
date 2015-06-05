@@ -49,6 +49,14 @@ lps$HH_Illness_1_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Il
 lps$HH_Illness_2_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Illness_2_Total_cost_Overall_average))
 lps$HH_Illness_3_Total_cost_Overall_average <- as.numeric(as.character(lps$HH_Illness_3_Total_cost_Overall_average))
 
+##The folowing individual has only DK in his report---removing it
+lps$HH_Illness_2_report_individual_number[708] <- 0;
+lps[708,c("HH_Illness_2_Health_Center_cost_Medicine","HH_Illness_2_Health_Center_cost_Medical_Fee","HH_Illness_2_Health_Center_cost_Transport","HH_Illness_2_Health_Center_cost_Others","HH_Illness_2_Health_Center_cost_Overall_average")] <- NA
+lps[708,c("HH_Illness_2_Total_cost_Medicine","HH_Illness_2_Total_cost_Medical_Fee","HH_Illness_2_Total_cost_Transport","HH_Illness_2_Total_cost_Others","HH_Illness_2_Total_cost_Overall_average")] <- NA
+lps[541,"HH_Illness_2_District_Hospital_cost_Transport"] <- 48000
+lps[658,"HH_Illness_1_Provincial_Hospital_cost_Medical_Fee"] <- 10000
+
+
 #Split Dependents
 #source("SplitDeps.R")
 load("IndiHealth.bin");
@@ -69,6 +77,4 @@ print("Data Saved")
   load(file="InitialAnalysis.RData")
   print("Data Fully Loaded")
 }
-
-
 
