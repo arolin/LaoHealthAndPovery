@@ -1590,14 +1590,14 @@ Mebendazole date?                                                               
   7.4Where did you get the information about free/paid se... -  Family/Friends                                                       ,q7_4_4,Free_HS_for_CU5_in_Sekong_Info_source_Family_Friends
   7.4Where did you get the information about free/paid se... -  Others:__________                                                    ,q7_4_5,Free_HS_for_CU5_in_Sekong_Info_source_Other
  7.4 other                                                                                                                           ,q7_4_other,Free_HS_for_CU5_in_Sekong_Info_source_Other_specify
-" 7.5 In the past year, was one of your child < 59m admitt...                                                                         ",q7_5,Child_Admitted_Past_year
-" 7.5 In the past year, was one of your child < 59m admitt...                                                                         ",q7_5_1_name,Child_Admitted_Name
-" 7.5 In the past year, was one of your child < 59m admitt...                                                                         ",q7_5_1_number,Child_Admitted_Number
+" 7.5 In the past year, was one of your child < 59m admitt...                                                                       ",q7_5,Child_Admitted_Past_year
+" 7.5 In the past year, was one of your child < 59m admitt...                                                                       ",q7_5_1_name,Child_Admitted_Name
+" 7.5 In the past year, was one of your child < 59m admitt...                                                                       ",q7_5_1_number,Child_Admitted_Number
 7.6 Where did you go for the health service? Found in Facility record:                                                               ,q7_6_report,Child_Admitted_Record_found
 7.6.1 Name of Facility                                                                                                               ,q7_6_name_report,Child_Admitted_Record_Facility_Name
-7.7 Type of services                                                                                                                 ,q7_7_report,Child_Admitted_Record_Procedure
+7.7 Type of services                                                                                                                 ,q7_7_report,Child_Admitted_Record_Procedure`
 7.8 Did you have to pay by yourself?                                                                                                 ,q7_8_report,Child_Admitted_Record_Cost_OOP
-"7.10 If HEF admitted child (code 3, 4, 5, 6), did you receive food allowance                                                         ",q7_10_report,Child_Admitted_Record_Food_allowance
+"7.10 If HEF admitted child (code 3, 4, 5, 6), did you receive food allowance                                                       ",q7_10_report,Child_Admitted_Record_Food_allowance
 7.11 Food allowance amount  (kip)_Found in Facility r...                                                                             ,q7_11_report,Child_Admitted_Record_Food_allowance_amount
 "7.15 If HEF admitted child (code 3, 4, 5, 6) living >3km ...                                                                         ",q7_15_report,Child_Admitted_Record_Outside_HEF_3km_radius
 7.16 Transport allowance amount received (kip)_From Facil...                                                                         ,q7_16_report,Child_Admitted_Record_Transport_allowance
@@ -1615,7 +1615,7 @@ Mebendazole date?                                                               
 7.9 drugs/supplies in hospital ____/LAK                                                                                              ,q7_9,Child_Admitted_Cost_Drugs_supplies_in_hospital_LAK
 7.9 drugs/supplies outside hospital____/LAK                                                                                          ,q7_9_2,Child_Admitted_Cost_Drugs_supplies_outtside_hospital_LAK
 7.9 service charge____/LAK                                                                                                           ,q7_9_3,Child_Admitted_Cost_Service_charge_LAK
-"7.9 others, specify:..LAK                                                                                                            ",q7_9_4,Child_Admitted_Cost_Other_LAK
+"7.9 others, specify:..LAK                                                                                                          ",q7_9_4,Child_Admitted_Cost_Other_LAK
 7.9 Average amount:_/LAK                                                                                                             ,q7_9_5,Child_Admitted_Cost_Average_LAK
 7.9 other                                                                                                                            ,q7_9_other,Child_Admitted_Cost_Other_specify
 " 7.10 If HEF admitted child (code 3, 4, 5, 6), did you re...                                                                         ",q7_10,"Child_Admitted_Code_3_4_5_6"
@@ -1623,7 +1623,7 @@ Mebendazole date?                                                               
  7.12Allowance receipt voucher available?                                                                                            ,q7_12,Child_Admitted_Food_allowance_receipt_voucher
  7.13 Did you receive food allowance daily?                                                                                          ,q7_13,Child_Admitted_Food_allowance_daily
  7.13 other                                                                                                                          ,q7_13_other,Child_Admitted_Food_allowance_other
-" 7_15. If HEF admitted child (code 3, 4, 5, 6) living >3k...                                                                         ",q7_15,Child_Admitted_Outside_HEF_3km_radius
+" 7_15. If HEF admitted child (code 3, 4, 5, 6) living >3k...                                                                       ",q7_15,Child_Admitted_Outside_HEF_3km_radius
  7.16 Transport allowance amount received (kip)                                                                                      ,q7_16,Child_Admitted_Transport_allowance_amount
  7.17Transport receipt voucher available?                                                                                            ,q7_17,Child_Admitted_Transport_allowance_voucher
  7.17 Did medical staff provide good services?                                                                                       ,q7_19,Child_Admitted_Service_Good

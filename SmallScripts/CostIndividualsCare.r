@@ -260,7 +260,7 @@ lps$HH_Illness_1_Private_Clinic_cost_Overall_average   <- as.numeric(trim(as.cha
 lps$HH_Illness_1_Religious_Healer_cost_Overall_average   <- as.numeric(trim(as.character(lps$HH_Illness_1_Religious_Healer_cost_Overall_average)))
 
 RunCostModel <- F;
-RunCostModel <- T;
+#RunCostModel <- T;
 
 if(RunCostModel){
   IndivInpCostTab  <-   t(simplify2array( apply (IndiHealth,1,ComputeCosts)))

@@ -1,0 +1,197 @@
+#MNCH Score Analysis
+
+```{r, echo=F, results='html'}
+
+source("LoadData.R")
+source("./SmallScripts/MNCH_score.r")
+library("ggplot2")
+library("plyr")
+
+```
+
+
+
+## Analysis of MNCH Score Distribution
+```{r, results='asis'}
+
+##New Plot with mothers data
+p <- ggplot(data=Mothers)
+##Make a histogram using the Score_MNCH Variable
+p <- p + geom_histogram(aes(x=Score_MNCH,
+                            fill=Group,                        #color using group
+                            y = 100*..count../sum(..count..)), #Make histogram using percent
+                        binwidth=.1)
+##Add a plot for each group
+p <- p + facet_grid(Group~.)
+##Add a veritcal line for the mean in each plot
+p <- p + geom_vline(data = ddply(Mothers, "Group", summarize, wavg = mean(Score_MNCH)), aes(xintercept=wavg))
+##Lable plot
+p <- p + labs(y="% of Group", x="MNCH Score [0-1]", title="MNCH Score Distribution by Group")
+##Print Plot
+p
+
+```
+
+
+##MNCH VS Wealth PCA Score
+```{r, results='asis'}
+
+
+p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+p <- p + geom_point(aes(color=Group))
+p <- p + stat_smooth(method = "lm",aes(colour=Group),se=F)
+p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+p
+
+```
+
+
+## Wealth Clustering Analysis
+
+
+
+``` {r, echo=F}
+
+nCluster <- 5;
+
+WealthTab <- as.data.frame(t(sapply(Score2,function(X){X})))
+WealthClusters <- kmeans(WealthTab,nCluster)
+WealthTab$Cluster <-factor( WealthClusters$cluster)
+WealthTab$Score <- lps$Score
+WealthTab$Group <- lps$Group            
+
+print(paste("Num Clusters =", nCluster));
+
+```
+
+
+###Wealth Distribution in kmeans clusters and Insurance groups
+```{r, results='asis'}
+
+p  <- ggplot(data=WealthTab)
+p <- p+geom_histogram(aes(x=Score,color=Cluster,fill=Cluster))
+p <- p+facet_grid(Group~.)
+p
+
+
+Mothers$WCluster <- WealthTab$Cluster[!is.na(lps$Mother_ID)]
+p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+p <- p + geom_point(aes(color=WCluster),alpha=.5 ,size=3)
+p <- p + stat_smooth(method = "lm",aes(colour=WCluster),se=F)
+p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+p
+
+p + facet_grid(Group~.)
+
+
+
+
+
+for (i in 1:1) {
+  nCluster <- 5;
+  WealthTab <- as.data.frame(t(sapply(Score2,function(X){X})))
+  WealthClusters <- kmeans(WealthTab,nCluster)
+  WealthTab$Cluster <-factor(WealthClusters$cluster,levels=order(rowSums(WealthClusters$centers)),labels=paste(1:nCluster))
+##  WealthTab$Cluster <-WealthClusters$cluster
+  WealthTab$Score <- lps$Score
+##  WealthTab$Cluster <-factor(as.numeric(order(
+  WealthTab$Group <- lps$Group
+
+  imp <- aggregate(. ~ L2, data=ScoreMelt[,c("value","L2")], FUN=mean)
+  imp$L2[order(imp$value,decreasing=T)]
+  ScoreMelt$L2 <- factor(ScoreMelt$L2,levels=imp$L2[order(imp$value,decreasing=T)])
+  ScoreMelt$WClust <- WealthTab$Cluster[as.numeric(ScoreMelt$L1)]
+
+  p <- ggplot(data=ScoreMelt,aes(x=L2,y=value))
+  p <- p + geom_boxplot()
+  p <- p + stat_summary(fun.y=mean,geom="point",aes(color=WClust))
+  p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  p <- p + facet_grid(WClust~.)
+  print(p)
+
+  p  <- ggplot(data=WealthTab)
+  p <- p+geom_histogram(aes(x=Score,color=Cluster,fill=Cluster))
+  p <- p+facet_grid(Group~.)
+  print(p)
+
+  Mothers$WCluster <- WealthTab$Cluster[!is.na(lps$Mother_ID)]
+  p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+  p <- p + geom_point(aes(color=WCluster),alpha=.5 ,size=3)
+  p <- p + stat_smooth(method = "lm",aes(colour=WCluster),se=F)
+  p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+  print(p + facet_grid(WCluster~.))
+
+  p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+  p <- p + geom_point(aes(color=Group),alpha=.5 ,size=3)
+  p <- p + stat_smooth(method = "lm",aes(colour=Group),se=F)
+  p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+  print(p + facet_grid(WCluster~.))
+  
+}
+
+  
+Mothers$WCluster <- WealthTab$Cluster[!is.na(lps$Mother_ID)]
+p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+p <- p + geom_point(aes(color=Group),alpha=.5 ,size=3)
+p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+p + facet_grid(WCluster~.)
+
+
+```
+
+```{r, results='asis'}
+## p <- ggplot(data=subset(Mothers,Score>16 & Score <27),aes(x=Score,y=Score_MNCH))
+## p <- p + geom_point(aes(color=Group))
+## p <- p + stat_smooth(method = "lm",aes(colour=Group),se=F)
+## p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+## p
+
+## p <- ggplot(data=subset(Mothers,Score>16 & Score <27),aes(x=Score))
+## p <- p + geom_histogram(aes(color=Group, fill=Group),binwidth=1)
+## p
+
+## Mothers$NBike <- Mothers$HH_Posses_Motorbike #/max(Mothers$HH_Posses_Motorbike)
+## Mothers$Score2 <- Mothers$Score/max(Mothers$Scor)
+## Mothers$GroupN <- as.numeric(Mothers[,c("Group")])
+## Mothers$GroupN  <- Mothers$GroupN/5 
+## means <- kmeans(Mothers[,c("GroupN","Score2","Score_MNCH","NBike")],centers=5)
+## Mothers$Cluster  <-  factor(means$cluster)
+
+## p <- ggplot(data=subset(Mothers),aes(x=Score))
+## p <- p + geom_histogram(aes(color=Cluster, fill=Cluster))
+## p
+
+## p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
+## p <- p + geom_point(aes(color=Cluster))
+## p <- p + stat_smooth(method = "lm",aes(colour=Cluster),se=F)
+## p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+## p
+
+## p <- ggplot(data=Mothers,aes(x=NBike,y=Score_MNCH))
+## p <- p + geom_point(aes(color=Cluster, alpha=.25 ,size=3))
+## p <- p + stat_smooth(method = "lm",aes(colour=Cluster),se=F)
+## p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+## p
+
+## x11()
+
+## p <- ggplot(data=subset(Mothers,Score>16 & Score <27),aes(x=Score))
+## p <- p + geom_histogram(aes(color=Cluster, fill=Cluster),binwidth=1)
+## p
+
+## p <- ggplot(data=subset(Mothers),aes(x=Score))
+## p <- p + geom_histogram(aes(color=Cluster, fill=Cluster),binwidth=1)
+## p <- p + facet_grid(Group~.)
+## p
+
+```
+
+```{r}
+
+
+
+
+
+
+
+```

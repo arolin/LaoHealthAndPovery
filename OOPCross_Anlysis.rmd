@@ -1,0 +1,396 @@
+---
+
+title: "OOP Investigation"
+date: "02/06/2015"
+output:
+    html_document:
+        toc: true
+        toc_depth: 4
+        number_sections: true
+
+    
+---
+
+
+# Background
+```{r,echo=F,results='hide',message=F,warning=F}
+
+library("ggplot2")
+library("xtable")
+source("./SmallScripts/Utility.r")
+source("LoadData.R")
+library("reshape")
+set.seed(0)
+
+```
+
+## Driving Questions from JM Thome:
+
+- Analysis and correlation ( especially for the public health facilities ) of
+    * general out-of-pocket health expenditure
+        - OOP (Q3.3)
+        - ( 3.5, 3.7),
+    + FMNCH expenditure
+        - Child Admittance (Q7.8.7-7.16)
+            - OOP
+            - Food
+            - Transport
+        - Mothers ( Q4.10, 4.18, 4.20, 5.18, 5.23, 5.28)
+            - ANC OOP
+            - Birth Cost
+            - Birth Food Allowance
+            - Birth Transport
+    + HEF OOP expenditure (Q8.8-8.16)
+
+* Analysis of the main drivers of OOP payment for FMNCH services and for HEF members
+
+
+# General out-of-pocket health expenditure
+## Outpatient (Q3.3)
+```{r, echo=F}
+
+Cost
+
+```
+## Inpatient  (3.5,3.7)
+    
+# FMNCH expenditure
+## Child Addmitance event (Q7.8.7-7.16)
+* OOP Rates
+* Cost Breakdown
+* Food Allowances
+* Transport Allowances
+
+### OOP Rates
+
+```{r, echo=F, results='hide'}
+
+###Prepare the data for Child Addmitance event
+
+TotalChildAdmit <- sum(lps$Child_Admitted_Past_year==1,na.rm=T)
+##Extract just the Child addmitted subset as CA
+CA <- subset(lps,Child_Admitted_Past_year==1)
+##Extract vectors of groups identity
+CAgroups <- cbind.data.frame(PreID=CA$Group=="PreID",GeoID=CA$Group=="GeoID",NoAssist=CA$Group=="NoAssist",All=rep(T,length(CA$Group)))
+#rename the Location Variables
+CALocs <- paste("CA",c("PH","DH","HC","PC","O"),sep="_")
+names(CA)[which(names(lps)=="Child_Admitted_Location_Provincial_Hospital"):
+            which(names(lps)=="Child_Admitted_Location_Other")] <- CALocs
+##Make an admit location vairable
+CA$CALoc <- CA$CA_PH
+CA$CALoc[!is.na(CA$CA_PH)] <- "PH"
+CA$CALoc[!is.na(CA$CA_DH)] <- "DH"
+CA$CALoc[!is.na(CA$CA_HC)] <- "HC"
+CA$CALoc[!is.na(CA$CA_O )] <- "Other"
+CA$CALoc <- factor(CA$CALoc,levels=c("PH","DH","HC","Other"))
+OOPLabler <- function(variable,value){
+  if (variable=="Child_Admitted_Types_of_service") {
+    return(c("IPD","small surgery","medium surgery","major surgery")[value])
+  }else{
+    return(c("OOP","Not OOP")[value])
+  }
+}
+
+
+
+```
+
+`r TotalChildAdmit ` Families reported a child inpatient event.
+
+```{r, echo=F, results='asis'}
+
+counts <- t(as.data.frame(sapply(CAgroups,sum)))
+rownames(counts) <- c("Num Child Admit")
+print(xtable(formatC(counts,digits=0),"Child addmittance events",digits=0),digits=0,type="html",html.table.attributes = "border = '1', align = 'center'")
+
+```
+
+The largers group of inpatient events are the GeoID in the distric hospitals.
+
+
+```{r,echo=F,results='asis'}
+
+CARates <- sapply (CAgroups,function(G){
+  sapply (levels(factor(CA$CALoc)),function(L) {
+    sum(!is.na( subset(CA[G,],CALoc==L)[,"Child_Admitted_Cost_OOP"]))
+  })})
+CARates <- rbind(CARates,Total=colSums(CARates))
+
+print(xtable(formatC(CARates,digits=0,format="f"),"Child Inpatient Report Counts by Facitly and Insurrance Group"),type="html",html.table.attributes = "border = '1', align = 'center'")
+
+
+```
+
+#### Barplot of OOP by facilty and Insurance Type
+```{r, echo=F, results='asis'}
+
+p <- ggplot(data=CA) + xlab("Addmit Location")
+p <- p + geom_bar(aes(x=CALoc,color=Group,fill=Group))
+p <- p + facet_grid(.~Child_Admitted_Cost_OOP,labeller=OOPLabler)
+p
+
+```
+
+```{r,echo=F,results='asis'}
+
+CAOOPRates <- sapply (CAgroups,function(G){
+  sapply (levels(factor(CA$CALoc)),function(L) {
+    sum(subset(CA[G,],CALoc==L)[,"Child_Admitted_Cost_OOP"]==1)
+  })})
+CAOOPRates <- rbind(CAOOPRates,Total=colSums(CAOOPRates))
+CAOOPRates  <- 100*CAOOPRates/CARates
+print(xtable(formatC(CAOOPRates,digits=1,format="f"),"OOP Percentages for Child Inpatient Reports by Facitly and Insurrance Group"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+
+```
+
+### Cost Breakdown
+
+
+Overview plot of cost breakdowns for all child inpatient procedures reported
+```{r,echo=F, results = 'asis', warning=F}
+
+CACost <- subset(CA,Child_Admitted_Cost_OOP==1)[,c("Serial","Group","CALoc","Child_Admitted_Cost_Drugs_supplies_in_hospital_LAK","Child_Admitted_Cost_Drugs_supplies_outtside_hospital_LAK","Child_Admitted_Cost_Service_charge_LAK","Child_Admitted_Cost_Other_LAK","Child_Admitted_Cost_Average_LAK")]
+colnames(CACost) <- c("Serial","Group","CALoc","Drugs Inside","Drugs Outtside","Service_charge","Other","Total")
+CACost[CACost==98] <- NA
+CACost[CACost==99] <- NA
+
+CAMelt <- melt(CACost,id=c("Group","CALoc","Serial"))
+p <- ggplot(data=CAMelt)
+p  <- p + geom_point(aes(x=variable,y=value,color=Group),alpha=.75,position = position_jitter(w = .2, h = 0),size=3)
+p  <- p  + labs(title="ALL OOP Child Inpatient Costs",x="Cost Breakdown",y="Cost in LAK")
+print(p)
+
+
+```
+
+Remove outliers and break down by care facility:
+```{r, echo=F, results='asis',warning=F}
+
+p <- ggplot(data=subset(CAMelt,CALoc!="Other"))
+p <- p + geom_point(aes(x=variable,y=value,color=Group),alpha=.75,position = position_jitter(w = .2, h = 0),size=3)
+p <- p + coord_cartesian(ylim = c(0, 750000))
+p <- p + labs(title="OOP Child Inpatient Costs",x="Cost Breakdown",y="Cost in LAK")
+p <- p + facet_grid(CALoc~.)          
+print(p)
+    
+
+```
+
+### Food Allowances
+
+#### Number of casses that recieve food allowances
+```{r, echo=F, results='asis'}
+
+NCAByCLoc <- sapply(levels(CA$CALoc),function(L){
+  sapply(CAgroups,function(G) {sum(!is.na(subset(CA[G,c("Child_Admitted_Code_3_4_5_6","CALoc")],CALoc==L)[,1]))})
+})
+
+NFAByCLoc <- sapply(levels(CA$CALoc),function(L){
+  sapply(CAgroups,function(G) {sum(subset(CA[G,c("Child_Admitted_Code_3_4_5_6","CALoc")],CALoc==L)[,1]==1)})
+})
+
+print(xtable(formatC(t(NFAByCLoc),digits=0,format="f"),"Number of Food Allowances by facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+```
+
+#### Percent of casses that recieve food allowances
+```{r, echo=F, results='asis'}
+
+PFAByCLoc <- t(100*NFAByCLoc/NCAByCLoc)
+print(xtable(formatC(PFAByCLoc,digits=1,format="f"),"Percent of Food Allowances by facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+```
+
+#### Plot of Food Allowance Amounts 
+```{r, echo=F, results='asis'}
+
+p <- ggplot(data=subset(CA,Child_Admitted_Code_3_4_5_6==1)[,c("Serial","Group","CALoc","Child_Admitted_Food_allowance_amount")])
+p <- p + geom_point(aes(x=CALoc,y=Child_Admitted_Food_allowance_amount,color=Group),position=position_jitter(w=.2,h=0),alpha=.75,size=3)
+p <- p + labs(title="Food Allowance Ammounts",x="Inpatient Location",y="Allowance in LAK")
+p
+
+```
+#### Overview of Transportation Allowance Reception for Child hospitalizations
+```{r, echo=F, result='asis'}
+
+CA$Transport_Allowance <- factor(CA$Child_Admitted_Outside_HEF_3km_radius,
+                                         levels=c(2,1,3),
+                                 labels=c("Not recieved","Recieved","<3k"))
+p <- ggplot(data=CA,aes(x=CALoc,fill=Transport_Allowance))
+p <- p + geom_bar()
+p <- p + facet_grid(.~Group)
+print(p)
+
+```
+
+
+#### Number of casses that recieve transportation allowance
+```{r, echo=F, results='asis'}
+
+## subset(Codes,Question==names(lpsraw)[which(names(lps)=="Child_Admitted_Outside_HEF_3km_radius")])
+##      Question Value                                                Label
+## 1679    q7_15     1                                                  yes
+## 1680    q7_15     2                                                   no
+## 1681    q7_15     3 did not receive because live close to hospital <3 km
+NTAByCLoc <- sapply(levels(CA$CALoc),function(L){
+  sapply(CAgroups,function(G) {sum(subset(CA[G,c("Child_Admitted_Outside_HEF_3km_radius","CALoc")],CALoc==L)[,1]==1)})
+})
+
+print(xtable(formatC(NTAByCLoc,digits=0,format="f"),"Number of Transportation Allowances Recieved facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+```
+#### Percent of casses that recieve transportation allowance
+```{r, echo=F, results='asis'}
+
+PTAByCLoc <- t(100*NTAByCLoc/NCAByCLoc)
+print(xtable(formatC(PTAByCLoc,digits=1,format="f"),"Percent of Transportation Allowances Recieved by facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+```
+
+#### Number of casses within 3km
+```{r, echo=F, results='asis'}
+
+NT3ByCLoc <- sapply(levels(CA$CALoc),function(L){
+  sapply(CAgroups,function(G) {sum(subset(CA[G,c("Child_Admitted_Outside_HEF_3km_radius","CALoc")],CALoc==L)[,1]==3)})
+})
+
+print(xtable(formatC(NT3ByCLoc,digits=0,format="f"),"Number <3km (no transport) by Facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+```
+#### Percent of casses within 3km
+```{r, echo=F, results='asis'}
+
+PT3ByCLoc <- t(100*NT3ByCLoc/NCAByCLoc)
+print(xtable(formatC(PT3ByCLoc,digits=1,format="f"),"Percent <3km (no transport) by Facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+```
+
+
+
+#### Plot Transportation Amount Recieved
+```{r, echo=F, result='asis'}
+
+p <- ggplot(data=subset(CA,Child_Admitted_Outside_HEF_3km_radius==1)[,c("Serial","Group","CALoc","Child_Admitted_Transport_allowance_amount")])
+p <- p + geom_point(aes(x=CALoc,y=Child_Admitted_Transport_allowance_amount,color=Group),position=position_jitter(w=.2,h=0),alpha=.75,size=3)
+p <- p + labs(title="Transportation Allowance Ammounts",x="Inpatient Location",y="Allowance in LAK")
+p
+
+
+```
+
+## MNCH Rates
+* Mother OOP ANCs (Q4.10)
+* Birth Cost delivery (4.18)
+* Birth Hospital Food allowance (4.20)
+* Birth Delivery was at hospital more 3k
+
+###  OOP ANCs (Q4.10)
+```{r, ehco=T, results='html'}
+
+#Monthers who have not been to ANC have NA
+#Mothers$Mother_been_to_ANC[is.na(Mothers$Mother_OOP_ANCs)]
+ANCM <- subset(Mothers,!is.na(Mothers$Mother_OOP_ANCs))
+
+#Count the number of ANC Mothers
+sapply(levels(ANCM$Group),function(G){sum(!is.na(subset(ANCM,Group==G)[,1]))})
+
+#Number of ANC Mothers that had a child admitance event
+sum(ANCM$Serial%in%CA$Serial)
+
+#Number of Mothers reporting ANC OOP
+sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G)[,"Mother_OOP_ANCs"]==1)})
+
+#Number of Mothers reporting ANC OOP having a child admitance event report
+sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G & Serial%in%CA$Serial )[,"Mother_OOP_ANCs"]==1)})
+
+#Number of Mothers reporting ANC OOP having a child admitance event report reporting OOP
+sapply(levels(Mothers$Group),function(G){
+  sum(subset(ANCM,Group==G &
+                          Mother_OOP_ANCs==1 &
+                          Serial%in%CA$Serial
+             )[,"Child_Admitted_Cost_OOP"]==1
+      )})
+```
+The 2 women who paid ANCs out of pocket and had inpatient child events in the same familly did not claim out of pocket payments on these children
+
+### Cost of Delivery
+```{r, echo=F, results='asis'}
+
+Mothers$BirthFacility <- factor(Mothers$Mother_Birth_facility_type,
+                                levels=c(1:6),
+                                labels=c("PH","DH","HC","PC","Home","Other"))
+p <- ggplot(data=Mothers)
+p <- p + geom_point(aes(color=Group,x= Mothers$BirthFacility,y=Mother_Birth_Cost_delivery),alpha=.35,size=3, position=position_jitter(w=.2,h=0))
+p <- p + facet_grid(Group~.)
+p <- p + coord_cartesian(ylim = c(0, 750000))
+print(p)
+
+```
+
+
+### Birth Food Allowance
+```{r, echo=T, results='html'}
+##Hospital Births
+hb <- sapply(levels(lps$Group),function(G) {
+  sum(!is.na(subset(Mothers,BirthFacility %in% c("PH","DH")&Group==G)
+             [,c("Mother_Birth_Hospital_Food_allowance")]))
+})
+hb
+
+##Got Food Allowance
+fa <- sapply(levels(lps$Group),function(G) {
+  sum(subset(Mothers,BirthFacility %in% c("PH","DH")&Group==G)
+             [,c("Mother_Birth_Hospital_Food_allowance")]==1,na.rm=T)
+})
+fa
+
+##Percent Got Food Allowance
+print(100*fa/hb,digits=1)
+
+```
+Serial Number 34 fails to report the food allowance information
+
+#### Plot Food Allowance Reciept for Hospital Births
+```{r, echo=F,results='asis'}
+
+Mothers$FoodAllowance <- factor(Mothers$Mother_Birth_Hospital_Food_allowance,
+                                levels=c(2,1),
+                                labels=c("Not Recieved","Recieved"))
+p <- ggplot(subset(Mothers,BirthFacility %in% c("PH","DH") )
+           ,aes(x=BirthFacility,fill=FoodAllowance))
+p <- p + geom_bar()
+p <- p + facet_grid(.~Group)
+print(p)            
+
+```
+
+#### Plot Transportation Amount Recieved
+```{r, echo=F, result='asis'}
+
+Mothers$Transport_Allowance <- factor(Mothers$Mother_Birth_Delivery_was_at_hospital_more_3k,
+                                      levels=c(2,1,3),
+                                      labels=c("Not Recieved","Recieved","<3k"))
+p <- ggplot(data=subset(Mothers,BirthFacility %in% c("PH","DH")))
+p <- p + geom_bar(aes(x=BirthFacility, fill=Transport_Allowance))
+p <- p + facet_grid(.~Group)
+print(p)
+
+
+```
+
+#### Compare Transportation Allowance to previous
+```{r, echo=T}
+
+CAAB <- subset(Mothers,Serial %in% CA$Serial & BirthFacility %in% c("PH","DH"))
+
+##Compare Transportation Allowance to Child Addmitance Transportation Allowance
+##CA is in rows Birth is in columns
+table(subset(CA,Serial %in% CAAB$Seria)$Transport_Allowance,CAAB$Transport_Allowance)
+
+```
+
+### (5.18, 5.23, 5.28)
+
+## HEF OOP expenditure
+### (Q8.8-8.16)
+

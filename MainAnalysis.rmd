@@ -3,7 +3,7 @@ title: "Cost Modeling Investigation"
 date: "02/06/2015"
 output: html_document
 ---
-
+# Background
 This is an R Markdown exploratory analysis of Cost Modeling
 
 A model is created based on the mean and median values of each service type for each demographic.
@@ -13,7 +13,7 @@ The model is implemented for each individual, each service used is assigned it's
 In this way we get the influence of the individual usage rates.
 
 
-```{r,echo=F,results='html'}
+```{r,echo=F,results='hide'}
 
 library("ggplot2")
 library("xtable")
@@ -23,8 +23,9 @@ source("LoadData.R")
 
 ```
 
+# Summary of Estemation Results
 
-###Mean Total Costs by Indv
+### Mean Total Costs by Indv
 ```{r,echo=F,results='asis'}
 
 CostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$CostTot[G])}),
@@ -33,7 +34,7 @@ CostByIndvF <- formatC(CostByIndv,digits=0,format="f",big.mark=",")
 print(xtable(CostByIndvF),type="html")
 
 ```
-###Mean Total Costs by HH
+### Mean Total Costs by HH
 ```{r,echo=F,results='asis'}
 
 CostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$CostTot[G])}),
@@ -44,7 +45,7 @@ print(xtable(CostByHHF),type="html")
 ```
 
 
-###Mean Outpatien Costs by Indv
+### Mean Outpatien Costs by Indv
 ```{r,echo=F,results='asis'}
 
 OutpCostByIndv <- rbind(Mean=sapply(ligroups,function(G){mean(IndiHealth$OutpCost[G])}),
@@ -53,7 +54,7 @@ OutpCostByIndvF <- formatC(OutpCostByIndv,digits=0,format="f",big.mark=",")
 print(xtable(OutpCostByIndvF),type="html")
 
 ```
-###Mean Outpatien Costs by HH
+### Mean Outpatien Costs by HH
 ```{r,echo=F,results='asis'}
 
 OutpCostByHH <- rbind(Mean=sapply(lgroups,function(G){mean(lps$OutpCost[G])}),
@@ -63,7 +64,7 @@ print(xtable(OutpCostByHHF),type="html")
 
 ```
 
-###Mean Total Inp Costs by Indv
+### Mean Total Inp Costs by Indv
 
 ```{r,echo=F,results='asis'}
 
@@ -74,7 +75,7 @@ print(xtable(MeanInpCostByIndvF),type="html")
 
 ```
 
-###Mean Total Inp Costs by HH
+### Mean Total Inp Costs by HH
 ```{r,echo=F,results='asis'}
 
 ##HHInpCost
@@ -90,10 +91,9 @@ print(xtable(InpCostByHHF),type="html")
 
 
 
-#Cost modeling:
+# Cost modeling:
 
-###Mean Outpatient Costs by department
-```{r,echo=F,results='hide'}
+```{r,echo=F,results='hide',message=F,warning=F}
 
 OutpatientMeanCosts <-     sapply(OutPatGroups,function(G){
                                 sapply(CCs,function(C){
@@ -122,20 +122,22 @@ OutpatientModelCostsF
 
 ```
 
+### Mean Outpatient Costs by department
+
 ```{r,echo=F,results='asis'}
 
 print(xtable(OutpatientMeanCostsF),type="html")
 
 ```
 
-###Median Outpatient Costs by department
+### Median Outpatient Costs by department
 ```{r,echo=F,results='asis'}
 
 print(xtable(OutpatientMedianCostsF),type="html")
 
 ```
 
-###Outpatient Cost Model by department
+### Outpatient Cost Model by department
 ```{r,echo=F,results='asis'}
 
 print(xtable(OutpatientModelCostsF),type="html")
@@ -160,7 +162,7 @@ print(xtable(formatC(InpAllMedianCost,digits = 0,format = "f",big.mark = ",")),t
 
 ```
 
-###Model Inpatient Costs
+### Model Inpatient Costs
 ```{r,echo=F,results='asis'}
 
 missing <- which(is.na(InpAllMeanCost))
@@ -237,7 +239,7 @@ PlotTrimedGroups  <- function (trim=12E6,trimLow=0,breaks=30) {
 MeanInpCostByIndv <- sapply(ligroups,function(G){mean(IndivInpCost[G])})
 
 ```
-###Median Inpatient Costs by department
+### Median Inpatient Costs by department
 ```{r,echo=F,results='html'}
 
 MedianInpCostByIndv <- sapply(ligroups,function(G){median(IndivInpCost[G])})
@@ -259,7 +261,7 @@ boxplot(sapply(ligroups,function(G){IndivInpCost[G]}))
 
 
 
-#Total Cost Distribution
+# Total Cost Distribution
 ```{r,echo=T,results='html'}
 
 p <-ggplot(subset(lps,CostTot<2e7),aes(CostTot))
@@ -304,7 +306,7 @@ p <- aes(colour=Group)
 p
 ```
 
-#Total Inpatient Reported cost vs Income
+# Total Inpatient Reported cost vs Income
 ```{r,results='html'}
 
 p <- ggplot(lps,aes(x=HH_Cash_income,y=InpTotOveralRep))
@@ -350,7 +352,7 @@ p + geom_point(size=3,alpha=.75) + facet_grid(.~Group)
 
 ```
 
-#inpatient's who report no cost
+# inpatient's who report no cost
 ```{r,results='asis'}
 p <- ggplot(subset(lps,InpTotOveralRep==0),aes(x=HH_Cash_income))
 p <- p + geom_histogram()

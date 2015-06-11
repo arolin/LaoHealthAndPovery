@@ -1,3 +1,4 @@
+CodeS <- function(S){subset(Codes,Question==names(lpsraw)[which(names(lps)==S)])}
 
 ##Save Freqency of questions as files
 mCheck<-function(Q=q4,N=NULL) {

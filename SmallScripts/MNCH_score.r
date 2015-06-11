@@ -92,38 +92,4 @@ Weights
 Mothers$Score_MNCH <- rowSums(t(t(Mothers[,c("MNCH_FPS" , "MNCH_SBA"  ,"MNCH_ANC" , "MNCH_DPT3" ,"MNCH_BCG" , "MNCH_MR" ,  "MNCH_ORS" , "MNCH_CPNM" ,"MNCH_MN")])*Weights))
 Mothers$Score_MNCH
 
-p <- ggplot(data=Mothers)
-p <- p + geom_histogram(aes(x=Score_MNCH,y = ..density..),binwidth=.1)
-p <- p + facet_grid(.~Group)
-p
 
-
-p <- ggplot(data=Mothers)
-p + geom_boxplot(aes(x=Group,y=Score_MNCH))
-
-p <- ggplot(data=Mothers,aes(x=Score,y=Score_MNCH))
-p <- p + geom_point(aes(color=Group))
-p <- p + stat_smooth(method = "lm",colour="Black",se=F)
-p <- p + stat_smooth(colour="Violet",se = F)
-p
-
-UnmetFPS[,c("Mother_Familily_planning_Using","Mother_Familily_planning_Want_child","Mother_Familily_planning_Surprise")]
-
-)]
-
-
-q4_41  <- "Mother_Familily_planning_Using"
-Q4_41Tab <- sapply(lgroups,function(G){
-  sapply(c(1,3:11),function(P){
-    sum(lps[G,q4_41]==P,na.rm=T)
-  })
-})
-Q4_41Tab <- rbind(sapply(lgroups,function(G){sum(lps[G,"Mother_Familily_planning_Want_child"]==1,na.rm=T)}),
-                  sapply(lgroups,function(G){sum(lps[G,"Mother_Familily_planning_Want_child"]==2,na.rm=T)}),
-                  Q4_41Tab)
-Q4_41Tab <- interleave2d(Q4_41Tab,FmtPer(t(t(Q4_41Tab)/colSums(Q4_41Tab ))))
-rownames(Q4_41Tab) <- c("No- Not pregnant, want child","No- Not pregnant, don't want child",Codes$Label[which(Codes$Question=="q4_41")][c(1,3:11)])
-colnames(Q4_41Tab) <- interleave(names(lgroups),rep("",length(lgroups)))
-Q4_41Tab
-SaveTables(Q4_41Tab,"Q4_41_Family_Planning_Use","Family planning use")
-q4_43 <- "Mother_Familily_planning_Want_child"

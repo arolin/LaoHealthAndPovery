@@ -200,6 +200,7 @@ rebuildScore=T
 if (rebuildScore) {
   ScoreTab <- data.frame(matrix(unlist(Score2), nrow=930, byrow=T),stringsAsFactors=FALSE)
   colnames(ScoreTab) <- names(Score2[[1]])
+  ScoreMelt<-melt(Score2, measure.vars = 1:2)
   save(ScoreTab,file="ScoreTab.RData");
 }
 
@@ -223,6 +224,8 @@ head(lps)
 
 
 png("./output/PCABreakdown.png")
+
+x11()
 ScoreMeans <- sapply(lgroups,function(G){apply(Score3[G,],2,mean)})
 ScoreMedians <- sapply(lgroups,function(G){apply(Score3[G,],2,median)})
 sord <- order(apply(ScoreMeans,1,function(X){s <- summary(X);s[6]-s[1];}),decreasing=T)
@@ -237,6 +240,7 @@ legend(15.5,5.15,legend=paste(c("PreID","GeoID","No Assist","All"),"Mean"),pch=1
 for(i in 1:4) {
   points(apply(Score3[lgroups[[i]],sord],2,mean),pch=12,col=pars$col[i])
 }
+
 dev.off()
 
 

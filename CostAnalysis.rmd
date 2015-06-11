@@ -1,0 +1,151 @@
+---
+
+title: "Cost Analysis"
+date: "02/06/2015"
+output:
+    html_document:
+        toc: true
+        toc_depth: 4
+        number_sections: true
+---
+
+
+#Cost Analysis
+
+
+```{r,echo=F,results='hide', warning=F}
+
+library("ggplot2")
+library("xtable")
+load("InitialAnalysis.RData")
+source("./SmallScripts/Utility.r")
+source("LoadData.R")
+library("GGally")
+
+```
+
+```{r,results='asis'}
+
+#source("./SmallScripts/CleanCosts.r")
+
+```
+
+### Box plot of all 
+```{r,results='asis'}
+
+head(OutPat2[,1:18])
+
+
+OutPatI[,1]
+
+
+
+
+
+
+```
+
+
+#catastrophic
+```{r,echo=F,results='asis'}
+
+all <- c("1_Total_cost_Overall_average","2_Total_cost_Overall_average","3_Total_cost_Overall_average")
+
+V1 <- !is.na(AllResp[,"1_Indiv"])
+V2 <- !is.na(AllResp[,"2_Indiv"])
+V3 <- !is.na(AllResp[,"3_Indiv"])
+
+
+CatTab <- rbind(NOutP=sapply(lgroups,function(G){sum(V1[G])}),
+                OutP_G500K=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>500000,na.rm=T)}),
+                OutP_G1M=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>1000000,na.rm=T)}),
+                OutP_20Percent=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>(.2*lps[V1&G,"HH_Cash_income"]),na.rm=T)}),
+                NInP1=sapply(lgroups,function(G){sum(V2[G])}),
+                InP1G_G500K=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>500000,na.rm=T)}),
+                InP1_G1M=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>1000000,na.rm=T)}),
+                InP1_20Percent=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>(.2*lps[V2&G,"HH_Cash_income"]),na.rm=T)}),
+                NInP2=sapply(lgroups,function(G){sum(V3[G])}),
+                InP2_G500K=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>500000,na.rm=T)}),
+                InP2_G1M=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>1000000,na.rm=T)}),
+                InP2_20Percent=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>(.2*lps[V3&G,"HH_Cash_income"]),na.rm=T)}),
+                NTot=sapply(lgroups,function(G){sum(V3[G]|V2[G]|V1[G])}),
+                Tot_G500K=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>500000,na.rm=T)}),
+                Tot_G1M=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>2000000,na.rm=T)}),
+                Tot_20Percent=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>(.2*lps[G,"HH_Cash_income"]),na.rm=T)}))
+
+print(xtable(CatTab,"CatastrophicExpenditure"),type='html')
+
+c("1_Total_cost_Overall_average","2_Total_cost_Overall_average","3_Total_cost_Overall_average")
+V1 <- !is.na(AllResp[,"1_Indiv"])
+sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>500000,na.rm=T)})
+
+
+```
+
+
+
+
+
+```{r,echo=F,results='hide',warning=F}
+
+CareCenterAgr <- function(X) {
+  c(N=sum(!is.na(X)),
+    N0=sum(X==0,na.rm=T),
+    Max=max(X,na.rm=T),
+    Mean=mean(X,na.rm=T),
+    Median=median(X,na.rm=T)
+    )
+}
+
+MeansByGroup <- aggregate(OutPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),CareCenterAgr)
+MeansByGroup <- cbind(MeansByGroup[1],MeansByGroup[2],as.matrix(MeansByGroup[3:6]))
+#write.csv(MeansByGroup,"./output/OutPatienCostDetails.csv")
+
+MeansForAll <- aggregate(OutPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=OutPatCostTable$CareCenter ),CareCenterAgr)
+dim(MeansForAll)
+                                        #write.csv(MeansForAll,"./output/OutPatienCostDetails.csv")
+MeansForAll <- cbind(MeansForAll[1],
+                     Cat2=rep("All",length(MeansForAll[,1])),
+                     as.matrix(MeansForAll[2:5]))
+head(MeansForAll)
+dim(MeansForAll)
+dim(MeansByGroup)
+
+write.csv(rbind(MeansForAll,MeansByGroup),file="./output/OutpatientCostMeansDetails.csv")
+
+########################################
+
+MeansByGroup <- aggregate(InPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=InPatCostTable$CareCenter,Cat2=InPatCostTable$Group),CareCenterAgr)
+MeansByGroup <- cbind(MeansByGroup[1],MeansByGroup[2],as.matrix(MeansByGroup[3:6]))
+#write.csv(MeansByGroup,"./output/InPatienCostDetails.csv")
+
+MeansForAll <- aggregate(InPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=InPatCostTable$CareCenter ),CareCenterAgr)
+dim(MeansForAll)
+                                        #write.csv(MeansForAll,"./output/InPatienCostDetails.csv")
+MeansForAll <- cbind(MeansForAll[1],
+                     Cat2=rep("All",length(MeansForAll[,1])),
+                     as.matrix(MeansForAll[2:5]))
+head(MeansForAll)
+dim(MeansForAll)
+dim(MeansByGroup)
+
+write.csv(rbind(MeansForAll,MeansByGroup),file="./output/InpatientCostMeansDetails.csv")
+
+
+
+NIll <- aggregate(OutPatCostTable$NumIllnesses,list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),
+                  function(X){
+                    c(N=length(X),NFound=sum(!is.na(X)),NSick=mean(X,na.rm=T))
+                  })
+
+UsageProfileByGroup <- cbind(aggregate(OutPatCostTable[,c("Age","Overall_average")],list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),mean),
+                      NIll[3])
+
+UsageProfileAll <- cbind(aggregate(OutPatCostTable[,c("Age","Overall_average")],list(Cat1=OutPatCostTable$CareCenter),mean),      
+       aggregate(OutPatCostTable$NumIllnesses,list(Cat1=OutPatCostTable$CareCenter),
+                  function(X){
+                    c(N=length(X),NFound=sum(!is.na(X)),NSick=mean(X,na.rm=T))
+                  })[2]
+      )
+
+```

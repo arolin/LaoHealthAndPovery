@@ -206,7 +206,7 @@ OutPatientEventsT <- rbind(OutPatientEvents,Total_Care_Events=colSums(OutPatient
 SaveTables(OutPatientEventsT,"Q2_Outpatient_event_count","Individual care event counts (max one per individual)")
 OutPatientEvents <- OutPatientEvents[order(OutPatientEvents[,"All"]),]## Order the events
 
-print("yeah?")
+
 
 OutPatientEventsF <- rbind(interleaveBl(NumIndivids),
                            intPer(OutPatientEvents,NumIndivids))
