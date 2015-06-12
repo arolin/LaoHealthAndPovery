@@ -69,10 +69,13 @@ source("./SmallScripts/DefineGroups.r")
 print("D4")
 source("./SmallScripts/Count_Consultation_Users.r")
 
-print("Data Rebuilt")
-source("./SmallScripts/PCA2.r")
-save.image(file="InitialAnalysis.RData")
-print("Data Saved")
+  print("Data Rebuilt")
+  source("./SmallScripts/PCA2.r")
+
+  
+  save.image(file="InitialAnalysis.RData")
+  print("Data Saved")
+  
 }else{
   load(file="InitialAnalysis.RData")
   print("Data Fully Loaded")

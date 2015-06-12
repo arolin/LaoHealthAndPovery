@@ -1,9 +1,10 @@
 # RMDFILE=MainAnalysis
-RMDFILE=OOPCross_Anlysis
-RMDFILE=CostAnalysis
+RMDFILE=OOPCross_Anlysis CostAnalysis
 
 
-html :
-	Rscript -e "require(knitr); require(markdown); rmarkdown::render('$(RMDFILE).rmd')"
+%: %.rmd
+	Rscript -e "require(knitr); require(markdown); rmarkdown::render('$@.rmd')"
+
+
 
 ## Rscript -e "require(knitr); require(markdown); knit('$(RMDFILE).rmd', '$(RMDFILE).md'); markdownToHTML('$(RMDFILE).md', '$(RMDFILE).html', stylesheet='custom.css')"

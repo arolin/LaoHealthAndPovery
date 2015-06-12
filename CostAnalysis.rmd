@@ -21,6 +21,9 @@ load("InitialAnalysis.RData")
 source("./SmallScripts/Utility.r")
 source("LoadData.R")
 library("GGally")
+library("scales")
+library("reshape")
+library("plyr")
 
 ```
 
@@ -28,22 +31,161 @@ library("GGally")
 
 #source("./SmallScripts/CleanCosts.r")
 
-```
-
-### Box plot of all 
-```{r,results='asis'}
-
-head(OutPat2[,1:18])
-
-
-OutPatI[,1]
-
-
-
-
-
+PublicFac  <- c("PH","DH","HC")
 
 ```
+
+## OutPatient
+
+### Check Number of Out Patient Records
+```{r,results='html'}
+
+##Check the total number of OutPatient Events
+sum(OutPat$Q==1)
+
+##Check the total number of OutPatient Events
+sapply(OutPatGroups,sum)
+
+```
+
+### Plot Outpatient Totals By Facility
+```{r ,echo=F, results='asis'}
+
+p <- ggplot(data=OutPat)
+p <- p + geom_point(aes(x=Facility,y=Total,color=Group),
+                    position=position_jitter(w=.2,h=0),
+                    alpha=.35)
+print(p)
+
+
+p <- p + coord_cartesian(ylim = c(0, 750000))
+print(p)
+
+```
+
+### Plot Outpatient Totals By Facility with group
+```{r ,echo=F, results='asis'}
+
+p <- p + facet_grid(Group~.)
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 50000))
+print(p)
+
+```
+
+### Plot Outpatient Costs by Cost Type, Srvice, and Group
+```{r ,echo=F, results='asis'}
+
+OutPCostBreakDown <-  melt(data=OutPat[,c("Medical_Fee","Medicine","Others","Transport","Total","Serial","Facility","Group")],id.vars=c("Serial","Facility","Group"))
+OutPCostBreakDown <- subset(OutPCostBreakDown,!is.na(value))
+
+p <- ggplot(data=OutPCostBreakDown)
+p <- p + geom_point(aes(x=variable,y=value))
+p <- p + facet_grid(Group~Facility)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + coord_cartesian(ylim = c(0, 750000))
+print(p)
+                    
+```
+
+### Plot Public Health Facility HEF Level Outpatient Costs by Cost Type, Srvice, and Group
+```{r ,echo=F, results='asis'}
+
+p <- ggplot(data=subset(OutPCostBreakDown,Facility %in% PublicFac ),aes(x=variable,y=value))
+p <- p + geom_point(shape=95,fill="Black",
+                    ## position=position_jitter(w=.25,h=0),
+                    size=10,
+                    alpha=.2)
+p <- p + facet_grid(Group~Facility)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + scale_x_discrete("Cost Type")
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + labs(title="Costs by Facility, Cotst Type, and Insurance Group")
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 150000))
+print(p)
+
+```
+
+## InPatient
+
+### Check Number of In Patient Records
+```{r,results='html'}
+
+##Check the total number of InPatient Events
+length(InPat$Q)
+
+
+##Check the total number of InPatient Events
+sapply(InPatGroups,sum)
+
+```
+
+### Plot Inpatient Totals By Facility
+```{r ,echo=F, results='asis'}
+
+p <- ggplot(data=InPat)
+p <- p + geom_point(aes(x=Facility,y=Total,color=Group),
+                    position=position_jitter(w=.2,h=0),
+                    alpha=.35)
+print(p)
+
+
+p <- p + coord_cartesian(ylim = c(0, 750000))
+print(p)
+
+```
+
+### Plot Inpatient Totals By Facility with group
+```{r ,echo=F, results='asis'}
+
+p <- p + facet_grid(Group~.)
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 50000))
+print(p)
+
+```
+
+### Plot Inpatient Costs by Cost Type, Srvice, and Group
+```{r ,echo=F, results='asis'}
+
+InPCostBreakDown <-  melt(data=InPat[,c("Medical_Fee","Medicine","Others","Transport","Total","Serial","Facility","Group")],id.vars=c("Serial","Facility","Group"))
+InPCostBreakDown <- subset(InPCostBreakDown,!is.na(value))
+
+p <- ggplot(data=InPCostBreakDown)
+p <- p + geom_point(aes(x=variable,y=value))
+p <- p + facet_grid(Group~Facility)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + coord_cartesian(ylim = c(0, 750000))
+print(p)
+                    
+```
+
+### Plot Public Health Facility HEF Level Inpatient Costs by Cost Type, Srvice, and Group
+```{r ,echo=F, results='asis'}
+
+p <- ggplot(data=subset(InPCostBreakDown,Facility %in% PublicFac ),aes(x=variable,y=value))
+p <- p + geom_point(shape=95,fill="Black",
+                    ## position=position_jitter(w=.25,h=0),
+                    size=10,
+                    alpha=.2)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + facet_grid(Facility~Group)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + scale_x_discrete("Cost Type")
+p <- p + labs(title="Costs by Facility, Cotst Type, and Insurance Group")
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 500000))
+print(p)
+
+```
+
 
 
 #catastrophic

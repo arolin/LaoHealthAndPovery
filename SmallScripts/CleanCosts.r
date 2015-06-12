@@ -375,6 +375,25 @@ save(CostRows,file="CostRows.RData")
 
 
 
-OutPat <- subset(CostRows,Q=1)
+OutPat <- subset(CostRows,Q==1)
 OutPatI <-t( sapply(1:nrow(OutPat),function(I){subset(IndiHealth,SRow==OutPat$Serial[I] & SN==OutPat$Indiv[I])}))
 OutPat <- cbind(OutPat,OutPatI)
+OutPat$Group <- factor(OutPat$Group,levels=c("PreID","GeoID","NoAssist"))
+names(OutPat)[names(OutPat)=="Center"] <- "Facility"
+rm(OutPatI)
+OutPatGroups <- list(PreID=OutPat$Group=="PreID",
+                     GeoID=OutPat$Group=="GeoID",
+                     NoAssist=OutPat$Group=="NoAssist",
+                     All=rep(T,length(OutPat$Group)))
+
+
+InPat <- subset(CostRows,Q==2 | Q==3)
+InPatI <-t( sapply(1:nrow(InPat),function(I){subset(IndiHealth,SRow==InPat$Serial[I] & SN==InPat$Indiv[I])}))
+InPat <- cbind(InPat,InPatI)
+InPat$Group <- factor(InPat$Group,levels=c("PreID","GeoID","NoAssist"))
+names(InPat)[names(InPat)=="Center"] <- "Facility"
+rm(InPatI)
+InPatGroups <- list(PreID=InPat$Group=="PreID",
+                     GeoID=InPat$Group=="GeoID",
+                     NoAssist=InPat$Group=="NoAssist",
+                     All=rep(T,length(InPat$Group)))

@@ -12,6 +12,8 @@ output:
 ---
 
 
+
+
 # Background
 ```{r,echo=F,results='hide',message=F,warning=F}
 
@@ -66,7 +68,6 @@ Cost
 ```{r, echo=F, results='hide'}
 
 ###Prepare the data for Child Addmitance event
-
 TotalChildAdmit <- sum(lps$Child_Admitted_Past_year==1,na.rm=T)
 ##Extract just the Child addmitted subset as CA
 CA <- subset(lps,Child_Admitted_Past_year==1)
@@ -90,7 +91,6 @@ OOPLabler <- function(variable,value){
     return(c("OOP","Not OOP")[value])
   }
 }
-
 
 
 ```
@@ -210,6 +210,10 @@ p <- p + labs(title="Food Allowance Ammounts",x="Inpatient Location",y="Allowanc
 p
 
 ```
+
+### Transportation Allowances
+
+
 #### Overview of Transportation Allowance Reception for Child hospitalizations
 ```{r, echo=F, result='asis'}
 
@@ -266,7 +270,6 @@ print(xtable(formatC(PT3ByCLoc,digits=1,format="f"),"Percent <3km (no transport)
 ```
 
 
-
 #### Plot Transportation Amount Recieved
 ```{r, echo=F, result='asis'}
 
@@ -278,7 +281,7 @@ p
 
 ```
 
-## MNCH Rates
+## MNCH Rates (Q4.10, 4.18, 4.20)
 * Mother OOP ANCs (Q4.10)
 * Birth Cost delivery (4.18)
 * Birth Hospital Food allowance (4.20)
@@ -363,6 +366,9 @@ p <- p + facet_grid(.~Group)
 print(p)            
 
 ```
+
+
+### Transportation
 
 #### Plot Transportation Amount Recieved
 ```{r, echo=F, result='asis'}
