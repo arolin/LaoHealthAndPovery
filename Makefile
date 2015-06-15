@@ -3,7 +3,7 @@ RMDFILE=OOPCross_Anlysis CostAnalysis
 
 
 %: %.rmd
-	Rscript -e "require(knitr); require(markdown); rmarkdown::render('$@.rmd')"
+	Rscript -e "require(knitr); require(markdown); rmarkdown::render('$@.rmd',output_dir='./html')"
 
 
 

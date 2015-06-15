@@ -10,16 +10,17 @@ output:
 ---
 
 
+
+
 #Cost Analysis
 
 
 ```{r,echo=F,results='hide', warning=F}
 
+source("LoadData.R")
+source("./SmallScripts/Utility.r")
 library("ggplot2")
 library("xtable")
-load("InitialAnalysis.RData")
-source("./SmallScripts/Utility.r")
-source("LoadData.R")
 library("GGally")
 library("scales")
 library("reshape")
@@ -127,14 +128,16 @@ sapply(InPatGroups,sum)
 ### Plot Inpatient Totals By Facility
 ```{r ,echo=F, results='asis'}
 
-p <- ggplot(data=InPat)
-p <- p + geom_point(aes(x=Facility,y=Total,color=Group),
-                    position=position_jitter(w=.2,h=0),
-                    alpha=.35)
+
+p <- ggplot(data=InPat,aes(x=Facility,y=Total))
+p <- p + geom_point(shape=95,fill="Black",
+                    size=10,
+                    alpha=.2)
+p <- p + facet_grid(Group~.)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
 print(p)
 
-
-p <- p + coord_cartesian(ylim = c(0, 750000))
+p <- p + coord_cartesian(ylim = c(0, 2000000))
 print(p)
 
 ```
@@ -185,6 +188,94 @@ p <- p + coord_cartesian(ylim = c(0, 500000))
 print(p)
 
 ```
+
+## Model
+```{r,echo=F,results='asis'}
+
+InPat$ModelID <-factor( paste(InPat$Group,InPat$Facility))
+ModelMeans <- sapply(levels(InPat$ModelID),function(M){mean(subset(InPat,ModelID==M)[,"Total"])})
+InPat$ModelID <-factor(InPat$ModelID,levels=levels(InPat$ModelID)[order(ModelMeans)])
+
+p <- ggplot(data=InPat,aes(x=ModelID,y=Total))
+p <- p + geom_point(shape=95,size=10,alpha=.1,na.rm=T)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + stat_summary(fun.y = median, colour="blue",geom="point")
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 5000000))
+print(p)
+
+p <- p + coord_cartesian(ylim = c(0, 50000))
+print(p)
+
+```
+
+###OOP
+```{r}
+
+sapply(InPatGroups,function(G){
+  sapply(levels(InPat$Facility),function(F) {
+    mean(subset(InPat[G,],Facility==F)[,"Total"])
+  })})
+
+
+
+InPat$OOP <- InPat$Total > median(subset(InPat,Facility=="PH")$Total)
+mylogit <- glm(OOP ~ Age +
+                 Group +
+                 NumIllnesses +
+                 WPCA.NPeople +
+                 WPCA.Sex +
+                 WPCA.Lit1 +                                 
+                 WPCA.Lit2 +                                 
+                 WPCA.NCH  +                                
+                 WPCA.NAdult +                                
+                 WPCA.House +                              
+                 WPCA.Roof +                               
+                 WPCA.TV  +                                
+                 WPCA.Vid  +                                 
+                 WPCA.Bike  +                                
+                 WPCA.Moto   +                               
+                 WPCA.Tractor +                              
+                 WPCA.Toilet  +                             
+                 WPCA.Energy  +                             
+                 WPCA.Cereals +                             
+                 WPCA.Shop    +                             
+                 WPCA.NChic   +                             
+                 WPCA.NPig    +                             
+                 WPCA.NCattel+
+                 WPCA.Cash   ,
+               data = subset(InPat,Facility=="PH"), family = "binomial")
+
+
+summary(mylogit)
+Pr <-predict(mylogit,type="response")
+qplot(Pr)
+
+P <- cbind.data.frame(Pr = Pr[order(Pr)],
+                      OOP=as.numeric(subset(InPat,Facility=="PH")$OOP[order(Pr)]),
+                      Ord=order(subset(InPat,Facility=="PH")$Total[order(Pr)])/length(subset(InPat,Facility=="PH")$OOP)
+                      )
+p <- ggplot(data=P,aes(x=1:length(Pr)))
+p <- p + geom_point(aes(y=Pr),color="Blue")
+p <- p + geom_point(aes(y=OOP),color="Red")
+p <- p + geom_point(aes(y=Ord),color="Green")
+print(p)
+
+p <- p + coord_cartesian(xlim = c(0, 50))
+
+c("Group","Gender","Age","NumIllnesses","Marital_Status","WPCA.NPeople","WPCA.Sex","WPCA.Lit1","WPCA.Lit2","WPCA.NCH","WPCA.NAdult","WPCA.House","WPCA.Roof","WPCA.TV","WPCA.Vid","WPCA.Bike","WPCA.Moto","WPCA.Tractor","WPCA.Toilet","WPCA.Energy","WPCA.Cereals","WPCA.Cash","WPCA.Shop","WPCA.NChic","WPCA.NPig","WPCA.NCattel")
+ggpairs(InPat[predict(mylogit)<.65,c("Group","Age","NumIllnesses")])
+      ## "WPCA.NPeople","WPCA.Sex","WPCA.Lit1","WPCA.Lit2","WPCA.NCH","WPCA.NAdult","WPCA.House","WPCA.Roof","WPCA.TV","WPCA.Vid","WPCA.Bike","WPCA.Moto","WPCA.Tractor","WPCA.Toilet","WPCA.Energy","WPCA.Cereals","WPCA.Cash","WPCA.Shop","WPCA.NChic","WPCA.NPig","WPCA.NCattel")])
+
+
+
+plot(exp(predict(mylogit,InPat[order(InPat$Total),])))
+plot(InPat[order(InPat$Total),"Total"]==0,color="Blue",add=T)
+
+```
+
 
 
 
