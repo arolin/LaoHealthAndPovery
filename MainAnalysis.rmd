@@ -1,7 +1,11 @@
 ---
 title: "Cost Modeling Investigation"
 date: "02/06/2015"
-output: html_document
+output: 
+    html_document:
+        toc: true
+        toc_depth: 4
+        number_sections: true
 ---
 # Background
 This is an R Markdown exploratory analysis of Cost Modeling

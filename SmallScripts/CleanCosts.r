@@ -1,6 +1,8 @@
 library("xtable")
 source("LoadData.R")
 
+##redoAll=T
+if (!exists("redoAll")) redoAll <- F
 
 printt <- function(Tb,C,format=T) {
   if(format) {
@@ -12,7 +14,10 @@ printt <- function(Tb,C,format=T) {
 }
 
 RebuildRaw=F
-#RebuildRaw=T
+if (redoAll){RebuildRaw = T}
+
+if (redoAll){RebuildRaw=T}
+
 if (RebuildRaw) {
 
   ##Clear any modification from the questions
@@ -64,11 +69,14 @@ if (RebuildRaw) {
     }
   }
 
+  rownames(CostRows) <- NULL
+  CostRows <- as.data.frame(CostRows)
+  names(CostRows) <- c("Q","Center","Group","Serial","Indiv","Consult","Medicine","Medical_Fee","Transport","Others","Overall_average")
   CostRows$Group <- relevel(CostRows$Group,("NoAssist"))
   CostRows$Group <- relevel(CostRows$Group,("GeoID"))
   CostRows$Group <- relevel(CostRows$Group,("PreID"))
   
-  names(CostRows) <- c("Q","Center","Group","Serial","Indiv","Consult","Medicine","Medical_Fee","Transport","Others","Overall_average")
+
   save(CostRows,file="CostRowsRaw.RData")
 
 }
@@ -77,17 +85,14 @@ if (RebuildRaw) {
 ################################################################################
 ##Data is clean and saved
 rebuildCostRows = F
-#rebuildCostRows = T
+if (redoAll){rebuildCostRows = T}
+
 if(rebuildCostRows) {
   
   load(file="CostRowsRaw.RData")
   CostRows <- subset(as.data.frame(CostRows),!is.na(Consult))
   names(CostRows) <- c("Q","Center","Group","Serial","Indiv","Consult","Medicine","Medical_Fee","Transport","Others","Overall_average")
 
-  printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1)[,"Group"]==G)}),
-               TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2)[,"Group"]==G)}),
-               TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3)[,"Group"]==G)})
-               ),"Report Counts")
 
   CostRowsN<- CostRows$Serial
   trim <- function (x) gsub("^\\s+|\\s+$", "", x)
@@ -103,47 +108,50 @@ if(rebuildCostRows) {
   CostRows$Others           <-  CostRowsN$Others          
   CostRows$Overall_average <-  CostRowsN$Overall_average
 
-  print("means before cleanup")
+  print("means before cleanup\n<br>")
   mbc <- aggregate(.~Group + Center,subset(as.data.frame(CostRows[,c("Group","Center","Overall_average")])),function(X){mean(X,na.rm=T)})
-  mbc
   Tb <- t(matrix(mbc$Overall_average,3))
   colnames(Tb) <- mbc$Group[1:ncol(Tb)]
   rownames(Tb) <- levels(mbc$Center)
-  printt(Tb,"Means before cleanup")
+  printt(Tb,"Means before cleanup\n<br>")
+  
+  printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1)[,"Group"]==G)}),
+               TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2)[,"Group"]==G)}),
+               TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3)[,"Group"]==G)})
+               ),"Initial Report Counts")
 
 
-
-  print("Remove dirty data")
+  print("Remove dirty data\n<br>")
   printt(as.data.frame(subset(as.data.frame(CostRows),is.na(Overall_average))),"NA in Overall average",format=F)
   CostRows <- subset(as.data.frame(CostRows),!is.na(Overall_average))
 
-
-  print(xtable(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1)[,"Group"]==G)}),
-                     TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2)[,"Group"]==G)}),
-                     TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3)[,"Group"]==G)})
-                     )),type="html")
-
-  print("Remove 99s")
+  print("Remove 99s\n<br>")
   CostRows[CostRows==99] <- NA
   CostRows[CostRows==98] <- NA
 
 
-  print("Remove totals with 99")
+  print("Remove totals with 99\n<br>")
   printt(subset(as.data.frame(CostRows),is.na(Overall_average)),"DK in Overall_average",F)
   CostRows <- subset(as.data.frame(CostRows),!is.na(Overall_average))
 
+  printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1)[,"Group"]==G)}),
+               TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2)[,"Group"]==G)}),
+               TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3)[,"Group"]==G)})
+               ),"Report Counts after initial cleanup")
+
+  print("Clean the Suspicious Totals");
 
   CostRows$SumParts <- rowSums(CostRows[,c("Medicine","Medical_Fee","Transport","Others")],na.rm=T)
 
-  print("Average below sum:")
+  print("Average below sum:\n<br>")
   printt(subset(as.data.frame(CostRows),Overall_average<SumParts),"Overall_average is lees than Sum of Parts",F)
 
-  print("Average below sum:")
+  print("Average below sum:\n<br>")
   printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1& Overall_average<SumParts)[,"Group"]==G)}),
                TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2& Overall_average<SumParts)[,"Group"]==G)}),
                TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3& Overall_average<SumParts)[,"Group"]==G)})
                ),"Average below sum",F)
-  print("Average at sum:")
+  print("Average at sum:\n<br>")
   printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1& Overall_average==SumParts)[,"Group"]==G)}),
                TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2& Overall_average==SumParts)[,"Group"]==G)}),
                TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3& Overall_average==SumParts)[,"Group"]==G)})
@@ -178,37 +186,40 @@ if(rebuildCostRows) {
   ## p + geom_point()
 
   ##Recover these
-  print("Identifying correction candidates")
-  subset(CostRows,(SumParts/Overall_average)>1 & (SumParts/Overall_average)<2)
-
-  subset(CostRows,(SumParts/Overall_average)>2)
-
-  print("***removeing Outliers and dirty data************")
-  print     (subset(CostRows, (Serial==541)))
-  CostRows <-subset(CostRows,!(Serial==541))
+  print("\n<br>removeing Outliers and dirty data\n<br>")
+  print(xtable(subset(CostRows, (Serial==541))),type=html)
+  CostRows <-  subset(CostRows,!(Serial==541))
   
-  print     (subset(CostRows, (Serial==658 & Center=="PH")))
-  CostRows <-subset(CostRows,!(Serial==658 & Center=="PH"))
+  print(xtable(subset(CostRows, (Serial==658 & Center=="PH"))),type=html)
+  CostRows <-  subset(CostRows,!(Serial==658 & Center=="PH"))
   
-  print     (subset(CostRows, Serial==96))
-  CostRows <-subset(CostRows,!Serial==96)
+  print(xtable(subset(CostRows, Serial==96)),type=html)
+  CostRows <-  subset(CostRows,!Serial==96)
   
-  print     (subset(CostRows, (Center=="PH"& Serial==238)))
-  CostRows <-subset(CostRows,!(Center=="PH"& Serial==238))
+  print(xtable(subset(CostRows, (Center=="PH"& Serial==238))),type=html)
+  CostRows <-  subset(CostRows,!(Center=="PH"& Serial==238))
 
-  print     (subset(CostRows, (Serial==327& Q==2)))
-  CostRows <-subset(CostRows,!(Serial==327& Q==2))
+  print(xtable(subset(CostRows, (Serial==327& Q==2))),type=html)
+  CostRows <-  subset(CostRows,!(Serial==327& Q==2))
   
-  print     (subset(CostRows, (Serial==883)))
-  CostRows <-subset(CostRows,!(Serial==883))
+  print(xtable(subset(CostRows, (Serial==883))),type=html)
+  CostRows <-  subset(CostRows,!(Serial==883))
 
 
-
+  print("Identifying correction candidates\n<br>")
+  print(xtable(
+            subset(CostRows,(SumParts/Overall_average)>1)
+     ,"Correction Candidates"),type=html)
 
 
   CostRows$Total <- CostRows$Overall_average
   CostRows[(CostRows$SumParts> CostRows$Overall_average),"Total"] <-   subset(CostRows,(SumParts/Overall_average)>1)["SumParts"]
 
+  print("Corrected Rows\n<br>")
+  print(xtable(
+            subset(CostRows,(SumParts/Overall_average)>1)
+     ,"Corrected Rows"),type=html)
+  
 
   Tb <- t(matrix(mbc$Overall_average,3))
   colnames(Tb) <- mbc$Group[1:ncol(Tb)]
@@ -218,13 +229,16 @@ if(rebuildCostRows) {
 
   print("means After cleanup")
   mac <- aggregate(.~Group + Center,subset(as.data.frame(CostRows[,c("Group","Center","Total")])),function(X){mean(X,na.rm=T)})
-  mac
   Tb <- t(matrix(mac$Total,3))
   colnames(Tb) <- mac$Group[1:ncol(Tb)]
   rownames(Tb) <- levels(mac$Center)
   printt(Tb,"Means after cleanup")
 
-  nrow(subset(CostRows,Total>1000000))
+  printt(rbind(TotalOutP=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==1)[,"Group"]==G)}),
+               TotalInP1=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==2)[,"Group"]==G)}),
+               TotalInP2=sapply(c("PreID","GeoID","NoAssist"),function(G){sum(subset(CostRows,Q==3)[,"Group"]==G)})
+               ),"Report Counts after cleanup")
+
 
   save(CostRows,file="CostRows.RData")
 } else {
@@ -236,6 +250,8 @@ if(rebuildCostRows) {
 WPCA <- t(sapply(Score2,function(S) {S}))
 
 rebuildPats=F
+if (redoAll){rebuildPats = T}
+
 if (rebuildPats) {
 
   OutPat <- subset(CostRows,Q==1)

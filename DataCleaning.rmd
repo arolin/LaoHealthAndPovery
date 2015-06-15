@@ -1,0 +1,21 @@
+---
+title: "Data Cleaning"
+date: "02/06/2015"
+output:
+    html_document:
+        toc: true
+        toc_depth: 4
+        number_sections: true
+---
+
+# Rerprocessed Cleaning
+```{r, echo=F, results='asis', warning=F }
+
+redoAll=T
+
+source ("./SmallScripts/CleanCosts.r")
+
+rm("redoAll")
+
+```
+

@@ -1,5 +1,4 @@
 ---
-
 title: "Cost Analysis"
 date: "02/06/2015"
 output:
@@ -26,9 +25,13 @@ library("scales")
 library("reshape")
 library("plyr")
 
+printt <- function(Tab,Cap) {
+  print(xtable(Tab,Cap),type='html')
+}
+
 ```
 
-```{r,results='asis'}
+```{r,results='asis',warning=F}
 
 #source("./SmallScripts/CleanCosts.r")
 
@@ -49,13 +52,48 @@ sapply(OutPatGroups,sum)
 
 ```
 
+### Outpatien Tables
+
+#### Number of Outpatient cost reports by Facility
+```{r , echo=F, results='asis'}
+
+printt(
+
+    sapply (levels(OutPat$Facility),function(F){
+  sapply(OutPatGroups,function(G){ length(subset(OutPat[G,],Facility==F)[,1]) })
+})
+
+,"Number fo Outpatient cost reports by facility")
+
+```
+
+##### Plot of Outpatient cost reports  by Facility
+```{r , echo=F, results='asis'}
+
+p <- ggplot(data=OutPat)
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p
+
+```
+
+##### Plot of Outpatient Useage rates by Facility
+```{r , echo=F, results='asis'}
+
+IHMelt <- melt(IH[,c("Serial","Group",paste("Care_At",levels(OutPat$Facility),sep="_"))],id=c("Serial","Group"))
+p <- ggplot(data=subset(IHMelt,value))
+p + geom_bar(aes(x=variable,fill=Group))
+
+
+```    
+
 ### Plot Outpatient Totals By Facility
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis',warning=F}
 
 p <- ggplot(data=OutPat)
 p <- p + geom_point(aes(x=Facility,y=Total,color=Group),
                     position=position_jitter(w=.2,h=0),
                     alpha=.35)
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
 print(p)
 
 
@@ -65,7 +103,7 @@ print(p)
 ```
 
 ### Plot Outpatient Totals By Facility with group
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis',warning=F}
 
 p <- p + facet_grid(Group~.)
 print(p)
@@ -76,7 +114,7 @@ print(p)
 ```
 
 ### Plot Outpatient Costs by Cost Type, Srvice, and Group
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis',warning=F}
 
 OutPCostBreakDown <-  melt(data=OutPat[,c("Medical_Fee","Medicine","Others","Transport","Total","Serial","Facility","Group")],id.vars=c("Serial","Facility","Group"))
 OutPCostBreakDown <- subset(OutPCostBreakDown,!is.na(value))
@@ -91,13 +129,13 @@ print(p)
 ```
 
 ### Plot Public Health Facility HEF Level Outpatient Costs by Cost Type, Srvice, and Group
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis',warning=F}
 
 p <- ggplot(data=subset(OutPCostBreakDown,Facility %in% PublicFac ),aes(x=variable,y=value))
 p <- p + geom_point(shape=95,fill="Black",
-                    ## position=position_jitter(w=.25,h=0),
+##                    position=position_jitter(w=.1,h=0),
                     size=10,
-                    alpha=.2)
+                    alpha=.1)
 p <- p + facet_grid(Group~Facility)
 p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
@@ -111,10 +149,15 @@ print(p)
 
 ```
 
+
+
+
+
+
 ## InPatient
 
 ### Check Number of In Patient Records
-```{r,results='html'}
+```{r,results='html' ,warning=F}
 
 ##Check the total number of InPatient Events
 length(InPat$Q)
@@ -126,7 +169,7 @@ sapply(InPatGroups,sum)
 ```
 
 ### Plot Inpatient Totals By Facility
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis',warning=F}
 
 
 p <- ggplot(data=InPat,aes(x=Facility,y=Total))
@@ -143,7 +186,7 @@ print(p)
 ```
 
 ### Plot Inpatient Totals By Facility with group
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis' ,warning=F}
 
 p <- p + facet_grid(Group~.)
 print(p)
@@ -154,7 +197,7 @@ print(p)
 ```
 
 ### Plot Inpatient Costs by Cost Type, Srvice, and Group
-```{r ,echo=F, results='asis'}
+```{r ,echo=F, results='asis' ,warning=F}
 
 InPCostBreakDown <-  melt(data=InPat[,c("Medical_Fee","Medicine","Others","Transport","Total","Serial","Facility","Group")],id.vars=c("Serial","Facility","Group"))
 InPCostBreakDown <- subset(InPCostBreakDown,!is.na(value))
@@ -222,7 +265,7 @@ sapply(InPatGroups,function(G){
 
 
 InPat$OOP <- InPat$Total > median(subset(InPat,Facility=="PH")$Total)
-mylogit <- glm(OOP ~ Age +
+mylogit <- glm(OOP ~ Age + 
                  Group +
                  NumIllnesses +
                  WPCA.NPeople +

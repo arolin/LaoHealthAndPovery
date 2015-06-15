@@ -1,5 +1,4 @@
 ---
-
 title: "OOP Investigation"
 date: "02/06/2015"
 output:
@@ -7,8 +6,6 @@ output:
         toc: true
         toc_depth: 4
         number_sections: true
-
-    
 ---
 
 
