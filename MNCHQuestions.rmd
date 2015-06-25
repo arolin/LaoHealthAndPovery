@@ -1,0 +1,310 @@
+---
+title: "Sampling Analysis"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+    html_document:
+        toc: true
+        toc_depth: 5
+        number_sections: true
+---
+
+```{r, echo=F, message=F}
+
+load(file="OOPCrossAnalysis.RData")
+library("ggplot2")
+library("xtable")
+library("reshape")
+library("scales")
+
+opts_chunk$set(comment=NA, fig.height=4, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
+
+outdir <- "./html/MNCHQuestions_files/"
+
+
+printTT <- function(tb,caption) {
+  ## write.csv(tb,file=paste(outdir,caption,".csv",sep=""))
+  tbm <- addmargins(tb)
+  ftb <-ftable(tbm)
+  ct <- ncol(tbm);
+  ftb <- format(ftb)
+  cn <- ncol(ftb)-ct
+  print(xtable(ftb,
+               caption=paste("Number",caption),
+               align=c(rep("l",cn+1),
+                       rep("c",ct))
+               ),
+        type='html',
+        html.table.attributes = "border = '1', align = 'center'")
+  ptb <- addmargins(prop.table(tb)*100)
+  ftb <-ftable(ptb)
+  ct <- ncol(ptb);
+  ftb <- format(ftb,digits=2)
+  cn <- ncol(ftb)-ct
+  print(xtable(ftb,
+               caption=paste("Percent",caption,"by cell"),
+               align=c(rep("l",cn+1),
+                       rep("c",ct))
+               ),
+        type='html',
+        html.table.attributes = "border = '1', align = 'center'")
+  ptb <-  addmargins(prop.table(tb,1)*100)
+  ftb <-ftable(ptb)
+  ct <- ncol(ptb);
+  ftb <- format(ftb,digits=2)
+  cn <- ncol(ftb)-ct
+  print(xtable(ftb,
+               caption=paste("Percent",caption,"by row"),
+               align=c(rep("l",cn+1),
+                       rep("c",ct))
+               ),
+        type='html',
+        html.table.attributes = "border = '1', align = 'center'")  
+  ptb <-  addmargins(prop.table(tb,2)*100)
+  ftb <-ftable(ptb)
+  ct <- ncol(ptb);
+  ftb <- format(ftb,digits=2)
+  cn <- ncol(ftb)-ct
+  print(xtable(ftb,
+               caption=paste("Percent",caption,"by col"),
+               align=c(rep("l",cn+1),
+                       rep("c",ct))
+               ),
+        type='html',
+        html.table.attributes = "border = '1', align = 'center'")  
+
+}
+
+
+
+printT <- function(tb,caption) {
+  ## write.csv(tb,file=paste(outdir,caption,".csv",sep=""))
+  ftb <-ftable(tb)
+  ct <- ncol(tb);
+  ftb <- format(ftb)
+  cn <- ncol(ftb)-ct
+  print(xtable(ftb,
+               catption=paste("Percent",caption),
+               align=c(rep("l",cn+1),
+                       rep("c",ct))
+               ),
+        type='html')
+}
+
+
+```        
+
+
+
+# Breakdown of CU2 and CU5
+
+## Expect 210 CU2 and 366 CU5
+
+## Find 366 CU2 and 596 CU5
+
+All respondents for Q4 and Q5 are the same 366 mothers considered to
+be the CU2 mothers involved in MNCH evaluation.
+
+CU5 Mothers are respondents to question 7 about child addmittance
+events. 596 mothers respond with 82 of them reporting a child
+admittance event.
+## CU2 Breakdown
+
+```{r, echo=F}
+
+cat("Percent of CU2 mothers in each group (q4_1 respondents)")
+CU2All <- with(lps,table(ifelse(!is.na(Mother_ID),
+                                "CU2",
+                                "No-CU2")))
+
+print(addmargins(with(lps,table(Group,
+                                ifelse(!is.na(Mother_ID),
+                                       "CU2",
+                                       "No-CU2")
+                                ))),
+      digits=2   
+      )
+
+
+cat("Percent of CU2 mothers in each group (q4_1 respondents)")
+CU2All <- with(lps,table(ifelse(!is.na(Mother_ID),
+                                "CU2",
+                                "No-CU2")))
+
+print(addmargins(prop.table(with(lps,rbind(table(Group,
+                                           ifelse(!is.na(Mother_ID),
+                                                  "CU2",
+                                                  "No-CU2")
+                                           ),All=CU2All)),1)*100)[1:4,],
+      digits=2   
+      )
+
+```
+
+## CU5 Detailed breakdown 
+
+```{r, echo=F}
+
+cat("Number of CU5 mothers by group (q7_5 respondents)")
+print(addmargins(with(lps,table(Group,
+                   ifelse(!is.na(Child_Admitted_Past_year),
+                          "CU5",
+                          "No-CU5")
+                   ))))
+
+cat("Percent of CU5 mothers in dataset (q7_5 respondents)")
+print(addmargins(prop.table(with(lps,table(Group,
+                                           ifelse(!is.na(Child_Admitted_Past_year),
+                                                  "CU5",
+                                                  "No-CU5")
+                                           )))*100),
+      digits=2   
+      )
+
+cat("Percent of CU5 mothers in each group (q7_5 respondents)")
+CU5All <- with(lps,table(ifelse(!is.na(Child_Admitted_Past_year),
+                                "CU5",
+                                "No-CU5")))
+print(addmargins(prop.table(with(lps,rbind(table(Group,
+                                           ifelse(!is.na(Child_Admitted_Past_year),
+                                                  "CU5",
+                                                  "No-CU5")
+                                           ),All=CU5All)),1)*100)[1:4,],
+      digits=2   
+      )
+
+cat("Percent of CU5 mothers by group (q7_5 respondents)")
+print(addmargins(prop.table(with(lps,table(Group,
+                                           ifelse(!is.na(Child_Admitted_Past_year),
+                                                  "CU5",
+                                                  "No-CU5")
+                                           )),2)*100),
+      digits=2   
+      )
+
+
+
+cat("Number of CU5 child admittance (q7_5 affirmative)")
+print(addmargins(with(lps,table(Group,
+                   ifelse(Child_Admitted_Past_year==1,
+                          "Child Admitted",
+                          "No Child Admitted")
+                   )))
+      )
+
+cat("Percent of CU5 child admittance (q7_5 affirmative)")
+print(addmargins(prop.table(with(lps,table(Group,
+                   ifelse(Child_Admitted_Past_year==1,
+                          "Child Admitted",
+                          "No Child Admitted")
+                   )))*100),
+      digits=2
+      )
+
+
+
+```
+## Breakdown of CU5 and CU2 responders
+```{r, echo=F}
+
+cat(        "Breakdown of CU5 and CU2 responders")
+print(ftable(addmargins(with(lps,
+                       table(Group,
+                             ifelse(!is.na(Child_Admitted_Past_year),
+                                    "CU5",
+                                    "No-CU5"),
+                             ifelse(!is.na(Mother_ID),
+                                    "CU2",
+                                    "No-CU2")
+                             )))
+      ))
+
+cat(        "Percent of CU5 and CU2 responders")
+print(ftable(addmargins(prop.table(with(lps,
+                       table(Group,
+                             ifelse(!is.na(Child_Admitted_Past_year),
+                                    "CU5",
+                                    "No-CU5"),
+                             ifelse(!is.na(Mother_ID),
+                                    "CU2",
+                                    "No-CU2")
+                             )))*100)),
+      digits=2)
+
+```      
+
+# Confidence intervals
+
+## CU2 Confidence intervals
+
+
+```{r, echo=F}
+cat("Num CU2 Mothers")
+print(NumMothers)
+
+cat("Confidence intervals are +/- the following percents for probabilities in yes/no questions in CU2:")
+print(100*(sapply(NumMothers,function(N){prop.test(N/2,N,correct=F)$conf.int})[2,]-.5),digits=2)
+
+```
+
+## CU5 Confidence intervals
+
+```{r, echo=F}
+
+NCU5 <- with(lps,sapply(levels(Group),function(G){sum(!is.na(Child_Admitted_Past_year[Group==G]))}))
+NCU5  <- c(NCU5 ,All=sum(NCU5 ))
+cat("Num CU5 Mothers")
+print(NCU5)
+
+cat("Confidence intervals are +/- the following percents for probabilities in yes/no questions in CU5:")
+print(100*(sapply(NCU5,function(N){prop.test(N/2,N,correct=F)$conf.int})[2,]-.5),digits=2)
+
+```
+# Village Distributions
+## PreID Vs GeoID HH
+```{r, echo=F}
+
+NPreID_HH <- with(Villages,sapply(c(1,2),function(P){sum(X..HH.Total[P==Pre.ID])}))
+names(NPreID_HH) <- c("PreID","GeoID")
+cat("Total number of HHs in areas:")
+print(c(NPreID_HH,All=sum(NPreID_HH)))
+
+cat("Percent of HHs in areas:")
+print(100*(NPreID_HH/sum(NPreID_HH)),digits=2)
+
+cat("Percent of GeoID HHs in survey")
+print(100*(269/930),digits=3)
+
+cat("Percent of GeoID HHs sampled")
+print(100*(NumGroups[2]/NPreID_HH[2]),digits=3)
+
+cat("Percent of non GeoID HHs sampled")
+print(100*((NumGroups[4]-NumGroups[2])/NPreID_HH[1]),digits=3)
+
+Villages$PreID <- factor(Villages$Pre.ID,labels=c("PreID","GeoID"))
+
+## p <- ggplot(data=Villages)
+## p <- p + geom_bar(aes(x=PreID,y=sum(X..HH.Total)),binwidth=1)
+## print(p)
+Villages$NHEF <- as.numeric(gsub(",","",as.character(Villages[,23])))
+
+
+with(subset(Villages,PreID=="PreID"),NHEF/X..HH.Total)
+with(subset(Villages,PreID=="GeoID"),NHEF/X..HH.Total)
+
+
+
+
+```
+# Population Distribution
+```{r}
+
+Villages$VillageNum <- factor(Villages$VillageNum)
+## p <- qplot(Year, Frequency, data = Data, geom = "bar", fill = Category,     theme_set(theme_bw()))
+p <- qplot(VillageNum,X..HH.Total,data=Villages,geom = "bar", stat="identity",fill= PreID)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+print(p)
+
+
+```

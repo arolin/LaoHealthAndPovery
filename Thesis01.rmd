@@ -1,0 +1,74 @@
+---
+title: "Thesis Analysis"
+date: "02/06/2015"
+output:
+    html_document:
+        toc: true
+        toc_depth: 4
+        number_sections: true
+---
+
+# Background
+```{r,echo=F,results='hide',message=F,warning=F}
+
+opts_chunk$set(comment=NA, fig.height=4, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
+
+library("ggplot2")
+library("xtable")
+source("LoadData.R")
+source("./SmallScripts/Utility.r")
+library("reshape")
+library("scales")
+set.seed(0)
+
+```
+
+# Question: does HEF improve equity of MNCH care across poverty levels?
+
+## Identify the correlation between wealth and MNCH care score
+
+## Determine weather GeoID and/or PreID show improved MNCH score while controlling for wealth.
+
+```{r }
+
+stat_sum_single <- function(fun, geom="point", ...) {
+  stat_summary(fun.y=fun, colour="orange", geom=geom, size = 4, ...)
+}
+Mothers$Class <- cut(Mothers$Score,8)
+p <- ggplot(data=Mothers,aes(x=Class,y=Score_MNCH))
+p <- p + geom_point(aes(color=Group),  position=position_jitter(w=.4,h=0),alpha=.2)
+p <- p + stat_sum_single(mean)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + stat_smooth(method = "lm",aes(colour=Group),se=F)
+p <- p + stat_smooth(method = "lm",colour="Black",se=F)
+
+p <- p + facet_grid(.~Group)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p
+
+
+
+```
+
+
+
+# who are the poor in Laos ?
+
+## Does the existing PCA effectively measure poverty?
+
+### What metric do we have to evaluate the PCA
+
+
+
+# do the poor have different MNCH results than the non-poor?
+
+because this is about equity...  Overall, Laos has had big strides in improving
+MNCH on a national level.  But, if this is not happening in an
+equitable fashion, we need to know and look at areas of improvement
+
+## what are the driving factors in MNCH results?
+
+# Are MNCH scores differences supply or demand side?
+
