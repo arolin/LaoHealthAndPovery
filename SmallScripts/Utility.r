@@ -1,3 +1,25 @@
+printPT  <- function(X,C,width=10) {
+  print(xtable(100*X,caption=C,digits=1,align=c("r",rep("c",length(X[1,])))),
+        type="html",html.table.attributes = paste("border = '1', align = 'center', width='",width,"'",sep=""))
+}
+
+printt <- function(Tb,C,format=F) {
+  if(format) {
+    TF <- formatC(Tb,digits=0,big.mark=",",format="f")
+    al="r"
+  }else {
+    TF <- Tb
+    al="c"
+  }
+  print(xtable(TF,C,align=c("l",rep(al,ncol(Tb))),digits=0),type="html",
+        html.table.attributes = "border = '1', align = 'center'")
+}
+
+printCT <- function(Tb,C,format=T) {
+  printt(TB,C,format)
+}
+
+
 CodeS <- function(S){subset(Codes,Question==names(lpsraw)[which(names(lps)==S)])}
 
 ##Save Freqency of questions as files

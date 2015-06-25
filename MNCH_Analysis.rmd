@@ -17,6 +17,11 @@ source("./SmallScripts/MNCH_score.r")
 library("ggplot2")
 library("plyr")
 
+opts_chunk$set(comment=NA, fig.height=4, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
+
+
 ```
 
 

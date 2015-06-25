@@ -1,23 +1,27 @@
 ---
 title: "OOP Investigation"
-date: "02/06/2015"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
     html_document:
         toc: true
-        toc_depth: 4
+        toc_depth: 5
         number_sections: true
 ---
-
 
 
 # Background
 ```{r,echo=F,results='hide',message=F,warning=F}
 
+opts_chunk$set(comment=NA, fig.height=4, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
+
 library("ggplot2")
 library("xtable")
-source("./SmallScripts/Utility.r")
 source("LoadData.R")
+source("./SmallScripts/Utility.r")
 library("reshape")
+library("scales")
 set.seed(0)
 
 ```
@@ -44,14 +48,623 @@ set.seed(0)
 
 
 # General out-of-pocket health expenditure
-## Outpatient (Q3.3)
-```{r, echo=F}
 
-Cost
+## Outpatient (Q3.3)
+
+### Number of Outpatient Cost Reports
+```{r, echo=F,results='asis'}
+
+NOutPat <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ length(subset(OutPat[G,],Facility==F)[,1]) })
+      }))
+NOutPat$Total <- rowSums(NOutPat)
+printt (as.matrix(NOutPat),"Number of Outpatient Cost Reports By Facility")
 
 ```
+
+#### Total Outpatient Events
+```{r, echo=F,results='asis'}
+
+NOutPatEvents <- as.data.frame(
+                   sapply(levels(IH$Group),function(G){
+                     colSums(subset(IH,Group==G)[,paste("Care_At",levels(OutPat$Facility),sep="_")])
+                   }))
+
+NOutPatEventsDay <- as.data.frame(
+                   sapply(levels(IH$Group),function(G){
+                     colSums(subset(IH,Group==G)[,names(IH)[grep("Overnight",names(IH))]]=="Day")
+                     }))
+
+NOutPatEvents[paste("Care_At_",c("HC","DH","PH","NH","PC"),sep=''),] <- 
+  NOutPatEventsDay[paste("Overnight_At_",c("HC","DH","PH","NH","PC"),sep=''),]
+
+
+NOutPatEvents$All <- rowSums(NOutPatEvents)
+NOutPatEvents <- as.data.frame(t(NOutPatEvents))
+NOutPatEvents$Total <- rowSums(NOutPatEvents)
+printt(NOutPatEvents,"Total Num Outpatient Events")
+
+```
+
+#### Percent of Outpatient Events Sampled
+```{r, echo=F,results='asis'}
+
+printPT(NOutPat/NOutPatEvents,"Precent of Outpatient Events with reported costs")
+
+
+```
+
+
+
+### No-OOP in Outpatient Total Cost Reports
+```{r, echo=F,results='asis'}
+
+printt (as.matrix(NOutPat),"Number of Outpatient Cost Reports By Facility")
+
+NOutPatNOOP <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum(subset(OutPat[G,],Facility==F)$Total==0) })
+      }))
+NOutPatNOOP$Total <- rowSums(NOutPatNOOP)
+printt (as.matrix(NOutPatNOOP),"Number of No OOP Outpatient Cost Reports By Facility")
+
+
+printPT(NOutPatNOOP/NOutPat,"Percent of Outpatient Cost Reports With 0 Total Cost By Facility")
+
+
+OOPLabler <- function(variable,value){
+  return(ifelse(value,"OOP","No-OOP"))
+}
+
+OutPat$OOP  <- OutPat$Total!=0;
+p <- ggplot(data=OutPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOP,labeller=OOPLabler)
+p <- p + labs(title="Outpatient Total Cost Reported OOP")
+print(p)  
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(OutPat,OOP & Total<800000))
+p <- p + geom_histogram(aes(x=Total,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Total Costs Reported for OOP")
+print(p)
+
+```
+
+### No-OOP in Outpatient Tranportation Cost Reports 
+```{r, echo=F,results='asis'}
+
+NOutPatTrans <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum(!is.na(subset(OutPat[G,],Facility==F)$Transport)) })
+      }))
+NOutPatTrans$Total <- rowSums(NOutPatTrans)
+printt(NOutPatTrans,"Number of reported Transportation Costs")
+
+NOutPatTransNOOP <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum((subset(OutPat[G,],Facility==F)$Transport)==0,na.rm=T) })
+      }))
+NOutPatTransNOOP$Total <- rowSums(NOutPatTransNOOP)
+printt(NOutPatTransNOOP,"Number of reported 0 Transportation Costs")
+
+printPT(NOutPatTransNOOP/NOutPatTrans,"Percent of Reported Transportation Cost equal to 0" )
+
+OutPat$OOPTransport  <- OutPat$Transport!=0;
+p <- ggplot(data=OutPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPTransport,labeller=OOPLabler)
+p <- p + labs(title="Outpatient Transportation Cost Reported OOP")
+print(p)  
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(OutPat,OOPTransport & Total<300000))
+p <- p + geom_histogram(aes(x=Transport,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Transportation Costs Reported for OOP")
+print(p)
+
+```
+
+
+### No-OOP in Outpatient Medicl Fee Cost Reports 
+```{r, echo=F,results='asis'}
+
+NOutPatMedFee <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum(!is.na(subset(OutPat[G,],Facility==F)$Medical_Fee)) })
+      }))
+NOutPatMedFee$Total <- rowSums(NOutPatMedFee)
+printt(NOutPatMedFee,"Number of reported Medical Fee Costs")
+
+
+
+NOutPatMedFeeNOOP <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum((subset(OutPat[G,],Facility==F)$Medical_Fee)==0,na.rm=T) })
+      }))
+NOutPatMedFeeNOOP$Total <- rowSums(NOutPatMedFeeNOOP)
+printt(NOutPatMedFeeNOOP,"Number of reported 0 Medical Fee Costs")
+
+printPT(NOutPatMedFeeNOOP/NOutPatMedFee,"Percent of Reported Medical Fee equal to 0" )
+
+
+OutPat$OOPMedical_Fee  <- OutPat$Medical_Fee!=0;
+p <- ggplot(data=OutPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPMedical_Fee,labeller=OOPLabler)
+p <- p + labs(title="Outpatient Medical Fee Costs Reported OOP")
+print(p)
+
+```
+
+
+
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(OutPat,OOPMedical_Fee))
+p <- p + geom_histogram(aes(x=Medical_Fee,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Medical Fee Costs Reported for OOP")
+print(p)
+
+```
+
+
+### No-OOP in Outpatient Medicine Cost Reports 
+```{r, echo=F,results='asis'}
+
+NOutPatMedicine <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum(!is.na(subset(OutPat[G,],Facility==F)$Medicine)) })
+      }))
+NOutPatMedicine$Total <- rowSums(NOutPatMedicine)
+printt(NOutPatMedicine,"Number of reported Medicine Costs")
+
+
+## Med <-  with(OutPat,table(Group,Facility,Medicine==0))
+## Med[,,2]/(Med[,,1]+Med[,,2])
+
+Med <-  with(InPat,table(Group,Facility,Medicine==0))
+Med[,,2]/(Med[,,1]+Med[,,2])
+
+
+
+NOutPatMedicineNOOP <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum((subset(OutPat[G,],Facility==F)$Medicine)==0,na.rm=T) })
+      }))
+NOutPatMedicineNOOP$Total <- rowSums(NOutPatMedicineNOOP)
+printt(NOutPatMedicineNOOP,"Number of reported 0 Medicine Costs")
+
+printPT(NOutPatMedicineNOOP/NOutPatMedicine,"Percent of Reported Medicine equal to 0" )
+
+
+OutPat$OOPMedicine  <- OutPat$Medicine!=0;
+p <- ggplot(data=OutPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPMedicine,labeller=OOPLabler)
+p <- p + labs(title="Outpatient Medicine Costs Reported OOP")
+print(p)
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(OutPat,OOPMedicine))
+p <- p + geom_histogram(aes(x=Medicine,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Medicine Costs Reported for OOP")
+print(p)
+
+```
+
+
+
+
+### No-OOP in Outpatient Other Cost Reports 
+```{r, echo=F,results='asis',fig.align='center'}
+
+NOutPatOther <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum(!is.na(subset(OutPat[G,],Facility==F)$Other)) })
+      }))
+NOutPatOther$Total <- rowSums(NOutPatOther)
+printt(NOutPatOther,"Number of reported Other Costs")
+
+NOutPatOtherNOOP <- 
+  as.data.frame(
+      sapply (levels(OutPat$Facility),function(F){
+        sapply(OutPatGroups,function(G){ sum((subset(OutPat[G,],Facility==F)$Other)==0,na.rm=T) })
+      }))
+NOutPatOtherNOOP$Total <- rowSums(NOutPatOtherNOOP)
+printt(NOutPatOtherNOOP,"Number of reported 0 Other Costs")
+
+printPT(NOutPatOtherNOOP/NOutPatOther,"Percent of Reported Other equal to 0" )
+
+
+OutPat$OOPOther  <- OutPat$Other!=0;
+p <- ggplot(data=OutPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPOther,labeller=OOPLabler)
+p <- p + labs(title="Outpatient Other Costs Reported OOP")
+print(p)
+
+```
+
+
+
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(OutPat,OOPOther))
+p <- p + geom_histogram(aes(x=Others,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Other Costs Reported for OOP")
+print(p)
+
+```
+
+
+
 ## Inpatient  (3.5,3.7)
+### Number of Inpatient Cost Reports
+```{r, echo=F,results='asis'}
+
+NInPat <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ length(subset(InPat[G,],Facility==F)[,1]) })
+      }))
+NInPat$Total <- rowSums(NInPat)
+printt (as.matrix(NInPat),"Number of Inpatient Cost Reports By Facility")
+
+```
+
+#### Total Inpatient Events
+```{r, echo=F,results='asis'}
+
+NInPatEvents <- as.data.frame(
+                   sapply(levels(IH$Group),function(G){
+                     colSums(subset(IH,Group==G)[,names(IH)[grep("Overnight",names(IH))]]=="Overnight")
+                     }))
     
+NInPatEvents$All <- rowSums(NInPatEvents)
+NInPatEvents <- as.data.frame(t(NInPatEvents))
+NInPatEvents$Total <- rowSums(NInPatEvents)
+printt(NInPatEvents,"Total Num Inpatient Events")
+
+```
+
+##### Total Inpatient Event Per Family Vs Reports
+
+```{r, echo=F}
+
+lps$NInPatEvents <-  sapply(1:930,function(S) {
+  sum(subset(IH,Serial==S)[,names(IH)[grep("Overnight",names(IH))]]=="Overnight")
+})
+
+cat("Number of families with more than 2 inpatient events:")
+sum(lps$NInPatEvents>2)
+
+cat("Number of inpatient events which could not be reported:")
+sum(lps[lps$NInPatEvents>2,]$NInPatEvents-2)
+
+
+lps$Inp1 <- lps$HH_Illness_2_report_individual_number!=0
+lps$Inp1[is.na(lps$Inp1)] <- F;
+lps$Inp2 <- lps$HH_Illness_3_report_individual_number!=0 
+lps$Inp2[is.na(lps$Inp2)]  <- F;
+lps$InpRep=lps$Inp1 + lps$Inp2
+
+
+cat("Number of inpatient events which failed to provide cost information when possible:")
+c(sapply(levels(lps$Group),
+       function(G) {
+  with(subset(lps,G==Group),
+       sum(InpRep < NInPatEvents & NInPatEvents<=2))
+}),All=sum(lps$InpRep < lps$NInPatEvents & lps$NInPatEvents<=2))
+
+cat("Number of families with more than 2 Inpatient events")
+sapply(levels(lps$Group),function(G) {sum(G==lps$Group &lps$NInPatEvents>2)})
+
+cat("Number of events in these families")
+sapply(levels(lps$Group),function(G) {sum(lps[G==lps$Group &lps$NInPatEvents>2,"NInPatEvents"])})
+
+
+InPatDist <- cbind.data.frame(
+    sapply(levels(lps$Group),function(G){
+      sapply(levels(factor(lps$NInPatEvents)),function(N){
+        sum(lps$NInPatEvents==N & lps$Group==G) 
+      })
+    }),NumInpatient=factor(as.numeric(levels(factor(lps$NInPatEvents))))
+)
+InPatDist <- melt(data=InPatDist,id.vars="NumInpatient")
+InPatDist$Percent <- sapply(InPatDist$variable,function(V){sum(lps$Group==V)})
+InPatDist$Percent <- InPatDist$value/InPatDist$Percent
+names(InPatDist)[2:3] <- c("Group","Count")
+
+p <- ggplot(data=subset(InPatDist,as.numeric(NumInpatient)>0),aes(x=NumInpatient,y=Count))
+p <- p + geom_bar(aes(fill=Group),stat="identity",binwidth=1)
+p <- p + facet_grid(.~Group)
+p <- p + labs(title="Inpatient Ussage Distribution", x="Number of Inpatient Events per HH")
+p <- p + geom_text(aes(label = sprintf(Percent*100,fmt="%.1f%%")), angle=-90,size = 3, hjust = 0, vjust = 0.5, position =     "stack")
+print(p)
+
+
+```
+
+#### Percent of Inpatient Events Sampled
+```{r, echo=F,results='asis'}
+
+
+printPT(NInPat[,c("HC","DH","PH","NH","PC","Total")]/NInPatEvents,"Precent of Inpatient Events with reported costs")
+
+
+```
+
+
+
+### No-OOP in Inpatient Total Cost Reports
+```{r, echo=F,results='asis'}
+
+printt (as.matrix(NInPat),"Number of Inpatient Cost Reports By Facility")
+
+NInPatNOOP <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum(subset(InPat[G,],Facility==F)$Total==0) })
+      }))
+NInPatNOOP$Total <- rowSums(NInPatNOOP)
+printt (as.matrix(NInPatNOOP),"Number of No OOP Inpatient Cost Reports By Facility")
+
+
+printPT(NInPatNOOP/NInPat,"Percent of Inpatient Cost Reports With 0 Total Cost By Facility")
+
+
+OOPLabler <- function(variable,value){
+  return(ifelse(value,"OOP","No-OOP"))
+}
+
+InPat$OOP  <- InPat$Total!=0;
+p <- ggplot(data=InPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOP,labeller=OOPLabler)
+p <- p + labs(title="Inpatient Total Cost Reported OOP")
+print(p)  
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(InPat,OOP & Total<800000))
+p <- p + geom_histogram(aes(x=Total,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Inpatient Total Costs Reported for OOP")
+print(p)
+
+```
+
+### No-OOP in Inpatient Tranportation Cost Reports 
+```{r, echo=F,results='asis'}
+
+NInPatTrans <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum(!is.na(subset(InPat[G,],Facility==F)$Transport)) })
+      }))
+NInPatTrans$Total <- rowSums(NInPatTrans)
+printt(NInPatTrans,"Number of reported Transportation Costs")
+
+NInPatTransNOOP <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum((subset(InPat[G,],Facility==F)$Transport)==0,na.rm=T) })
+      }))
+NInPatTransNOOP$Total <- rowSums(NInPatTransNOOP)
+printt(NInPatTransNOOP,"Number of reported 0 Transportation Costs")
+
+printPT(NInPatTransNOOP/NInPatTrans,"Percent of Reported Transportation Cost equal to 0" )
+
+InPat$OOPTransport  <- InPat$Transport!=0;
+p <- ggplot(data=InPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPTransport,labeller=OOPLabler)
+p <- p + labs(title="Inpatient Transportation Cost Reported OOP")
+print(p)  
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(InPat,OOPTransport & Total<300000))
+p <- p + geom_histogram(aes(x=Transport,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Inpatient Transportation Costs Reported for OOP")
+print(p)
+
+```
+
+
+### No-OOP in Inpatient Medical Fee Cost Reports 
+```{r, echo=F,results='asis'}
+
+NInPatMedFee <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum(!is.na(subset(InPat[G,],Facility==F)$Medical_Fee)) })
+      }))
+NInPatMedFee$Total <- rowSums(NInPatMedFee)
+printt(NInPatMedFee,"Number of reported Medical Fee Costs")
+
+NInPatMedFeeNOOP <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum((subset(InPat[G,],Facility==F)$Medical_Fee)==0,na.rm=T) })
+      }))
+NInPatMedFeeNOOP$Total <- rowSums(NInPatMedFeeNOOP)
+printt(NInPatMedFeeNOOP,"Number of reported 0 Medical Fee Costs")
+
+printPT(NInPatMedFeeNOOP/NInPatMedFee,"Percent of Reported Medical Fee equal to 0" )
+
+
+InPat$OOPMedical_Fee  <- InPat$Medical_Fee!=0;
+p <- ggplot(data=InPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPMedical_Fee,labeller=OOPLabler)
+p <- p + labs(title="Inpatient Medical Fee Costs Reported OOP")
+print(p)
+
+```
+
+
+
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(InPat,OOPMedical_Fee))
+p <- p + geom_histogram(aes(x=Medical_Fee,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Inpatient Medical Fee Costs Reported for OOP")
+print(p)
+
+```
+
+
+### No-OOP in Inpatient Medicine Cost Reports 
+```{r, echo=F,results='asis'}
+
+NInPatMedicine <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum(!is.na(subset(InPat[G,],Facility==F)$Medicine)) })
+      }))
+NInPatMedicine$Total <- rowSums(NInPatMedicine)
+printt(NInPatMedicine,"Number of reported Medicine Costs")
+
+NInPatMedicineNOOP <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum((subset(InPat[G,],Facility==F)$Medicine)==0,na.rm=T) })
+      }))
+NInPatMedicineNOOP$Total <- rowSums(NInPatMedicineNOOP)
+printt(NInPatMedicineNOOP,"Number of reported 0 Medicine Costs")
+
+printPT(NInPatMedicineNOOP/NInPatMedicine,"Percent of Reported Medicine equal to 0" )
+
+
+InPat$OOPMedicine  <- InPat$Medicine!=0;
+p <- ggplot(data=InPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPMedicine,labeller=OOPLabler)
+p <- p + labs(title="Inpatient Medicine Costs Reported OOP")
+print(p)
+
+```
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(InPat,OOPMedicine))
+p <- p + geom_histogram(aes(x=Medicine,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Inpatient Medicine Costs Reported for OOP")
+print(p)
+
+```
+
+
+
+
+### No-OOP in Inpatient Other Cost Reports 
+```{r, echo=F,results='asis',fig.align='center'}
+
+NInPatOther <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum(!is.na(subset(InPat[G,],Facility==F)$Other)) })
+      }))
+NInPatOther$Total <- rowSums(NInPatOther)
+printt(NInPatOther,"Number of reported Other Costs")
+
+NInPatOtherNOOP <- 
+  as.data.frame(
+      sapply (levels(InPat$Facility),function(F){
+        sapply(InPatGroups,function(G){ sum((subset(InPat[G,],Facility==F)$Other)==0,na.rm=T) })
+      }))
+NInPatOtherNOOP$Total <- rowSums(NInPatOtherNOOP)
+printt(NInPatOtherNOOP,"Number of reported 0 Other Costs")
+
+printPT(NInPatOtherNOOP/NInPatOther,"Percent of Reported Other equal to 0" )
+
+
+InPat$OOPOther  <- InPat$Other!=0;
+p <- ggplot(data=InPat);
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + facet_grid(.~OOPOther,labeller=OOPLabler)
+p <- p + labs(title="Inpatient Other Costs Reported OOP")
+print(p)
+
+```
+
+
+
+
+Note that the range of costs in the figure bellow has been trimmed and excludes some outliers.
+```{r, echo=F,results='asis',fig.height=7}
+
+p <- ggplot(data=subset(InPat,OOPOther))
+p <- p + geom_histogram(aes(x=Others,fill=Group))
+p <- p + facet_grid(Facility~.)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Inpatient Other Costs Reported for OOP")
+print(p)
+
+```
+
+
+
 # FMNCH expenditure
 ## Child Addmitance event (Q7.8.7-7.16)
 * OOP Rates
@@ -126,7 +739,7 @@ p <- p + facet_grid(.~Child_Admitted_Cost_OOP,labeller=OOPLabler)
 p
 
 ```
-
+#### Percent Child Inpatient OOP by facilty and Insurance Type
 ```{r,echo=F,results='asis'}
 
 CAOOPRates <- sapply (CAgroups,function(G){
@@ -135,7 +748,10 @@ CAOOPRates <- sapply (CAgroups,function(G){
   })})
 CAOOPRates <- rbind(CAOOPRates,Total=colSums(CAOOPRates))
 CAOOPRates  <- 100*CAOOPRates/CARates
-print(xtable(formatC(CAOOPRates,digits=1,format="f"),"OOP Percentages for Child Inpatient Reports by Facitly and Insurrance Group"),type="html", html.table.attributes = "border = '2', align = 'center'")
+print(xtable(formatC(t(CAOOPRates),digits=1,format="f"),"OOP Percentages for Child Inpatient Reports by Facitly and Insurrance Group"),type="html", html.table.attributes = "border = '2', align = 'center'")
+
+chisq.test(with(CA,table(CALoc,Child_Admitted_Cost_OOP)))
+
 
 
 ```
@@ -175,7 +791,7 @@ print(p)
 
 ### Food Allowances
 
-#### Number of casses that recieve food allowances
+#### Number of cases that recieve food allowances
 ```{r, echo=F, results='asis'}
 
 NCAByCLoc <- sapply(levels(CA$CALoc),function(L){
@@ -189,7 +805,7 @@ NFAByCLoc <- sapply(levels(CA$CALoc),function(L){
 print(xtable(formatC(t(NFAByCLoc),digits=0,format="f"),"Number of Food Allowances by facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
 ```
 
-#### Percent of casses that recieve food allowances
+#### Percent of cases that recieve food allowances
 ```{r, echo=F, results='asis'}
 
 PFAByCLoc <- t(100*NFAByCLoc/NCAByCLoc)
@@ -224,7 +840,7 @@ print(p)
 ```
 
 
-#### Number of casses that recieve transportation allowance
+#### Number of cases that recieve transportation allowance
 ```{r, echo=F, results='asis'}
 
 ## subset(Codes,Question==names(lpsraw)[which(names(lps)=="Child_Admitted_Outside_HEF_3km_radius")])
@@ -239,7 +855,7 @@ NTAByCLoc <- sapply(levels(CA$CALoc),function(L){
 print(xtable(formatC(NTAByCLoc,digits=0,format="f"),"Number of Transportation Allowances Recieved facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
 
 ```
-#### Percent of casses that recieve transportation allowance
+#### Percent of cases that recieve transportation allowance
 ```{r, echo=F, results='asis'}
 
 PTAByCLoc <- t(100*NTAByCLoc/NCAByCLoc)
@@ -247,7 +863,7 @@ print(xtable(formatC(PTAByCLoc,digits=1,format="f"),"Percent of Transportation A
 
 ```
 
-#### Number of casses within 3km
+#### Number of cases within 3km
 ```{r, echo=F, results='asis'}
 
 NT3ByCLoc <- sapply(levels(CA$CALoc),function(L){
@@ -257,11 +873,11 @@ NT3ByCLoc <- sapply(levels(CA$CALoc),function(L){
 print(xtable(formatC(NT3ByCLoc,digits=0,format="f"),"Number <3km (no transport) by Facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
 
 ```
-#### Percent of casses within 3km
+#### Percent of cases within 3km
 ```{r, echo=F, results='asis'}
 
 PT3ByCLoc <- t(100*NT3ByCLoc/NCAByCLoc)
-print(xtable(formatC(PT3ByCLoc,digits=1,format="f"),"Percent <3km (no transport) by Facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
+print(xtable(formatC(t(PT3ByCLoc),digits=1,format="f"),"Percent <3km (no transport) by Facility and Insurance type"),type="html", html.table.attributes = "border = '2', align = 'center'")
 
 ```
 
@@ -277,43 +893,56 @@ p
 
 ```
 
-## MNCH Rates (Q4.10, 4.18, 4.20)
+## MNCH Rates Birth Costs(Q4.10, 4.18, 4.20)
 * Mother OOP ANCs (Q4.10)
 * Birth Cost delivery (4.18)
 * Birth Hospital Food allowance (4.20)
 * Birth Delivery was at hospital more 3k
 
 ###  OOP ANCs (Q4.10)
-```{r, ehco=T, results='html'}
+```{r, echo=F, results='html'}
 
 #Monthers who have not been to ANC have NA
 #Mothers$Mother_been_to_ANC[is.na(Mothers$Mother_OOP_ANCs)]
 ANCM <- subset(Mothers,!is.na(Mothers$Mother_OOP_ANCs))
 
 #Count the number of ANC Mothers
-sapply(levels(ANCM$Group),function(G){sum(!is.na(subset(ANCM,Group==G)[,1]))})
+NANCM <- sapply(levels(ANCM$Group),function(G){sum(!is.na(subset(ANCM,Group==G)[,1]))})
+NANCM  <- c(NANCM,sum(NANCM))
+cat ("Number of Mothers attending ANCs")
+print(NANCM)
 
-#Number of ANC Mothers that had a child admitance event
-sum(ANCM$Serial%in%CA$Serial)
+#Number of ANC Mothers that 
+cat (paste(sum(ANCM$Serial%in%CA$Serial),"Mothers attending ANCs had a child addmitance event\n"))
 
 #Number of Mothers reporting ANC OOP
-sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G)[,"Mother_OOP_ANCs"]==1)})
+NANCMOOP <- sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G)[,"Mother_OOP_ANCs"]==1)})
+NANCMOOP <- c(NANCMOOP,sum(NANCMOOP))
+cat("Number of Mothers reporting ANC OOP\n")
+print(NANCMOOP)
+
+cat("Percent of Mothers attening ANC reporting OOP\n")
+print (100*NANCMOOP/NANCM,digits=1)
 
 #Number of Mothers reporting ANC OOP having a child admitance event report
-sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G & Serial%in%CA$Serial )[,"Mother_OOP_ANCs"]==1)})
+cat("Number of Mothers reporting ANC OOP having a child admitance event report\n")
+print(sapply(levels(Mothers$Group),function(G){sum(subset(ANCM,Group==G & Serial%in%CA$Serial )[,"Mother_OOP_ANCs"]==1)}))
 
 #Number of Mothers reporting ANC OOP having a child admitance event report reporting OOP
-sapply(levels(Mothers$Group),function(G){
-  sum(subset(ANCM,Group==G &
-                          Mother_OOP_ANCs==1 &
-                          Serial%in%CA$Serial
-             )[,"Child_Admitted_Cost_OOP"]==1
-      )})
+cat("Number of Mothers reporting ANC OOP having a child admitance event report reporting OOP\n")
+print(
+    sapply(levels(Mothers$Group),function(G){
+      sum(subset(ANCM,Group==G &
+                        Mother_OOP_ANCs==1 &
+                        Serial%in%CA$Serial
+                 )[,"Child_Admitted_Cost_OOP"]==1
+          )}))
+
 ```
 The 2 women who paid ANCs out of pocket and had inpatient child events in the same familly did not claim out of pocket payments on these children
 
-### Cost of Delivery
-```{r, echo=F, results='asis'}
+### Cost of Delivery (Q4_18)
+```{r, echo=F, results='asis', warning=F}
 
 Mothers$BirthFacility <- factor(Mothers$Mother_Birth_facility_type,
                                 levels=c(1:6),
@@ -321,30 +950,87 @@ Mothers$BirthFacility <- factor(Mothers$Mother_Birth_facility_type,
 p <- ggplot(data=Mothers)
 p <- p + geom_point(aes(color=Group,x= Mothers$BirthFacility,y=Mother_Birth_Cost_delivery),alpha=.35,size=3, position=position_jitter(w=.2,h=0))
 p <- p + facet_grid(Group~.)
+p <- p + labs(title="Cost of Delivery")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
 p <- p + coord_cartesian(ylim = c(0, 750000))
 print(p)
+
+BF <- as.data.frame(with(Mothers,table(BirthFacility,Mother_Birth_Cost_delivery!=0)))
+colnames(BF) <- c("BirthFacility","OOP","Count")
+BF$OOP <- as.logical(BF$OOP)
+BF$Percent <- 0
+BF[BF$OOP,]$Percent <- 100* BF[BF$OOP,]$Count/(BF[BF$OOP,]$Count+BF[!BF$OOP,]$Count)
+BF[!BF$OOP,]$Percent <- 100* BF[!BF$OOP,]$Count/(BF[BF$OOP,]$Count+BF[!BF$OOP,]$Count)
+p <- ggplot(data=Mothers)
+p <- p + geom_bar(aes(x= BirthFacility,fill=Mother_Birth_Cost_delivery!=0))
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + geom_text(data=BF,aes(x=BirthFacility,y=Count,label=ifelse(!OOP,sprintf(Percent,fmt="%.1f%%"),"")),size=3)
+p <- p + labs(title="No-OOP Rates by Birth Facility")
+print(p)
+
+
+BF <- as.data.frame(with(Mothers,table(BirthFacility,Group,Mother_Birth_Cost_delivery!=0)))
+colnames(BF) <- c("BirthFacility","Group","OOP","Count")
+BF$OOP <- as.logical(BF$OOP)
+BF$Percent <- 0
+BF[BF$OOP,]$Percent <- 100* BF[BF$OOP,]$Count/(BF[BF$OOP,]$Count+BF[!BF$OOP,]$Count)
+BF[!BF$OOP,]$Percent <- 100* BF[!BF$OOP,]$Count/(BF[BF$OOP,]$Count+BF[!BF$OOP,]$Count)
+p <- ggplot(data=Mothers)
+p <- p + geom_bar(aes(x= BirthFacility,fill=Mother_Birth_Cost_delivery!=0))
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + geom_text(data=BF,aes(x=BirthFacility,y=Count,label=ifelse(!OOP,sprintf(Percent,fmt="%.1f%%"),"")),size=3,angle=90,color="Black")
+p <- p + labs(title="OOP Rates for Delivery by Facility and Group")
+p <- p + theme(axis.text.x = element_text(angle = 90,vjust=.5))
+p <- p + facet_grid(.~Group)
+print(p)
+
+
+
+library(dplyr)
+
+require(plyr)
+
+
+MotherMeans <- ddply(subset(Mothers[,c("Group","BirthFacility","Mother_Birth_Cost_delivery")],Mother_Birth_Cost_delivery!=0),.(Group,BirthFacility),summarize,
+                     Mother_Birth_Cost_delivery = mean(Mother_Birth_Cost_delivery),
+                     Mean = format(Mother_Birth_Cost_delivery,digits=1,big.mark=',',scientific=F))
+p <- ggplot(data=subset(Mothers,BirthFacility!="Other" & Mother_Birth_Cost_delivery!=0),aes(x=BirthFacility,y=Mother_Birth_Cost_delivery))
+p <- p + geom_point(aes(color=Group),alpha=.1,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="OOP Cost for Delivery by Facility")
+p <- p + geom_text(data=MotherMeans,aes(label = Mean), size=3,angle = 90, vjust=.5,hjust = -1, color="black")
+p <- p + facet_grid(.~Group)
+p <- p + coord_cartesian(ylim = c(0, 2000000))
+p <- p + theme(axis.text.x = element_text(angle = 90,vjust=.5))
+print(p)
+
 
 ```
 
 
-### Birth Food Allowance
-```{r, echo=T, results='html'}
+### Birth Food Allowance (Q4_20)
+```{r, echo=F}
+
 ##Hospital Births
 hb <- sapply(levels(lps$Group),function(G) {
   sum(!is.na(subset(Mothers,BirthFacility %in% c("PH","DH")&Group==G)
              [,c("Mother_Birth_Hospital_Food_allowance")]))
 })
-hb
-
+hb <- c(hb,All=sum(hb))
+cat("Number of Hospital Births")
+print(hb)
 ##Got Food Allowance
 fa <- sapply(levels(lps$Group),function(G) {
   sum(subset(Mothers,BirthFacility %in% c("PH","DH")&Group==G)
              [,c("Mother_Birth_Hospital_Food_allowance")]==1,na.rm=T)
 })
-fa
-
+fa <- c(fa,All=sum(fa))
+cat("Number of Hospital Births Recieving Food Allowance")
+print(fa)
 ##Percent Got Food Allowance
-print(100*fa/hb,digits=1)
+cat("Percent of Hospital Births Recieving Food Allowance")
+print(100*(fa/hb),digits=1)
 
 ```
 Serial Number 34 fails to report the food allowance information
@@ -364,7 +1050,7 @@ print(p)
 ```
 
 
-### Transportation
+### Birth Transportation Transportation Allowance
 
 #### Plot Transportation Amount Recieved
 ```{r, echo=F, result='asis'}
@@ -381,7 +1067,7 @@ print(p)
 ```
 
 #### Compare Transportation Allowance to previous
-```{r, echo=T}
+```{r, echo=F}
 
 CAAB <- subset(Mothers,Serial %in% CA$Serial & BirthFacility %in% c("PH","DH"))
 
@@ -391,8 +1077,490 @@ table(subset(CA,Serial %in% CAAB$Seria)$Transport_Allowance,CAAB$Transport_Allow
 
 ```
 
-### (5.18, 5.23, 5.28)
+## Child Illness
 
-## HEF OOP expenditure
-### (Q8.8-8.16)
+### Cost of Last Diarhea (5.18)
+```{r, echo=F}
 
+MD <- subset(lps,!is.na(Mother_Child_Last_diarhea_Cost))
+NChildDiarhea <- sapply(levels(MD$Group),function(G){length(subset(MD,Group==G)$Mother_Child_Last_diarhea_Cost)})
+NChildDiarhea <- c(NChildDiarhea,All=sum(NChildDiarhea))
+cat ("Number of Child Diarhea events:")
+print (NChildDiarhea)
+NChildDiarhea_OOP <- sapply(levels(MD$Group),function(G){sum(subset(MD,Group==G)$Mother_Child_Last_diarhea_Cost!=0)})
+NChildDiarhea_OOP  <- c(NChildDiarhea_OOP,All=sum(NChildDiarhea_OOP))
+cat ("Number of Child Diarhea OOP:")
+print (NChildDiarhea_OOP)
+cat ("Percent of Child Diarhea OOP:")
+print (100*(NChildDiarhea_OOP/NChildDiarhea),digits=1)
+
+
+```
+
+```{r, echo=F, results='asis'}
+
+OOPLabler <- function(variable,value){
+  return(ifelse(value,"OOP","No-OOP"))
+}
+MD$OOP <- MD$Mother_Child_Last_diarhea_Cost!=0;
+p <- ggplot(data=MD)
+p <- p + geom_bar(aes(x=Group,fill=OOP),labeller=OOPLabler)
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + labs(title="OOP Payments for child's last diarhea")
+print(p)
+
+Mothers$Dhiarhea <- !is.na(Mothers$Mother_Child_Last_diarhea_Cost)
+p <- ggplot(data=Mothers)
+p <- p + geom_bar(aes(x=Group,fill=Dhiarhea))
+p <- p + scale_fill_manual("Diarhea",values=c("darkgreen","orange"),labels=c("No Event Report","Reported Diarhea Event"))
+p <- p + labs(title="Reports of Child's Last Diarhea")
+print(p)
+
+
+p <- ggplot(data=subset(MD,OOP),aes(x=Group,y=Mother_Child_Last_diarhea_Cost))
+p <- p + geom_point(aes(color=Group),alpha=.1,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="OOP Cost for last diarhea")
+print(p)
+
+p <- ggplot(data=subset(MD,OOP))
+p <- p + geom_histogram(aes(x=Mother_Child_Last_diarhea_Cost,fill=Group))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)+coord_flip()
+p <- p + labs(title="OOP Cost for last diarhea")
+print(p)
+
+p <- ggplot(data=subset(MD,OOP & Mother_Child_Last_diarhea_Cost<100000))
+p <- p + geom_histogram(aes(x=Mother_Child_Last_diarhea_Cost,fill=Group))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)+coord_flip()
+p <- p + labs(title="OOP Cost for last diarhea (<100000Kip)")
+print(p)
+
+
+```
+
+### Cost of Respitratory Treatment (5.23)
+```{r, echo=F}
+
+MR <- subset(lps,!is.na(Mother_Child_Last_respiratory_First_treatment_Cost))
+names(MR)[grep("Mother_Child_Last_respiratory_First_treatment_Cost",names(MR))] <- "RespCost"
+
+NChildResp <- sapply(levels(MR$Group),function(G){length(subset(MR,Group==G)$RespCost)})
+NChildResp <- c(NChildResp,All=sum(NChildResp))
+cat ("Number of Child Resp events:")
+print (NChildResp)
+NChildResp_OOP <- sapply(levels(MR$Group),function(G){sum(subset(MR,Group==G)$RespCost!=0)})
+NChildResp_OOP  <- c(NChildResp_OOP,All=sum(NChildResp_OOP))
+cat ("Number of Child Resp OOP:")
+print (NChildResp_OOP)
+cat ("Percent of Child Resp OOP:")
+print (100*(NChildResp_OOP/NChildResp),digits=1)
+
+
+```
+
+```{r, echo=F, results='asis'}
+
+MR$OOP <- MR$RespCost!=0;
+p <- ggplot(data=MR)
+p <- p + geom_bar(aes(x=Group,fill=OOP),labeller=OOPLabler)
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + labs(title="OOP Payments for child's last resipiratory illness")
+print(p)
+
+Mothers$Resp <- !is.na(Mothers$Mother_Child_Last_respiratory_First_treatment_Cost)
+p <- ggplot(data=Mothers)
+p <- p + geom_bar(aes(x=Group,fill=Resp))
+p <- p + scale_fill_manual("Respiratory",values=c("darkgreen","orange"),labels=c("No Event Report","Reported Respiratory Event"))
+p <- p + labs(title="Reports of Child's Respiratory Illness")
+print(p)
+
+p <- ggplot(data=subset(MR,OOP),aes(x=Group,y=RespCost))
+p <- p + geom_point(aes(color=Group),alpha=.1,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="OOP Cost for last respiratory illness")
+print(p)
+
+p <- ggplot(data=subset(MR,OOP))
+p <- p + geom_histogram(aes(x=RespCost,fill=Group))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)+coord_flip()
+p <- p + labs(title="OOP Cost for last respiratory illness")
+print(p)
+
+```
+
+
+### Cost of Fever Treatment (5.28)
+```{r, echo=F}
+
+MF <- subset(lps,!is.na(Mother_Child_Last_fever_First_treatment_Cost))
+names(MF)[grep("Mother_Child_Last_fever_First_treatment_Cost",names(MF))] <- "FeverCost"
+
+
+NChildFever <- sapply(levels(MF$Group),function(G){length(subset(MF,Group==G)$FeverCost)})
+NChildFever <- c(NChildFever,All=sum(NChildFever))
+cat ("Number of Child Fever events:")
+print (NChildFever)
+NChildFever_OOP <- sapply(levels(MF$Group),function(G){sum(subset(MF,Group==G)$FeverCost!=0)})
+NChildFever_OOP  <- c(NChildFever_OOP,All=sum(NChildFever_OOP))
+cat ("Number of Child Fever OOP:")
+print (NChildFever_OOP)
+cat ("Percent of Child Fever OOP:")
+print (100*(NChildFever_OOP/NChildFever),digits=1)
+
+
+```
+
+```{r, echo=F, results='asis'}
+
+MF$OOP <- MF$FeverCost!=0;
+p <- ggplot(data=MF)
+p <- p + geom_bar(aes(x=Group,fill=OOP),labeller=OOPLabler)
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + labs(title="OOP Payments for child's last fever treatment")
+print(p)
+
+Mothers$Resp <- !is.na(Mothers$Mother_Child_Last_respiratory_First_treatment_Cost)
+p <- ggplot(data=Mothers)
+p <- p + geom_bar(aes(x=Group,fill=Resp))
+p <- p + scale_fill_manual("Fever",values=c("darkgreen","orange"),labels=c("No Event Report","Reported Fever Event"))
+p <- p + labs(title="Reports of Child's fever treatment")
+print(p)
+
+p <- ggplot(data=subset(MF,OOP),aes(x=Group,y=FeverCost))
+p <- p + geom_point(aes(color=Group),alpha=.1,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="OOP Cost for last fever treatment")
+print(p)
+
+p <- ggplot(data=subset(MF,OOP))
+p <- p + geom_histogram(aes(x=FeverCost,fill=Group))
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)+coord_flip()
+p <- p + labs(title="OOP Cost for last fever treatment")
+print(p)
+
+```
+
+
+# HEF OOP expenditure
+
+## Adult_Admitted_Cost_OOP Q8_8
+```{r, echo=F}
+
+HEF <- subset(lps,!is.na(Adult_Admitted_Cost_OOP))
+HEFOOP <- subset(lps,Adult_Admitted_Cost_OOP==1)
+for (C in c(1683,1684,1685,1686,1687)) {
+  HEFOOP[HEFOOP[,C]==98 | HEFOOP[,C]==99 ,C] <- NA
+}
+HEFOOP$Total  <- rowSums(HEFOOP[,1683:1686],na.rm=T)
+
+HEFOOP$Total[ HEFOOP$Total< HEFOOP$Adult_Admitted_Cost_Average_LAK] <- HEFOOP$Adult_Admitted_Cost_Average_LAK[ HEFOOP$Total< HEFOOP$Adult_Admitted_Cost_Average_LAK]
+
+HEF$Adult_Admitted_Cost_OOP <- HEF$Adult_Admitted_Cost_OOP==1
+
+cat ("Num Respondents to HEF Admittance OOP Question\n")
+NHEF <- c(PreID=length(subset(HEF,Group=="PreID")$Adult_Admitted_Cost_OOP),
+          GeoID=length(subset(HEF,Group=="GeoID")$Adult_Admitted_Cost_OOP),
+          All=length(HEF$Adult_Admitted_Cost_OOP))
+NHEF
+
+
+cat ("Num Responding with OOP to HEF Admittance OOP Question\n")
+NHEFOOP <- c(PreID=sum(subset(HEF,Group=="PreID")$Adult_Admitted_Cost_OOP),
+             GeoID=sum(subset(HEF,Group=="GeoID")$Adult_Admitted_Cost_OOP),
+             All=sum(HEF$Adult_Admitted_Cost_OOP))
+NHEFOOP
+
+
+cat ("Percent Responding with OOP to HEF Admittance OOP Question\n")
+print(100*(NHEFOOP/NHEF),digits=1)
+
+```
+
+```{r, echo=F, rseults='asis'}
+
+p <- ggplot(data=HEF)
+p <- p + geom_bar(aes(x=Group,fill=Adult_Admitted_Cost_OOP))
+p <- p + scale_fill_manual("Addmited",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + labs(title="HEF Adult Addmision OOP Reporting")
+print(p)
+
+```
+
+## Adult_Admitted_Cost Q8_9
+### HEF OOP Cost Average
+
+```{r, echo=F, rseults='asis'}
+
+p <- ggplot(data=subset(HEFOOP))
+p <- p + geom_histogram(aes(x=Total,fill=Group))
+p <- p + labs(title="HEF Adult Addmision OOP Total Costs")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Total<2000000))
+p <- p + geom_histogram(aes(x=Total,fill=Group))
+p <- p + labs(title="HEF Adult Addmision OOP Total Costs (<2,000,000LAK)")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Total<500000))
+p <- p + geom_histogram(aes(x=Total,fill=Group))
+p <- p + labs(title="HEF Adult Addmision OOP Total Costs (<500,000LAK)")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP, Total<10000000),
+            aes(x=Group,y=Total))
+p <- p + geom_point(aes(color=Group),alpha=.2,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="HEF Adult Addmision OOP Total Costs (<10,000,000LAK)")
+print(p)
+
+```
+
+### HEF OOP Cost Drugs in Hospital
+```{r, echo=F}
+
+cat("Number of HEF Admitts reporting OOP and 0 Drug Costs in Hospital\n")
+DrugHosp <- (subset(HEFOOP,  Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK==0)[,"Group"])
+NDrugHosp <- c(PreID=sum(DrugHosp=="PreID"),
+  GeoID=sum(DrugHosp=="GeoID"),
+  All=length(DrugHosp))
+NDrugHosp
+
+cat("Percent of HEF Admitts reporting OOP report 0 Drug Costs in Hospital\n")
+print(100*NDrugHosp/NHEFOOP,digits=1)
+
+HEFOOP$DrugsInHospOOP <- HEFOOP$Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK!=0
+
+p <- ggplot(data=HEFOOP)
+p <- p + geom_bar(aes(x=Group,fill=DrugsInHospOOP))
+p <- p + scale_fill_manual("Addmited",values=c("darkgreen","darkred","gray"),labels=c("No-OOP","OOP","Don't Know"))
+p <- p + labs(title="OOP Drugs in Hosptital for HEF Adult Admitt reporting OOP")
+print(p)
+
+```
+
+```{r, echo=F, rseults='asis'}
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK>0))
+p <- p + geom_histogram(aes(x=Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK,fill=Group))
+p <- p + labs(title="HEF Adult Admision OOP Drug Costs (in hospital)")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK<1000000 &
+                              Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK>0))
+p <- p + geom_histogram(aes(x=Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK,fill=Group))
+p <- p + labs(title="HEF Adult Admision OOP Drug Costs (in hospital) (<1,000,000LAK)")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK<6000000 &
+                              Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK>0),
+            aes(x=Group,y=Adult_Admitted_Cost_Drugs_supplies_in_hospital_LAK))
+p <- p + geom_point(aes(color=Group),alpha=.2,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="HEF Adult Addmision OOP Drug Costs (in hospital) (<6,000,000LAK)")
+print(p)
+
+```
+
+### HEF OOP Cost Drugs out of Hospital 
+```{r, echo=F}
+
+HEFOOP$DrugsOutHospOOP <- HEFOOP$Adult_Admitted_Cost_Drugs_supplies_outtside_hospital_LAK!=0
+p <- ggplot(data=HEFOOP)
+p <- p + geom_bar(aes(x=Group,fill=DrugsOutHospOOP))
+p <- p + scale_fill_manual("Addmited",values=c("darkgreen","darkred","gray"),labels=c("No-OOP","OOP","Don't Know"))
+p <- p + labs(title="OOP Drugs outside Hosptital for HEF Adult Admitt reporting OOP")
+print(p)
+
+```
+
+
+### HEF OOP Cost Service Charge
+```{r, echo=F}
+
+HEFOOP$ServiceOOP <- HEFOOP$Adult_Admitted_Cost_Service_charge_LAK!=0
+p <- ggplot(data=HEFOOP)
+p <- p + geom_bar(aes(x=Group,fill=ServiceOOP))
+p <- p + scale_fill_manual("Addmited",values=c("darkgreen","darkred","gray"),labels=c("No-OOP","OOP","Don't Know"))
+p <- p + labs(title="OOP Service Charge for HEF Adult Admitt reporting OOP")
+print(p)
+
+```
+
+```{r, echo=F, rseults='asis'}
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Service_charge_LAK>0))
+p <- p + geom_histogram(aes(x=Adult_Admitted_Cost_Service_charge_LAK,fill=Group))
+p <- p + labs(title="HEF Adult Admision OOP  Service Charge")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Service_charge_LAK<250000 &
+                              Adult_Admitted_Cost_Service_charge_LAK>0))
+p <- p + geom_histogram(aes(x=Adult_Admitted_Cost_Service_charge_LAK,fill=Group))
+p <- p + labs(title="HEF Adult Admision OOP  Service Charge (<250,000LAK)")
+p <- p + scale_x_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(.~Group)
+p <- p + coord_flip()
+print(p)
+
+p <- ggplot(data=subset(HEFOOP,Adult_Admitted_Cost_Service_charge_LAK<6000000 &
+                              Adult_Admitted_Cost_Service_charge_LAK>0),
+            aes(x=Group,y=Adult_Admitted_Cost_Service_charge_LAK))
+p <- p + geom_point(aes(color=Group),alpha=.2,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="HEF Adult Addmision OOP Service Charge")
+print(p)
+
+```
+
+## Adult_Admitted_Food_allowance Q8_10
+```{r echo=F,results='asis',message=F}
+
+HEF$FoodAllowance <-ifelse(HEF$Adult_Admitted_Food_allowance==1,"Recieved","Not Recieved");
+
+HEF$OOP <- ifelse(HEF$Adult_Admitted_Cost_OOP==1,"OOP","No-OOP")
+
+
+print(xtable(
+          addmargins(prop.table(table(HEF$FoodAllowance,HEF$OOP)))*100
+      ,"Percent of OOP/No-OOP Recieving Food allowance",digits=1
+     ),type="html")
+
+
+Tb <- with(HEF,table(FoodAllowance,
+                     OOP,
+                     Group,
+                     exclude="NoAssist"))
+
+          
+print(xtable(format(
+              ftable(addmargins(Tb))
+              ,digits=1),"Number of OOP/No-OOP Recieving Food allowance by Group"
+     ),type="html")
+
+print(xtable(format(
+              100*ftable(addmargins(prop.table(Tb)))
+              ,digits=1),"Percent of OOP/No-OOP Recieving Food allowance by Group"
+     ),type="html")
+
+## > subset(Codes,Question==names(lpsraw)[which(names(lps)=="Adult_Admitted_Food_allowance_receipt_voucher")])
+##      Question Value                     Label
+## 1747    q8_12     1                       yes
+## 1748    q8_12     2 No, staff did not give it
+## 1749    q8_12     3                  No, lost
+
+HEF$FoodAllowanceVoucher <- factor(HEF$Adult_Admitted_Food_allowance_receipt_voucher,levels=c(1,2,3), labels=c("Have Voucher","Did not Recieve Voucher","Lost Voucher"))
+
+p <- ggplot(data=HEF)
+p <- p + geom_bar(aes(x=FoodAllowance,fill=FoodAllowance,color=FoodAllowanceVoucher),size=1.5)
+p <- p + scale_fill_manual("Food Allowance:",values=c("darkred","darkgreen"),labels=c("Not Recieved","Recieved"))
+p <- p + labs(title="HEF Adult Admittance Food Allowanced Reporting")
+print(p)
+
+
+p <- ggplot(data=HEF)
+p <- p + geom_bar(aes(x=FoodAllowance,fill=FoodAllowance,color=FoodAllowanceVoucher),size=1.5)
+p <- p + scale_fill_manual("Food Allowance:",values=c("darkred","darkgreen"),labels=c("Not Recieved","Recieved"))
+p <- p + facet_grid(Group~OOP)
+p <- p + labs(title="HEF Adult Admittance Food Allowanced Reporting by OOP/No-OOP and HEF Group")
+print(p)
+
+```
+
+## Adult_Admitted_Food_allowance_amount Q8_11
+```{r, echo=F, results='asis', warning=F}
+
+
+p <- ggplot(data=subset(HEF),
+            aes(x=Group,y=Adult_Admitted_Food_allowance_amount))
+
+p <- p + geom_point(aes(color=Group),alpha=.2,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Allowance in LAK",labels=comma)
+p <- p + labs(title="HEF Adult Admission Food Allowance Amounts")
+print(p)
+
+p <- p + facet_grid(.~OOP)
+print(p)
+
+
+
+```
+
+## Adult_Admitted_Outside_HEF_3km_radius
+```{r, echo=F, results='asis', warning=F}
+
+## CodeS("Adult_Admitted_Outside_HEF_3km_radius")
+##      Question Value                                                Label
+## 1755    q8_15     1                                                  yes
+## 1756    q8_15     2                                                   no
+## 1757    q8_15     3 did not receive because live close to hospital < 3km
+
+HEF$Transport <- factor(HEF$Adult_Admitted_Outside_HEF_3km_radius,levels=c(2,3,1),labels=c("Not Recieved","<3k","Recieved"))
+
+p <- ggplot(data=HEF)
+p <- p + geom_bar(aes(x=Group,fill=Transport))
+p <- p + scale_fill_brewer(palette="Spectral") ## scale_fill_manual("Group:",values=c("#f8766d","#00ba38"))
+p <- p + labs(title="Transportation Allowances")
+
+print(p)
+
+```
+
+## Adult_Admitted_Transport_allowance_amount
+```{r, echo=F, results='asis', warning=F}
+
+HEF$TransportAllowance <- factor(HEF$Adult_Admitted_Outside_HEF_3km_radius,levels=c(2,3,1),labels=c("Not Recieved","<3k","Recieved"))
+p <- ggplot(data=subset(HEF,TransportAllowance=="Recieved"),
+            aes(x=Group,y=Adult_Admitted_Transport_allowance_amount))
+
+p <- p + geom_point(aes(color=Group),alpha=.2,shape=95,size=20)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + scale_y_continuous(name="Allowance in LAK",labels=comma)
+p <- p + labs(title="HEF Transportation Allowance Amounts")
+print(p)
+
+p <- p + facet_grid(.~OOP)
+print(p)
+
+
+```
+
+```{r, echo=F}
+
+save.image(file="OOPCrossAnalysis.RData")
+
+```
+
+```{r, echo=F}
+
+load(file="OOPCrossAnalysis.RData")
+     
+```        

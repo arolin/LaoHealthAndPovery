@@ -310,7 +310,7 @@ names(OutPat)[names(OutPat)=="Nights_District_Hospital"         ] <- "Nights_At_
 names(OutPat)[names(OutPat)=="Nights_Provincial_Hospital"       ] <- "Nights_At_PH"
 names(OutPat)[names(OutPat)=="Nights_National_Hospital"         ] <- "Nights_At_NH"
 names(OutPat)[names(OutPat)=="Nights_Private_Clinic"            ] <- "Nights_At_PC"
-
+OutPat <- OutPat[,!is.na(names(OutPat))]
     
 PatOPC <- c("Care_At_Homemade_medicine","Care_At_Village_modern_medical_practitioner","Care_At_HV","Care_At_TH","Care_At_HC","Care_At_DH","Care_At_PH","Care_At_NH","Care_At_PP","Care_At_PC","Care_At_Abroad","Care_At_Illegal_medical_practitioner","Care_At_Other","Care_At_Do_not_remember","Care_At_Do_not_know","Care_At_Military_Hospital","Care_At_RH")
 
@@ -372,7 +372,7 @@ names(InPat)[names(InPat)=="Nights_District_Hospital"         ] <- "Nights_At_DH
 names(InPat)[names(InPat)=="Nights_Provincial_Hospital"       ] <- "Nights_At_PH"
 names(InPat)[names(InPat)=="Nights_National_Hospital"         ] <- "Nights_At_NH"
 names(InPat)[names(InPat)=="Nights_Private_Clinic"            ] <- "Nights_At_PC"
-
+InPat <- InPat[,!is.na(names(InPat))]
     
 PatOPC <- c("Care_At_Homemade_medicine","Care_At_Village_modern_medical_practitioner","Care_At_HV","Care_At_TH","Care_At_HC","Care_At_DH","Care_At_PH","Care_At_NH","Care_At_PP","Care_At_PC","Care_At_Abroad","Care_At_Illegal_medical_practitioner","Care_At_Other","Care_At_Do_not_remember","Care_At_Do_not_know","Care_At_Military_Hospital","Care_At_RH")
 

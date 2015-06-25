@@ -14,7 +14,11 @@ output:
 #Cost Analysis
 
 
-```{r,echo=F,results='hide', warning=F}
+```{r,echo=F,results='hide', warning=F,message = F}
+
+opts_chunk$set(comment=NA, fig.height=5, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
 
 source("LoadData.R")
 source("./SmallScripts/Utility.r")
@@ -24,17 +28,6 @@ library("GGally")
 library("scales")
 library("reshape")
 library("plyr")
-
-printt <- function(Tab,Cap) {
-  print(xtable(Tab,Cap),type='html')
-}
-
-```
-
-```{r,results='asis',warning=F}
-
-#source("./SmallScripts/CleanCosts.r")
-
 PublicFac  <- c("PH","DH","HC")
 
 ```
@@ -42,17 +35,17 @@ PublicFac  <- c("PH","DH","HC")
 ## OutPatient
 
 ### Check Number of Out Patient Records
-```{r,results='html'}
+```{r,echo=F,results='html'}
 
-##Check the total number of OutPatient Events
-sum(OutPat$Q==1)
+cat("Total number of OutPatient Cost Reports")
+cat(sum(OutPat$Q==1))
 
-##Check the total number of OutPatient Events
-sapply(OutPatGroups,sum)
+cat("Total number of OutPatient Cost Reports")
+print(sapply(OutPatGroups,sum))
 
 ```
 
-### Outpatien Tables
+### Outpatient Tables
 
 #### Number of Outpatient cost reports by Facility
 ```{r , echo=F, results='asis'}
@@ -68,65 +61,157 @@ printt(
 ```
 
 ##### Plot of Outpatient cost reports  by Facility
-```{r , echo=F, results='asis'}
+```{r , echo=F, results='asis', fig.height=5}
 
-p <- ggplot(data=OutPat)
-p <- p + geom_bar(aes(x=Facility,fill=Group))
+
+OutPatCounts = transform(summarise(group_by(OutPat,Group, Facility),Count=length(Total)))
+OutPatCounts <- cbind(OutPatCounts,
+                      Events = sapply(1:length(as.data.frame(OutPatCounts)[,1]),function(X){
+                        with(OutPatCounts[X,], sum(IH[,paste("Care_At",Facility,sep="_")] & IH$Group == Group))
+                      }))
+
+
+OutPatCounts$Events[OutPatCounts$Facility %in% InOutCare] <- 
+  sapply(1:length(as.data.frame(OutPatCounts)[OutPatCounts$Facility %in% InOutCare,"Events"]),function(X){
+    with(OutPatCounts[OutPatCounts$Facility %in% InOutCare,][X,],
+         sum(IH[,paste("Overnight_At",Facility,sep="_")]=="Day"
+             & IH$Group == Group))
+  })
+    
+
+p <- ggplot(data=OutPat,aes(x=Facility,fill=Group))
+p <- p + geom_histogram()
+p <- p + labs(title="Outpatient Cost Report Count by Facility")
+p <- p + stat_bin(geom="text", aes(label=sprintf(..count..,fmt="%d")),vjust=-.5,size=3)
+p <- p + geom_text(data=OutPatCounts,aes(x=Facility,y=Count, label= sprintf(100*Count/Events,fmt="%.1f%%")),size=3,vjust=1)
+p <- p + facet_grid(Group~.)
 p
 
 ```
 
 ##### Plot of Outpatient Useage rates by Facility
-```{r , echo=F, results='asis'}
+```{r , echo=F, results='asis',fig.height=5}
 
-IHMelt <- melt(IH[,c("Serial","Group",paste("Care_At",levels(OutPat$Facility),sep="_"))],id=c("Serial","Group"))
-p <- ggplot(data=subset(IHMelt,value))
-p + geom_bar(aes(x=variable,fill=Group))
 
+
+IHMelt <- melt(IH[,c("Serial",
+                     "Group",
+                     names(IH)[grep("Overnight_At",names(IH))])],
+               id=c("Serial","Group"))
+names(IHMelt)[3]="Facility"
+
+p <- ggplot(data=subset(IHMelt,value=="Day"), aes(x=Facility,fill=Group))
+p <- p + geom_bar(aes(x=Facility,fill=Group))
+p <- p + scale_x_discrete(labels=sub("Overnight_At_","",levels(IHMelt$Facility)))
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + labs(title="Outpatient Useage rates by Facility")
+p <- p + stat_bin(geom="text", aes(label=sprintf(..count..,fmt="%d")),vjust=1,size=3)
+p <- p + facet_grid(Group~.)
+print(p)
 
 ```    
 
 ### Plot Outpatient Totals By Facility
-```{r ,echo=F, results='asis',warning=F}
+```{r ,echo=F, results='asis',warning=F, messag=F}
 
-p <- ggplot(data=OutPat)
-p <- p + geom_point(aes(x=Facility,y=Total,color=Group),
-                    position=position_jitter(w=.2,h=0),
-                    alpha=.35)
+
+
+
+library(dplyr)
+OutPatMeans = transform(summarise(group_by(OutPat,Group, Facility), Total = mean(Total)), 
+                    Label = format(Total,digits=0,big.mark=',',scientific=FALSE))
+
+
+p <- ggplot(data=OutPat,aes(x=Facility,y=Total,color=Group))
+p <- p + labs(title="Outpatient Event Cost Means (Full range)")
+p <- p + geom_point(position=position_jitter(w=0,h=0),
+                    alpha=.35,
+                    shape=95,
+                    size=10)
 p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + facet_grid(Group~.)
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "black")
+p <- p + geom_text(data=OutPatMeans,aes(label = Label), size=3,angle = 90, vjust=2,hjust = -.6, color="black")
 print(p)
 
-
+p <- p + labs(title="Outpatient Event Cost Means (<750000)")
 p <- p + coord_cartesian(ylim = c(0, 750000))
 print(p)
 
 ```
 
-### Plot Outpatient Totals By Facility with group
-```{r ,echo=F, results='asis',warning=F}
-
-p <- p + facet_grid(Group~.)
-print(p)
-
-p <- p + coord_cartesian(ylim = c(0, 50000))
-print(p)
-
-```
-
-### Plot Outpatient Costs by Cost Type, Srvice, and Group
+### Plot Outpatient Costs by Cost Type, Service, and Group
 ```{r ,echo=F, results='asis',warning=F}
 
 OutPCostBreakDown <-  melt(data=OutPat[,c("Medical_Fee","Medicine","Others","Transport","Total","Serial","Facility","Group")],id.vars=c("Serial","Facility","Group"))
 OutPCostBreakDown <- subset(OutPCostBreakDown,!is.na(value))
 
-p <- ggplot(data=OutPCostBreakDown)
-p <- p + geom_point(aes(x=variable,y=value))
+stat_sum_single <- function(fun, geom="point", ...) {
+  stat_summary(fun.y=fun, colour="red", geom=geom, size = 1, ...)
+}
+p <- ggplot(data=OutPCostBreakDown,aes(x=variable,y=value))
+p <- p + geom_point()
+p <- p + stat_sum_single(mean)
 p <- p + facet_grid(Group~Facility)
 p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 p <- p + coord_cartesian(ylim = c(0, 750000))
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Cost Breakdown",x="")
 print(p)
                     
 ```
+
+### Outpatient PH Details
+```{r ,echo=F, results='asis',warning=F}
+
+stat_sum_single <- function(fun, geom="point", ...) {
+  stat_summary(fun.y=fun, colour="red", geom=geom, size = 3, ...)
+}
+p <- ggplot(data=subset(OutPCostBreakDown,Facility=="PH"),aes(x=variable,y=value))
+p <- p + geom_point()
+p <- p + stat_summary(fun.data = "mean_cl_boot", colour = "red")
+p <- p + facet_grid(.~Group)
+p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p <- p + coord_cartesian(ylim = c(0, 750000))
+p <- p + scale_y_continuous(name="Cost in LAK",labels=comma)
+p <- p + labs(title="Outpatient Cost Breakdown",x="")
+print(p)
+
+
+
+
+OOPLabler <- function(variable,value){
+  return(ifelse(value,"OOP","No-OOP"))
+}
+
+OutPCostBreakDown
+
+OutPCostBreakDown2 = transform(summarise(group_by(OutPat,Group, Facility), Total = mean(Total)), 
+                    Label = format(Total,digits=0,big.mark=',',scientific=FALSE))
+
+
+OutPCostBreakDown2 <- melt(with(subset(OutPCostBreakDown, variable=="Total"),
+                                table(Facility,Group)),
+                           id.vars=Facility)
+
+
+
+p <- ggplot(data=subset(OutPCostBreakDown,Facility %in% PublicFac & variable=="Total"),
+            aes(x=Group,fill=value!=0))
+p <- p + geom_bar()
+p <- p + stat_bin(geom="text", aes(label=sprintf(..count..,fmt="%d")),vjust=1,size=3)
+p <- p + scale_fill_manual("Payment:",values=c("darkgreen","darkred"),labels=c("No-OOP","OOP"))
+p <- p + stat_density(geom="text", aes(label=sprintf(..density..*100,fmt="%.1f%%")),vjust=-1,size=3)
+p <- p + facet_grid(.~Facility)
+print(p)
+  
+
+    sum(subset(OutPCostBreakDown,variable=="Total")==0)
+
+
+```
+
+
 
 ### Plot Public Health Facility HEF Level Outpatient Costs by Cost Type, Srvice, and Group
 ```{r ,echo=F, results='asis',warning=F}
@@ -263,11 +348,12 @@ sapply(InPatGroups,function(G){
   })})
 
 
-
+InPat$HavePhone <- lps$HH_Posses_Mobile_phone[InPat$Serial] > 0
 InPat$OOP <- InPat$Total > median(subset(InPat,Facility=="PH")$Total)
 mylogit <- glm(OOP ~ Age + 
                  Group +
                  NumIllnesses +
+                 HavePhone + 
                  WPCA.NPeople +
                  WPCA.Sex +
                  WPCA.Lit1 +                                 
@@ -315,7 +401,7 @@ ggpairs(InPat[predict(mylogit)<.65,c("Group","Age","NumIllnesses")])
 
 
 plot(exp(predict(mylogit,InPat[order(InPat$Total),])))
-plot(InPat[order(InPat$Total),"Total"]==0,color="Blue",add=T)
+plot(InPat[order(InPat$Total),"Total"]==0,color="Blue",dad=T)
 
 ```
 
@@ -332,28 +418,33 @@ V2 <- !is.na(AllResp[,"2_Indiv"])
 V3 <- !is.na(AllResp[,"3_Indiv"])
 
 
-CatTab <- rbind(NOutP=sapply(lgroups,function(G){sum(V1[G])}),
-                OutP_G500K=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>500000,na.rm=T)}),
-                OutP_G1M=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>1000000,na.rm=T)}),
-                OutP_20Percent=sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>(.2*lps[V1&G,"HH_Cash_income"]),na.rm=T)}),
-                NInP1=sapply(lgroups,function(G){sum(V2[G])}),
-                InP1G_G500K=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>500000,na.rm=T)}),
-                InP1_G1M=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>1000000,na.rm=T)}),
-                InP1_20Percent=sapply(lgroups,function(G){sum(AllResp[V2&G,"2_Total_cost_Overall_average"]>(.2*lps[V2&G,"HH_Cash_income"]),na.rm=T)}),
-                NInP2=sapply(lgroups,function(G){sum(V3[G])}),
-                InP2_G500K=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>500000,na.rm=T)}),
-                InP2_G1M=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>1000000,na.rm=T)}),
-                InP2_20Percent=sapply(lgroups,function(G){sum(AllResp[V3&G,"3_Total_cost_Overall_average"]>(.2*lps[V3&G,"HH_Cash_income"]),na.rm=T)}),
-                NTot=sapply(lgroups,function(G){sum(V3[G]|V2[G]|V1[G])}),
-                Tot_G500K=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>500000,na.rm=T)}),
-                Tot_G1M=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>2000000,na.rm=T)}),
-                Tot_20Percent=sapply(lgroups,function(G){sum(rowSums(AllResp[G,all],na.rm=T)>(.2*lps[G,"HH_Cash_income"]),na.rm=T)}))
+NOutP      <- sapply(levels(lps$Group), function(G){length(subset(OutPat,G==Group)[,1])})
+OutP_G500K <- sapply(levels(lps$Group), function(G){sum(subset(OutPat,G==Group)$Total>500000,na.rm=T)})
+OutP_G1M   <- sapply(levels(lps$Group), function(G){sum(subset(OutPat,G==Group)$Total>1000000,na.rm=T)})
+OutP_20Per <- sapply(levels(lps$Group),
+                     function(G){
+  sum(subset(OutPat,G==Group)$Total
+      > .2*lps[subset(OutPat,G==Group)$Serial,]$HH_Cash_income)})
+NInP       <- sapply(levels(lps$Group), function(G){length(subset(InPat,G==Group)[,1])})
+InP_G500K  <- sapply(levels(lps$Group), function(G){sum(subset(InPat,G==Group)$Total>500000,na.rm=T)})
+InP_G1M    <- sapply(levels(lps$Group), function(G){sum(subset(InPat,G==Group)$Total>1000000,na.rm=T)})
+InP_20Per <- sapply(levels(lps$Group),
+                     function(G){
+  sum(subset(InPat,G==Group)$Total
+      > .2*lps[subset(InPat,G==Group)$Serial,]$HH_Cash_income)})
 
-print(xtable(CatTab,"CatastrophicExpenditure"),type='html')
 
-c("1_Total_cost_Overall_average","2_Total_cost_Overall_average","3_Total_cost_Overall_average")
-V1 <- !is.na(AllResp[,"1_Indiv"])
-sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>500000,na.rm=T)})
+
+CatTab <- rbind(NOutP     ,
+                OutP_G500K,
+                OutP_G1M  ,
+                OutP_20Per,
+                NInP      ,
+                InP_G500K ,
+                InP_G1M,
+                InP_20Per)
+
+print(xtable(CatTab,"Catastrophic Expenditure for single events"),type='html')
 
 
 ```
@@ -361,67 +452,15 @@ sapply(lgroups,function(G){sum(AllResp[V1&G,"1_Total_cost_Overall_average"]>5000
 
 
 
-
-```{r,echo=F,results='hide',warning=F}
-
-CareCenterAgr <- function(X) {
-  c(N=sum(!is.na(X)),
-    N0=sum(X==0,na.rm=T),
-    Max=max(X,na.rm=T),
-    Mean=mean(X,na.rm=T),
-    Median=median(X,na.rm=T)
-    )
-}
-
-MeansByGroup <- aggregate(OutPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),CareCenterAgr)
-MeansByGroup <- cbind(MeansByGroup[1],MeansByGroup[2],as.matrix(MeansByGroup[3:6]))
-#write.csv(MeansByGroup,"./output/OutPatienCostDetails.csv")
-
-MeansForAll <- aggregate(OutPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=OutPatCostTable$CareCenter ),CareCenterAgr)
-dim(MeansForAll)
-                                        #write.csv(MeansForAll,"./output/OutPatienCostDetails.csv")
-MeansForAll <- cbind(MeansForAll[1],
-                     Cat2=rep("All",length(MeansForAll[,1])),
-                     as.matrix(MeansForAll[2:5]))
-head(MeansForAll)
-dim(MeansForAll)
-dim(MeansByGroup)
-
-write.csv(rbind(MeansForAll,MeansByGroup),file="./output/OutpatientCostMeansDetails.csv")
-
-########################################
-
-MeansByGroup <- aggregate(InPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=InPatCostTable$CareCenter,Cat2=InPatCostTable$Group),CareCenterAgr)
-MeansByGroup <- cbind(MeansByGroup[1],MeansByGroup[2],as.matrix(MeansByGroup[3:6]))
-#write.csv(MeansByGroup,"./output/InPatienCostDetails.csv")
-
-MeansForAll <- aggregate(InPatCostTable[,c("Overall_average","Medical_Fee","Medicine","Transport")],list(Cat1=InPatCostTable$CareCenter ),CareCenterAgr)
-dim(MeansForAll)
-                                        #write.csv(MeansForAll,"./output/InPatienCostDetails.csv")
-MeansForAll <- cbind(MeansForAll[1],
-                     Cat2=rep("All",length(MeansForAll[,1])),
-                     as.matrix(MeansForAll[2:5]))
-head(MeansForAll)
-dim(MeansForAll)
-dim(MeansByGroup)
-
-write.csv(rbind(MeansForAll,MeansByGroup),file="./output/InpatientCostMeansDetails.csv")
+```{r}
 
 
+ScoreMeans <- ddply(lps[,c("Village","Score")],.(Village),summarize,
+                    Sd= sd(Score),Score = mean(Score)
+                    )
 
-NIll <- aggregate(OutPatCostTable$NumIllnesses,list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),
-                  function(X){
-                    c(N=length(X),NFound=sum(!is.na(X)),NSick=mean(X,na.rm=T))
-                  })
-
-UsageProfileByGroup <- cbind(aggregate(OutPatCostTable[,c("Age","Overall_average")],list(Cat1=OutPatCostTable$CareCenter,Cat2=OutPatCostTable$Group),mean),
-                      NIll[3])
-
-UsageProfileAll <- cbind(aggregate(OutPatCostTable[,c("Age","Overall_average")],list(Cat1=OutPatCostTable$CareCenter),mean),      
-       aggregate(OutPatCostTable$NumIllnesses,list(Cat1=OutPatCostTable$CareCenter),
-                  function(X){
-                    c(N=length(X),NFound=sum(!is.na(X)),NSick=mean(X,na.rm=T))
-                  })[2]
-      )
+p <- ggplot(data=lps)
+p <- p + geom_point(aes(color=Group,x=factor(Village,levels=ScoreMeans$Village[order(ScoreMeans$Score)]),y=Score))
+print(p)
 
 ```

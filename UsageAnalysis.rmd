@@ -27,15 +27,15 @@ Calculations for table for q2.5 x2.6 to calculate the illness per HH/Pers per ye
 
 sapply(ligroups,function(G){mean(IndiHealth$NumIllness[G],na.rm=T)})
 
-p <- ggplot(data=IndiHealth,aes(x=NumIllnesses))
+p <- ggplot(data=IH,aes(x=NumIllnesses))
 p <- p+geom_histogram(binwidth=1)
 p
 
-p <- ggplot(data=IndiHealth,aes(x=NumIllnesses))
+p <- ggplot(data=IH,aes(x=NumIllnesses))
 p <- p+geom_histogram(binwidth=1) + facet_grid(Group~.)
 p                    
 
 
-p <- ggplot(data=IndiHealth,aes(x=Age,y=NumIllnesses))
-p <- p+ geom_point() + facet_grid(Group~.)+stat_smooth(aes(color="Red",width=2))
+p <- ggplot(data=IH,aes(x=Age,y=NumIllnesses))
+p <- p+ geom_point() + facet_grid(Group~.)+stat_smooth(aes(color=Group,width=2))
 p                    
