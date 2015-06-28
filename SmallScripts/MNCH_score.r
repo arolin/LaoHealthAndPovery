@@ -64,6 +64,7 @@ Mothers$MNCH_ORS[Mothers$Mother_Child_Last_diarhea_Received_ORS==1] <- 1
 Mothers$MNCH_ORS
 
 
+
 # 
 # > subset(Codes,Question=="q5_21")
 # Question Value                                Label
@@ -84,6 +85,14 @@ Mothers$MNCH_MN[Mothers[,"Mother_Mosquito_net_last_night"]!=3] <-1
 Mothers$MNCH_MN
 
 names(Mothers)[grep("MNCH_",names(Mothers))]
+
+write.csv(cbind(format(sapply(levels(Mothers$Group),function(G){colSums(subset(Mothers,Group==G)[,grep("MNCH_",names(Mothers))])/sum(Mothers$Group==G)*100}),digits=1),
+                p=sprintf(sapply(names(Mothers)[grep("MNCH_",names(Mothers))],function(N){ chisq.test( with (Mothers,table(Group,get(N))))$p.value}),fmt="%.3f")),file="./output/MNCH_Breakdown.csv")
+
+chisq.test(with(subset(Mothers,Group!="NoAssist"),table(factor(Group),MNCH_SBA)))$p.value
+chisq.test(with(subset(Mothers,Group!="GeoID"),table(factor(Group),MNCH_SBA)))$p.value
+chisq.test(with(subset(Mothers,Group!="PreID"),table(factor(Group),MNCH_SBA)))$p.value
+
 
 Mothers[,c("MNCH_FPS" , "MNCH_SBA"  ,"MNCH_ANC" , "MNCH_DPT3" ,"MNCH_BCG" , "MNCH_MR" ,  "MNCH_ORS" , "MNCH_CPNM" ,"MNCH_MN")]
 Weights <- c(1,.5,.5,.5,.25,.25,.5,.5,1)

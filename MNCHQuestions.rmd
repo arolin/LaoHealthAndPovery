@@ -302,7 +302,7 @@ with(subset(Villages,PreID=="GeoID"),NHEF/X..HH.Total)
 
 Villages$VillageNum <- factor(Villages$VillageNum)
 ## p <- qplot(Year, Frequency, data = Data, geom = "bar", fill = Category,     theme_set(theme_bw()))
-p <- qplot(VillageNum,X..HH.Total,data=Villages,geom = "bar", stat="identity",fill= PreID)
+p <- qplot(VillageNum,X..HH.Total,data=Villages,geom = "bar", stat="identity",fill= Pre.ID)
 p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 print(p)
 
