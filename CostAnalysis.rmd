@@ -348,7 +348,7 @@ sapply(InPatGroups,function(G){
   })})
 
 
-InPat$HavePhone <- lps$HH_Posses_Mobile_phone[InPat$Serial] > 0
+InPat$HavePhone <- lps$HH_Posses_Mobile_phone[as.numeric(as.character(InPat$Serial))] > 0
 InPat$OOP <- InPat$Total > median(subset(InPat,Facility=="PH")$Total)
 mylogit <- glm(OOP ~ Age + 
                  Group +

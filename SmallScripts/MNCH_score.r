@@ -101,4 +101,22 @@ Weights
 Mothers$Score_MNCH <- rowSums(t(t(Mothers[,c("MNCH_FPS" , "MNCH_SBA"  ,"MNCH_ANC" , "MNCH_DPT3" ,"MNCH_BCG" , "MNCH_MR" ,  "MNCH_ORS" , "MNCH_CPNM" ,"MNCH_MN")])*Weights))
 Mothers$Score_MNCH
 
+Mothers$QANC_TT1 <- (!is.na(Mothers$Mother_TT_immun_preg_Card_Date1) & Mothers$Mother_TT_immun_preg_Card_Date1!="") | (!is.na(Mothers$Mother_TT_immun_Verbal1) & Mothers$Mother_TT_immun_Verbal1==1)
+Mothers$QANC_TT2 <- (!is.na(Mothers$Mother_TT_immun_preg_Card_Date2) & Mothers$Mother_TT_immun_preg_Card_Date2!="") | (!is.na(Mothers$Mother_TT_immun_Verbal2) & Mothers$Mother_TT_immun_Verbal2==1)
+Mothers$QANC_BP  <- (!is.na(Mothers$Mother_Blood_pressure_measured) & (Mothers$Mother_Blood_pressure_measured==1))
+Mothers$QANC_FA  <- (!is.na(Mothers$Mother_Ferrous_and_folic_acid)& (Mothers$Mother_Ferrous_and_folic_acid==1))
+Mothers$QANC_RC  <- (!is.na(Mothers$Mother_Informed_of_Pregnancy_Risk)& (Mothers$Mother_Informed_of_Pregnancy_Risk==1))
 
+Mothers$Score_QANC <- rowSums(Mothers[,c("QANC_TT1","QANC_TT2","QANC_BP","QANC_FA","QANC_RC")])/5
+
+
+  
+Mothers$QCH_Meb <-
+(!is.na(Mothers$Mother_Child_Mebendazole) & Mothers$Mother_Child_Mebendazole) &
+(!is.na(Mothers$Mother_Child_Mebendazole_Date) & Mothers$Mother_Child_Mebendazole_Date!="")
+
+
+  
+
+  
+                                                                                                                         

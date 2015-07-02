@@ -106,8 +106,14 @@ printPT(NOutPat/NOutPatEvents,"Precent of Outpatient Events with reported costs"
 
 ```{r, echo=F, fig.height=3, width=7}
 
+png("./Analysis/Figures/OutPatTotal_OOP.png",400,200)
 PlotOutPOOP("Total","Outpatient Cost Reported OOP/No-OOP")
+dev.off()
+
+png("./Analysis/Figures/OutPatTransport_OOP.png",400,200)
 PlotOutPOOP("Transport","Outpatient Transport Reported OOP/No-OOP")
+dev.off()
+
 PlotOutPOOP("Medicine","Outpatient Medicine Reported OOP/No-OOP")
 PlotOutPOOP("Medical_Fee","Outpatient Medical Fee Reported OOP/No-OOP")
 
@@ -319,8 +325,14 @@ printPT(NInPat[,c("HC","DH","PH","NH","PC","Total")]/NInPatEvents,"Precent of In
 
 ```{r, echo=F, fig.height=3, width=7}
 
+png("./Analysis/Figures/InPatTotal_OOP.png",400,200)
 PlotInPOOP("Total","Inpatient Cost Reported OOP/No-OOP")
+dev.off()
+
+png("./Analysis/Figures/InPatTranport_OOP.png",400,200)
 PlotInPOOP("Transport","Inpatient Transport Reported OOP/No-OOP")
+dev.off()
+
 PlotInPOOP("Medicine","Inpatient Medicine Reported OOP/No-OOP")
 PlotInPOOP("Medical_Fee","Inpatient Medical Fee Reported OOP/No-OOP")
 
@@ -432,14 +444,95 @@ printt(NInPatMedicineNOOP,"Number of reported 0 Medicine Costs")
 printPT(NInPatMedicineNOOP/NInPatMedicine,"Percent of Reported Medicine equal to 0" )
 
 ```
+
 ## Detailed analysis of who does/does-not pay
 
 ### Who are the no assist who do not pay?
 
 ```{r, echo=F}
 
+cat("NoAssist NoOOP OutP Medicine")
+NumNoAssisNOOP <- length(subset(OutPat,Group=="NoAssist"&Medicine==0)$Age<5)
+NumNoAssisNOOP
+
+cat("NoAssist NoOOP OutP Medicine CU5")
+NumNoAssisNOOPCU5 <- sum(subset(OutPat,Group=="NoAssist"&Medicine==0)$Age<5)
+NumNoAssisNOOPCU5
+
+paste(format(100*NumNoAssisNOOPCU5/NumNoAssisNOOP,digits=1,scientific=F),"%")
+
+
+cat("NoAssist NoOOP OutP Medical_Fee")
+NumNoAssisNOOP <- length(subset(OutPat,Group=="NoAssist"&Medical_Fee==0)$Age<5)
+NumNoAssisNOOP
+
+cat("NoAssist NoOOP OutP Medical_Fee CU5")
+NumNoAssisNOOPCU5 <- sum(subset(OutPat,Group=="NoAssist"&Medical_Fee==0)$Age<5)
+NumNoAssisNOOPCU5
+
+paste(format(100*NumNoAssisNOOPCU5/NumNoAssisNOOP,digits=1,scientific=F),"%")
+
+cat("NoAssist NoOOP Medicine")
 NumNoAssisNOOP <- length(subset(InPat,Group=="NoAssist"&Medicine==0)$Age<5)
+NumNoAssisNOOP
+
+
+a <- with(subset(OutPat,Group=="NoAssist"),table(Facility,Medical_Fee==0,useNA="ifany"))
+print(100*a[,2]/rowSums(a),digits=2)
+
+cat("Percent No-Assist No-OOP Medical Fee CU5 by facility")
+a <- with(subset(OutPat,Group=="NoAssist"),table(Facility,Medical_Fee==0 & Age<5,useNA="ifany"))
+print(100*a[,2]/rowSums(a),digits=2)
+
+OutPat$VillageNum <- factor(lps$Village[OutPat$Serial],levels=Villages$VillageNum)
+OutPat$HC <- Villages$Name.HC.coverage[as.numeric(OutPat$VillageNum)]
+OutPat$DH <- Villages$Name.DH.coverage[as.numeric(OutPat$VillageNum)]
+OutPat$PH <- Villages$Name.PH.coverage[as.numeric(OutPat$VillageNum)]
+
+pat <- subset(OutPat,Group=="NoAssist" & (Facility %in% c("HC","PH","DH")) & Medicine==0 & Age>5)
+ins <- lps[as.numeric(as.character(pat$Serial)),grep("HH_Insurance_",names(lps))]
+names(ins) <- sub("HH_Insurance_","",names(ins))
+
+table(names(ins)[rowSums(ins,na.rm=T)])/.22
+
+
+b <- length(pat[,1])
+
+b
+cat("Percent No-Assist No-OOP Medicine @ HC by HC Name")
+a <- with(subset(OutPat,Medicine==0 & Group=="NoAssist" & Facility=="HC" & Age>5),table(HC))
+a
+print(100*a/b,digits=2)
+print(sum(a/b))
+cat("Percent No-Assist No-OOP Medicine @ DH by DH Name")
+a <- with(subset(OutPat,Medicine==0 & Group=="NoAssist" & Facility=="DH" & Age>5),table(DH))
+a
+print(100*a/b,digits=2)
+print(sum(a/b))
+cat("Percent No-Assist No-OOP Medicine @ PH by PH Name")
+a <- with(subset(OutPat,Medicine==0 & Group=="NoAssist" & Facility=="PH" & Age>5),table(PH))
+a
+print(100*a/b,digits=2)
+
+
+cat("NoAssist NoOOP Medicine CU5")
 NumNoAssisNOOPCU5 <- sum(subset(InPat,Group=="NoAssist"&Medicine==0)$Age<5)
+NumNoAssisNOOPCU5
+
+paste(format(100*NumNoAssisNOOPCU5/NumNoAssisNOOP,digits=1,scientific=F),"%")
+
+
+cat("NoAssist NoOOP Medical_Fee")
+NumNoAssisNOOP <- length(subset(InPat,Group=="NoAssist"&Medical_Fee==0)$Age<5)
+NumNoAssisNOOP
+
+cat("NoAssist NoOOP Medical_Fee CU5")
+NumNoAssisNOOPCU5 <- sum(subset(InPat,Group=="NoAssist"&Medical_Fee==0)$Age<5)
+NumNoAssisNOOPCU5
+
+paste(format(100*NumNoAssisNOOPCU5/NumNoAssisNOOP,digits=1,scientific=F),"%")
+
+
 
 ```
 
@@ -509,6 +602,11 @@ CARates <- sapply (CAgroups,function(G){
 CARates <- rbind(CARates,Total=colSums(CARates))
 
 print(xtable(formatC(CARates,digits=0,format="f"),"Child Inpatient Report Counts by Facitly and Insurrance Group"),type="html",html.table.attributes = "border = '1', align = 'center'")
+
+InPat$GG <- 1:length(InPat[,1])
+M <- merge(InPat,lps,"Serial")
+length(rowSums(subset(M,Group.x=="NoAssist"&Age>5 & Medicine==0)[,names(lps)[grep("HH_Ins",names(lps))]],na.rm=T))
+sum(rowSums(subset(M,Group.x=="NoAssist"&Age>5 & Medicine==0)[,names(lps)[grep("HH_Ins",names(lps))]],na.rm=T)!=8)
 
 ```
 

@@ -1,0 +1,317 @@
+---
+title: "Cost Modeling"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+    html_document:
+        toc: true
+        toc_depth: 5
+        number_sections: true
+---
+
+
+# General Inpatient and Outpatient Costs
+```{r,echo=F,results='hide',message=F,warning=F}
+
+opts_chunk$set(comment=NA, fig.height=4, fig.width=7, fig.align='center')
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(dev='png')
+
+library("ggplot2")
+library("xtable")
+source("LoadData.R")
+source("./SmallScripts/Utility.r")
+library("reshape")
+library("scales")
+library("plyr")
+library(Hmisc)
+set.seed(0)
+
+MDM <- T
+
+```
+
+```{r, echo=F, results='asis'}
+
+source("SmallScripts/ComputeCosts.r")
+
+```
+
+# Inpatient and outpatient costs by facility
+
+## Outpatient CU5
+
+### Num Outpatient CU5 Reports by Facility
+```{r, echo=F}
+
+with(subset(OutPat,Total<500000 & Age < 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=length))
+
+```
+
+
+### Mean Outpatient CU5
+```{r, echo=F}
+
+OutPCU5Mean <- with(subset(OutPat,Total<500000 & Age < 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=mean))
+OutPCU5Mean
+
+```
+### Median Outpatient CU5
+```{r, echo=F}
+
+OutPCU5Median <- with(subset(OutPat,Total<500000 & Age < 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=median))
+OutPCU5Median
+
+```
+### Model Outpatient CU5
+```{r, echo=F}
+
+OutPCU5 <- (OutPCU5Mean+OutPCU5Median)/2
+OutPCU5 <- sapply(levels(OutPat$Group),function(G){OutPCU5[is.na(OutPCU5[,G]),G] <- OverallCosts["OutP_CU5",G]; return(OutPCU5[,G])})
+OutPCU5 <- t((t(OutPCU5) + OverallCosts["OutP_CU5",])/2)
+OutPCU5
+
+```
+
+## Outpatient
+
+### Num Reports by facility
+```{r, echo=F}
+
+with(subset(OutPat,Total<500000 & Age >= 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=length))
+
+```
+
+### Mean Outpatient
+```{r, echo=F}
+
+OutPCMean <- with(subset(OutPat,Total<500000 & Age >= 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=mean))
+OutPCMean
+
+```
+### Median Outpatient
+```{r, echo=F}
+
+OutPCMedian <- with(subset(OutPat,Total<500000 & Age >= 5),tapply(Total,list(Facility=Facility,Group=Group),FUN=median))
+OutPCMedian
+
+```
+
+### Model Outpatient
+```{r, echo=F}
+
+
+OutPC <- (OutPCMean+OutPCMedian)/2
+OutPC <- sapply(levels(OutPat$Group),function(G){OutPC[is.na(OutPC[,G]),G] <- OverallCosts["OutP",G]; return(OutPC[,G])})
+OutPC <- t((t(OutPC) + OverallCosts["OutP",])/2)
+OutPC
+
+
+```
+## Inpatient CU5
+
+### Num Inptatient CU5 Reports by Facility
+```{r, echo=F}
+
+InPF <- sub("Overnight_At_","",grep("Overnight_At_",names(IH),value=T))
+with(subset(InPat,Facility %in% InPF & Total<1000000 & Age < 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=length))
+
+
+```
+
+### Mean Inpatient CU5
+```{r, echo=F}
+
+
+InPCU5Mean <- with(subset(InPat,Facility %in% InPF & Total<1000000 & Age < 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=mean))
+InPCU5Mean
+
+```
+### Median Inpatient CU5
+```{r, echo=F}
+
+InPCU5Median <- with(subset(InPat,Facility %in% InPF & Total<1000000 & Age < 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=median))
+InPCU5Median
+
+```
+### Model Inpatient CU5
+```{r, echo=F}
+
+
+InPCU5 <- (InPCU5Mean+InPCU5Median)/2
+InPCU5 <- sapply(levels(InPat$Group),function(G){InPCU5[is.na(InPCU5[,G]),G] <- OverallCosts["InP_CU5",G]; return(InPCU5[,G])})
+InPCU5 <- t((t(InPCU5) + OverallCosts["InP_CU5",])/2)
+
+InPCU5 <- rbind(InPCU5,
+      NH=OverallCosts["InP_CU5",],
+      PC=OverallCosts["InP_CU5",])
+InPCU5
+
+```
+
+## Inpatient
+### Num Inpatient Reports by Facility
+```{r, echo=F}
+
+with(subset(InPat,Facility %in% InPF & Total<1000000 & Age >= 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=length))
+
+```
+
+### Mean Inpatient
+```{r, echo=F}
+
+InPCMean <- with(subset(InPat,Facility %in% InPF & Total<1000000 & Age >= 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=mean))
+InPCMean
+
+```
+### Median Inpatient
+```{r, echo=F}
+
+InPCMedian <- with(subset(InPat,Facility %in% InPF & Total<1000000 & Age >= 5),tapply(Total,list(Facility=factor(Facility),Group=Group),FUN=median))
+InPCMedian
+
+```
+
+### Model Inpatient
+```{r, echo=F}
+
+
+InPC <- (InPCMean+InPCMedian)/2
+InPC <- sapply(levels(InPat$Group),function(G){InPC[is.na(InPC[,G]),G] <- OverallCosts["InP",G]; return(InPC[,G])})
+InPC <- t((t(InPC) + OverallCosts["InP",])/2)
+InPC
+
+
+```
+
+
+# Individual Costs
+
+## OutPatient Costs by Individual
+```{r, echo=F}
+
+##Stricly Outpatient costed care options
+
+OutF <- c("HV","PP","TH","RH")
+IH$CostOutP <- 0
+for (G in levels(InPat$Group)){
+  for (Fl in OutF) {
+    IH$CostOutP[IH$Group==G & IH$Age<5 & IH[,paste("Care_At",Fl,sep="_")]] <-
+      IH$CostOutP[IH$Group==G & IH$Age<5 & IH[,paste("Care_At",Fl,sep="_")]] +
+      OutPCU5[Fl,G]
+  }
+}
+for (G in levels(InPat$Group)){
+  for (Fl in OutF) {
+    IH$CostOutP[IH$Group==G & IH$Age>=5 & IH[,paste("Care_At",Fl,sep="_")]] <-
+      IH$CostOutP[IH$Group==G & IH$Age>=5 & IH[,paste("Care_At",Fl,sep="_")]] +
+      OutPC[Fl,G]
+  }
+}
+for (G in levels(InPat$Group)){
+  for (Fl in InPF) {
+    IH$CostOutP[IH$Group==G & IH$Age<5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Day" ] <-
+      IH$CostOutP[IH$Group==G & IH$Age<5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Day"] +
+      OutPCU5[Fl,G]
+  }
+}
+for (G in levels(InPat$Group)){
+  for (Fl in InPF) {
+    IH$CostOutP[IH$Group==G & IH$Age>=5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Day" ] <-
+      IH$CostOutP[IH$Group==G & IH$Age>=5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Day"] +
+      OutPC[Fl,G]
+  }
+}
+
+
+OutPMeanByIndiv <- with(subset(IH),aggregate(CostOutP,by=list(Group=Group),FUN=mean))
+names(OutPMeanByIndiv)[2] <- "mean"
+OutPMeanByIndiv
+
+
+OutPMeanByIndiv <- with(subset(IH,CostOutP!=0),aggregate(CostOutP,by=list(Group=Group),FUN=mean))
+names(OutPMeanByIndiv)[2] <- "mean"
+OutPMeanByIndiv
+
+```
+
+
+
+## InPatient Costs by Individual
+```{r, echo=F}
+
+IH$CostInP <- 0
+for (G in levels(InPat$Group)){
+  for (Fl in InPF) {
+    IH$CostInP[IH$Group==G & IH$Age<5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Overnight" ] <-
+      IH$CostInP[IH$Group==G & IH$Age<5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Overnight"] +
+      InPCU5[Fl,G]
+  }
+}
+for (G in levels(InPat$Group)){
+  for (Fl in InPF) {
+    IH$CostInP[IH$Group==G & IH$Age>=5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Overnight" ] <-
+      IH$CostInP[IH$Group==G & IH$Age>=5 & IH[,paste("Overnight_At",Fl,sep="_")]=="Overnight"] +
+      InPC[Fl,G]
+  }
+}
+if(sum(rowSums(IH[,grep("Overnight_At",names(IH),value=T)]=="Overnight")>0)!=sum(IH$CostInP>0)){
+  stop("Problem!!!, Overnights don't add up to total overnights")
+}
+
+InPMeanByIndiv <- with(IH,aggregate(CostInP,by=list(Group=Group),FUN=mean))
+names(InPMeanByIndiv)[2] <- "mean"
+InPMeanByIndiv
+
+InPMeanByIndiv <- with(subset(IH,CostInP!=0),aggregate(CostInP,by=list(Group=Group),FUN=mean))
+names(InPMeanByIndiv)[2] <- "mean"
+InPMeanByIndiv
+
+
+```
+## Total Costs by Individual
+
+```{r , echo=F}
+
+PCMeanByIndiv <- with(subset(IH),aggregate(CostInP + CostOutP,by=list(Group=Group),FUN=mean))
+names(PCMeanByIndiv)[2] <- "mean"
+PCMeanByIndiv
+
+
+PCMeanByIndiv <- with(subset(IH,CostInP!=0 | CostOutP!=0),aggregate(CostInP + CostOutP,by=list(Group=Group),FUN=mean))
+names(PCMeanByIndiv)[2] <- "mean"
+PCMeanByIndiv
+
+
+```
+
+## Total Costs by HH
+```{r , echo=F}
+
+PCMeanByHH <- with(with(IH,aggregate(CostInP + CostOutP,by=list(Serial=Serial,Group=Group),FUN=sum)),
+                   aggregate(x,by=list(Group=Group),FUN=mean))
+names(PCMeanByHH)[2] <- "mean"
+PCMeanByHH
+
+```
+
+
+```{r , echo=F}
+
+AllCostMeansByGroup <- rbind(OutPMeanByIndiv[,2],InPMeanByIndiv[,2],PCMeanByIndiv[,2],PCMeanByHH[,2])
+rownames(AllCostMeansByGroup) <- c("Outpatient by Indv",
+                                   "Inpatient by Indv",
+                                   "Total by Indv",
+                                   "Total by HH")
+colnames(AllCostMeansByGroup) <- levels(IH$Group)
+AllCostMeansByGroup
+
+```
+## Provincial Cost Estimates
+
+### Sample to Province Ratios
+
+```{r , echo=F}
+
+
+
+```
